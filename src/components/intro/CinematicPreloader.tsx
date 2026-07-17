@@ -202,10 +202,10 @@ export default function CinematicPreloader() {
         const counter = { v: 0 }
 
         tl
-          .set(sceneRef, { v: 1 })
+          .add(() => setScene(1))
           .to(initTextRef.current, { opacity: 1, duration: 0.2 })
           .to({}, { duration: 0.15 })
-          .set(sceneRef, { v: 2 })
+          .add(() => setScene(2))
           .to(letters, { yPercent: 0, opacity: 1, duration: 0.3, ease: 'expo.out', stagger: 0.04 })
           .to(barRef.current, { scaleX: 1, duration: 0.5, ease: 'power1.inOut' }, 0.1)
           .to(counter, {
@@ -220,7 +220,7 @@ export default function CinematicPreloader() {
             },
           }, 0.1)
           .to({}, { duration: 0.1 })
-          .set(sceneRef, { v: 4 })
+          .add(() => setScene(4))
           .to(rootRef.current, { opacity: 0, duration: 0.3, ease: 'power2.in' })
         return
       }
@@ -408,8 +408,9 @@ export default function CinematicPreloader() {
       clearTimeout(timeoutId)
       tlRef.current?.kill()
       tlRef.current = null
-      if (gsapRef.current) {
-        gsapRef.current.killTweensOf(glowRef.current)
+      const currentGlow = glowRef.current
+      if (gsapRef.current && currentGlow) {
+        gsapRef.current.killTweensOf(currentGlow)
       }
       cleanupScroll?.()
     }

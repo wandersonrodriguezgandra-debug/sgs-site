@@ -43,7 +43,7 @@ export default function HomePage() {
           <TrustSection />
         </WebGLSectionTransition>
 
-        <SectionTransition delay={0.1}>
+        <SectionTransition delay={0.1} parallax>
           <BenefitsSection />
         </SectionTransition>
 
@@ -51,7 +51,7 @@ export default function HomePage() {
           <ProblemSection />
         </SectionTransition>
 
-        <SectionTransition delay={0.05}>
+        <SectionTransition delay={0.05} parallax>
           <ModulesSection />
         </SectionTransition>
 
@@ -67,7 +67,7 @@ export default function HomePage() {
           <SuspenseWrapper><DashboardSection /></SuspenseWrapper>
         </SectionTransition>
 
-        <SectionTransition delay={0.05}>
+        <SectionTransition delay={0.05} parallax>
           <SecuritySection />
         </SectionTransition>
 

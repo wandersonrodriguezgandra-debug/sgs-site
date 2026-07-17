@@ -9,21 +9,21 @@ interface SectionTransitionProps {
   className?: string
   delay?: number
   stagger?: number
+  /** Apply subtle parallax depth during scroll */
+  parallax?: boolean
 }
 
 /**
- * Reveal de assinatura aplicado a cada seção da home.
- * Cinematográfico mas SEGURO para layout: usa apenas opacity + translateY +
- * filter:blur (que entra em foco). Evita clip-path/scale, que criariam um
- * containing-block e quebrariam o `position:fixed` do pin do HowItWorks.
- * O estado final é idêntico ao original (opacity 1, y 0, sem blur) — os
- * snapshots visuais e o pinning permanecem intactos.
+ * Cinematic section reveal with blur-to-focus transition.
+ * Uses opacity + translateY + filter:blur for safe layout.
+ * Optional parallax adds depth during scroll.
  */
 export default function SectionTransition({
   children,
   className,
   delay = 0,
   stagger,
+  parallax = false,
 }: SectionTransitionProps) {
   const ref = useRef<HTMLDivElement>(null!)
   const reduced = useReducedMotion()
@@ -43,6 +43,7 @@ export default function SectionTransition({
         : ref.current
 
       ctx = gsap.context(() => {
+        // Main reveal animation
         gsap.fromTo(
           targets,
           { opacity: 0, y: 56, filter: 'blur(14px)' },
@@ -63,6 +64,20 @@ export default function SectionTransition({
             clearProps: 'filter',
           },
         )
+
+        // Optional parallax: subtle Y shift during scroll
+        if (parallax) {
+          gsap.to(ref.current, {
+            y: -20,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: ref.current,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1,
+            },
+          })
+        }
       })
     }
 
@@ -72,7 +87,7 @@ export default function SectionTransition({
       cancelled = true
       if (ctx) ctx.revert()
     }
-  }, [reduced, delay, stagger])
+  }, [reduced, delay, stagger, parallax])
 
   return <div ref={ref} className={cn(className)}>{children}</div>
 }

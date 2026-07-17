@@ -20,9 +20,9 @@ interface ButtonProps {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-sgs-accent text-sgs-text-inverse hover:bg-sgs-accent-dark shadow-sm hover:shadow-glow',
+  primary: 'bg-sgs-accent text-sgs-text-inverse hover:bg-sgs-accent-dark shadow-sm hover:shadow-glow-strong',
   secondary: 'bg-sgs-blue-50 text-sgs-accent hover:bg-sgs-blue-100',
-  outline: 'border border-sgs-accent text-sgs-accent hover:bg-sgs-blue-50',
+  outline: 'border border-sgs-accent/30 text-sgs-accent hover:bg-sgs-accent/5 hover:border-sgs-accent/50',
   ghost: 'text-sgs-accent hover:bg-sgs-blue-50',
 }
 
@@ -47,7 +47,7 @@ function Button({
   const isDisabled = disabled || loading
 
   const classes = cn(
-    'inline-flex items-center justify-center gap-2 font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-sgs-accent cursor-pointer select-none',
+    'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus-visible:outline-2 focus-visible:outline-sgs-accent cursor-pointer select-none',
     variantStyles[variant],
     sizeStyles[size],
     isDisabled && 'opacity-50 pointer-events-none',
@@ -56,8 +56,8 @@ function Button({
 
   const motionProps = {
     className: classes,
-    whileHover: isDisabled ? {} : { scale: 1.02 },
-    whileTap: isDisabled ? {} : { scale: 0.98 },
+    whileHover: isDisabled ? {} : { scale: 1.03, y: -1 },
+    whileTap: isDisabled ? {} : { scale: 0.97 },
     onClick,
     transition: { type: 'spring' as const, stiffness: 400, damping: 25 },
     'data-testid': rest['data-testid'] || undefined,

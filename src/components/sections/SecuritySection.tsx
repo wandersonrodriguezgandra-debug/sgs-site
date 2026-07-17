@@ -6,6 +6,7 @@ import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 import Card from '@/components/ui/Card'
 import Reveal from '@/components/motion/Reveal'
+import BlurReveal from '@/components/motion/BlurReveal'
 import Stagger from '@/components/motion/Stagger'
 import InteractiveSurface from '@/components/interaction/InteractiveSurface'
 
@@ -45,17 +46,25 @@ const securityFeatures = [
 export default function SecuritySection() {
   return (
     <Section id="security" variant="dark">
+      {/* Shield glow effect */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(0,86,179,0.5) 0%, transparent 60%)' }} aria-hidden="true" />
+
       <Reveal>
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <div className="h-px w-12 bg-gradient-to-r from-transparent to-sgs-accent-light/40" />
+          <Shield className="h-5 w-5 text-sgs-accent-light" />
+          <div className="h-px w-12 bg-gradient-to-l from-transparent to-sgs-accent-light/40" />
+        </div>
         <Heading size="h2" align="center" className="mb-4 text-sgs-text-inverse">
           Seus dados protegidos em todas as etapas
         </Heading>
       </Reveal>
-      <Reveal delay={0.1}>
+      <BlurReveal delay={0.1} blur={4}>
         <Text size="lg" className="mb-12 max-w-2xl mx-auto text-center text-white/60">
           Sua informação é tratada com responsabilidade. Trabalhamos com as melhores
           práticas de segurança para garantir proteção em cada camada do sistema.
         </Text>
-      </Reveal>
+      </BlurReveal>
       <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {securityFeatures.map((feature) => (
           <Reveal key={feature.title}>

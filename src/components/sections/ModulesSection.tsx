@@ -6,6 +6,7 @@ import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 import ModuleCard from '@/components/ui/ModuleCard'
 import Reveal from '@/components/motion/Reveal'
+import BlurReveal from '@/components/motion/BlurReveal'
 import InteractiveSurface from '@/components/interaction/InteractiveSurface'
 import CursorTarget from '@/components/interaction/CursorTarget'
 import MorphCard from '@/components/interaction/MorphCard'
@@ -88,15 +89,24 @@ export default function ModulesSection() {
           Módulos do sistema
         </Heading>
       </Reveal>
-      <Reveal delay={0.1}>
-        <Text size="lg" className="mb-10 max-w-2xl mx-auto text-center">
+      <BlurReveal delay={0.1} blur={4}>
+        <Text size="lg" className="mb-6 max-w-2xl mx-auto text-center">
           Módulos integrados que cobrem todas as necessidades da gestão de SST,
           do operacional ao estratégico.
         </Text>
+      </BlurReveal>
+
+      {/* Module count indicator */}
+      <Reveal delay={0.12} className="mb-8">
+        <div className="flex items-center justify-center gap-2">
+          <span className="font-mono text-xs tracking-wider text-sgs-text-tertiary">
+            {modules.length} módulos disponíveis
+          </span>
+        </div>
       </Reveal>
 
       <Reveal delay={0.15}>
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
+        <div className="flex flex-wrap justify-center gap-2 mb-8">
           {categories.map((cat) => (
             <button
               key={cat}

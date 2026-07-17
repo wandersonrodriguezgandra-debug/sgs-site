@@ -22,7 +22,7 @@ function MagneticButton({
   className,
   disabled = false,
   href,
-  onClick,
+  onClick: _onClick,
   type = 'button',
   ...rest
 }: MagneticButtonProps) {

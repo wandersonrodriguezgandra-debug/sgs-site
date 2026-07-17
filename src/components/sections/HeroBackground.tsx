@@ -65,6 +65,33 @@ export default function HeroBackground() {
       <div className="absolute bottom-[30%] left-[10%] w-24 h-24 bg-sgs-blue-400/8 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '8s', animationDelay: '1s' }} />
       <div className="absolute top-[40%] right-[35%] w-20 h-20 bg-sgs-accent/6 rounded-full blur-2xl animate-pulse" style={{ animationDuration: '7s', animationDelay: '2s' }} />
 
+      {/* Subtle horizontal scan lines */}
+      <div className="absolute inset-0 overflow-hidden opacity-[0.03]" aria-hidden="true">
+        <div
+          className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-sgs-cyan to-transparent"
+          style={{ top: '30%', animation: 'scan-line 8s ease-in-out infinite' }}
+        />
+        <div
+          className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-sgs-accent-light to-transparent"
+          style={{ top: '60%', animation: 'scan-line 12s ease-in-out infinite 3s' }}
+        />
+      </div>
+
+      {/* Data flow dots */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
+        {[...Array(6)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute w-1 h-1 rounded-full bg-sgs-cyan/30"
+            style={{
+              left: `${15 + i * 14}%`,
+              top: `${20 + (i % 3) * 25}%`,
+              animation: `float ${5 + i * 0.8}s ease-in-out infinite ${i * 0.5}s`,
+            }}
+          />
+        ))}
+      </div>
+
       {/* Noise overlay */}
       <div
         className="absolute inset-0 opacity-[0.015]"

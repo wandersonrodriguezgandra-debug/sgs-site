@@ -159,10 +159,28 @@ export default function PinnedStorySection({
                         : 'opacity-0 scale-90 pointer-events-none',
                     )}
                   >
-                    <div className="w-64 h-64 rounded-2xl bg-sgs-accent/10 border border-sgs-accent/20 flex items-center justify-center">
-                      <span className="text-7xl font-heading font-bold text-sgs-accent/30">
-                        {step.number}
+                    {/* Outer ring */}
+                    <div className="absolute inset-0 rounded-full border border-sgs-accent/10" />
+                    <div className="absolute inset-4 rounded-full border border-sgs-accent/15" />
+
+                    {/* Active indicator glow */}
+                    <div className="absolute inset-8 rounded-full bg-sgs-accent/5 blur-xl" />
+
+                    {/* Step number */}
+                    <div className="relative w-48 h-48 rounded-2xl bg-gradient-to-br from-sgs-blue-950 to-sgs-blue-900 border border-sgs-accent/20 flex flex-col items-center justify-center shadow-2xl">
+                      <span className="text-6xl font-heading font-bold text-sgs-accent/40">
+                        {String(step.number).padStart(2, '0')}
                       </span>
+                      <div className="mt-2 px-3 py-1 rounded-full bg-sgs-accent/10 border border-sgs-accent/20">
+                        <span className="font-mono text-[10px] tracking-wider uppercase text-sgs-accent-light">
+                          Passo {step.number}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Corner data indicators */}
+                    <div className="absolute top-0 right-0 font-mono text-[10px] text-sgs-text-tertiary">
+                      {String(step.number).padStart(2, '0')}/{String(steps.length).padStart(2, '0')}
                     </div>
                   </div>
                 ))}

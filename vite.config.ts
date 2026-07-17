@@ -11,6 +11,7 @@ export default defineConfig({
     },
   },
   build: {
+    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks(id: string) {
@@ -34,6 +35,9 @@ export default defineConfig({
           }
           if (id.includes('node_modules/@react-three/postprocessing')) {
             return 'three-effects'
+          }
+          if (id.includes('node_modules/gsap')) {
+            return 'gsap'
           }
         },
       },

@@ -49,11 +49,16 @@ export default function HeroSection() {
     <section
       id="hero"
       data-testid="hero-section"
-      className="relative min-h-[100svh] flex items-center overflow-hidden bg-gradient-to-b from-sgs-blue-950 via-sgs-blue-950 to-sgs-blue-900"
+      className="relative min-h-[100svh] flex items-center overflow-hidden"
     >
+      {/* Deep cinematic background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-sgs-blue-950 via-[#0a1628] to-sgs-blue-900" />
       <HeroBackground />
 
-      <div className="container-sgs relative z-10 py-20 md:py-0 w-full">
+      {/* Subtle vignette overlay */}
+      <div className="absolute inset-0 vignette pointer-events-none z-[1]" aria-hidden="true" />
+
+      <div className="container-sgs relative z-10 py-24 md:py-0 w-full">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div className="space-y-8">
             <BlurReveal delay={0.1} duration={0.6}>

@@ -68,13 +68,13 @@ export default function SceneEffects({ children }: SceneEffectsProps) {
           luminanceThreshold={postprocessing.bloomThreshold}
           luminanceSmoothing={0.2}
           mipmapBlur
-          radius={0.7}
+          radius={isUltra ? 0.8 : 0.7}
         />
         {isHigh ? (
           <DepthOfField
             focusDistance={0.015}
-            focalLength={isUltra ? 0.06 : 0.05}
-            bokehScale={isUltra ? 3 : 2}
+            focalLength={isUltra ? 0.07 : 0.05}
+            bokehScale={isUltra ? 3.5 : 2}
           />
         ) : (
           <></>
@@ -85,9 +85,9 @@ export default function SceneEffects({ children }: SceneEffectsProps) {
           radialModulation
           modulationOffset={0.35}
         />
-        <Vignette eskil={false} offset={0.28} darkness={isUltra ? 0.7 : 0.55} />
+        <Vignette eskil={false} offset={0.25} darkness={isUltra ? 0.65 : 0.5} />
         {isUltra ? (
-          <Noise premultiply blendFunction={BlendFunction.OVERLAY} opacity={0.035} />
+          <Noise premultiply blendFunction={BlendFunction.OVERLAY} opacity={0.025} />
         ) : (
           <></>
         )}
