@@ -1,0 +1,234 @@
+@layer components {
+  /* === Core cinematic effects === */
+  .cinematic-glow {
+    box-shadow: 0 0 30px rgba(0, 86, 179, 0.15),
+                0 0 60px rgba(0, 86, 179, 0.08);
+  }
+
+  .cinematic-glow-strong {
+    box-shadow: 0 0 40px rgba(0, 86, 179, 0.25),
+                0 0 80px rgba(0, 86, 179, 0.12),
+                0 0 120px rgba(0, 86, 179, 0.06);
+  }
+
+  .cinematic-gradient {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 86, 179, 0.1) 0%,
+      rgba(7, 26, 51, 0.8) 50%,
+      rgba(0, 86, 179, 0.05) 100%
+    );
+  }
+
+  .cinematic-gradient-deep {
+    background: linear-gradient(
+      180deg,
+      rgba(7, 26, 51, 1) 0%,
+      rgba(0, 36, 77, 0.95) 30%,
+      rgba(0, 86, 179, 0.15) 60%,
+      rgba(7, 26, 51, 1) 100%
+    );
+  }
+
+  .cinematic-border {
+    border: 1px solid rgba(0, 86, 179, 0.2);
+    border-image: linear-gradient(
+      135deg,
+      rgba(0, 86, 179, 0.4),
+      rgba(6, 182, 212, 0.2),
+      rgba(0, 86, 179, 0.4)
+    ) 1;
+  }
+
+  .cinematic-text-gradient {
+    background: linear-gradient(135deg, #4a87eb 0%, #06b6d4 50%, #4a87eb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cinematic-text-gradient-gold {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 50%, #f59e0b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* === Scanner effects === */
+  .scanline-overlay {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 86, 179, 0.03) 2px,
+      rgba(0, 86, 179, 0.03) 4px
+    );
+    pointer-events: none;
+  }
+
+  .scanner-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(6, 182, 212, 0.6) 20%,
+      rgba(0, 86, 179, 0.9) 50%,
+      rgba(6, 182, 212, 0.6) 80%,
+      transparent 100%
+    );
+    box-shadow: 0 0 20px rgba(0, 86, 179, 0.5), 0 0 40px rgba(6, 182, 212, 0.3);
+    pointer-events: none;
+  }
+
+  /* === Noise overlay === */
+  .noise-overlay {
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+    pointer-events: none;
+    mix-blend-mode: overlay;
+  }
+
+  /* === Reveal masks === */
+  .reveal-mask {
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal-mask-hidden {
+    clip-path: inset(0 0 100% 0);
+  }
+
+  .reveal-mask-left {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal-mask-left-visible {
+    clip-path: inset(0 0 0 0);
+  }
+
+  /* === Grid background === */
+  .grid-bg {
+    background-image:
+      linear-gradient(to right, rgba(74,135,235,0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(74,135,235,0.08) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .grid-bg-radial {
+    background-image:
+      linear-gradient(to right, rgba(74,135,235,0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(74,135,235,0.08) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
+  }
+
+  /* === Vignette === */
+  .vignette {
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(7,26,51,0.6) 100%);
+    pointer-events: none;
+  }
+
+  /* === Frosted glass === */
+  .glass-surface {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-surface-strong {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* === Section transitions === */
+  .section-fade-top {
+    background: linear-gradient(to bottom, var(--color-sgs-surface) 0%, transparent 100%);
+  }
+
+  .section-fade-bottom {
+    background: linear-gradient(to top, var(--color-sgs-surface) 0%, transparent 100%);
+  }
+
+  .section-fade-dark-top {
+    background: linear-gradient(to bottom, rgba(7,26,51,1) 0%, transparent 100%);
+  }
+
+  .section-fade-dark-bottom {
+    background: linear-gradient(to top, rgba(7,26,51,1) 0%, transparent 100%);
+  }
+
+  /* === Data visualization helpers === */
+  .data-glow {
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+  }
+
+  .data-pulse {
+    animation: data-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes data-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+
+  /* === Risk states === */
+  .risk-critical { color: #dc2626; }
+  .risk-warning { color: #f59e0b; }
+  .risk-safe { color: #16a34a; }
+  .risk-info { color: #0ea5e9; }
+
+  .risk-glow-critical { box-shadow: 0 0 15px rgba(220, 38, 38, 0.3); }
+  .risk-glow-warning { box-shadow: 0 0 15px rgba(245, 158, 11, 0.3); }
+  .risk-glow-safe { box-shadow: 0 0 15px rgba(22, 163, 74, 0.3); }
+
+  /* === Animated gradient border === */
+  .animated-border {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .animated-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 86, 179, 0.4),
+      rgba(6, 182, 212, 0.2),
+      rgba(0, 86, 179, 0.4)
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cinematic-glow,
+    .cinematic-glow-strong,
+    .cinematic-gradient,
+    .cinematic-gradient-deep,
+    .cinematic-border,
+    .cinematic-text-gradient,
+    .cinematic-text-gradient-gold,
+    .data-pulse {
+      animation: none !important;
+      transition: none !important;
+    }
+
+    .scanner-line {
+      display: none;
+    }
+  }
+}

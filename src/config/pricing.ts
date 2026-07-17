@@ -1,0 +1,66 @@
+import type { Plan } from '@/types'
+
+export const plans: Plan[] = [
+  {
+    name: 'Essencial',
+    description: 'Para pequenas empresas que desejam iniciar a digitalização da gestão de SST.',
+    highlighted: false,
+    features: [
+      'Gestão de empresas',
+      'Cadastro de colaboradores',
+      'Controle de documentos',
+      'DDS digital',
+      'Relatórios básicos',
+      'Suporte por e-mail',
+    ],
+    cta: 'Solicitar demonstração',
+  },
+  {
+    name: 'Profissional',
+    description: 'Para operações que precisam de módulos, relatórios e controles avançados.',
+    highlighted: true,
+    features: [
+      'Tudo do plano Essencial',
+      'APR completo',
+      'Inspeções com checklist',
+      'Gestão de treinamentos',
+      'Planos de ação',
+      'Relatórios avançados',
+      'Dashboard completo',
+      'Suporte prioritário',
+    ],
+    cta: 'Solicitar demonstração',
+  },
+  {
+    name: 'Empresarial',
+    description: 'Para médias e grandes empresas com múltiplas unidades e usuários.',
+    highlighted: false,
+    features: [
+      'Tudo do plano Profissional',
+      'Múltiplas unidades',
+      'Usuários ilimitados',
+      'Gestão de riscos avançada',
+      'API de integração',
+      'Relatórios personalizados',
+      'Notificações inteligentes',
+      'Gerente de conta dedicado',
+    ],
+    cta: 'Solicitar demonstração',
+  },
+  {
+    name: 'Personalizado',
+    description: 'Para consultorias, grupos empresariais e operações específicas.',
+    highlighted: false,
+    features: [
+      'Tudo do plano Empresarial',
+      'Módulos personalizados',
+      'White label',
+      'Integrações customizadas',
+      'SLA diferenciado',
+      'Treinamento presencial',
+      'Suporte 24h',
+      'Condições especiais',
+    ],
+    cta: 'Falar com especialista',
+  },
+]

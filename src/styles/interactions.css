@@ -1,0 +1,49 @@
+@layer components {
+  .depth-layer-0 {
+    transform: translateZ(0px);
+  }
+
+  .depth-layer-1 {
+    transform: translateZ(12px);
+  }
+
+  .depth-layer-2 {
+    transform: translateZ(22px);
+  }
+
+  .depth-layer-3 {
+    transform: translateZ(30px);
+  }
+
+  .glass-reflection {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      transparent 50%
+    );
+    pointer-events: none;
+  }
+
+  .spotlight-border {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .interactive-focus:focus-visible {
+    outline: 2px solid var(--color-sgs-accent);
+    outline-offset: 2px;
+    border-radius: inherit;
+  }
+
+  .spotlight-glow {
+    background: radial-gradient(
+      circle at var(--spotlight-x, 50%) var(--spotlight-y, 50%),
+      rgba(255, 255, 255, 0.06) 0%,
+      transparent 60%
+    );
+    pointer-events: none;
+  }
+
+  .tilt-depth-container {
+    transform-style: preserve-3d;
+  }
+}

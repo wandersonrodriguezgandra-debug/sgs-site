@@ -1,0 +1,147 @@
+@import "tailwindcss";
+@import "./cinematic.css";
+@import "./interactions.css";
+
+@theme {
+  --color-sgs-blue-50: #e8f0fe;
+  --color-sgs-blue-100: #c5d9f9;
+  --color-sgs-blue-200: #9bbcf4;
+  --color-sgs-blue-300: #6d9eef;
+  --color-sgs-blue-400: #4a87eb;
+  --color-sgs-blue-500: #0056b3;
+  --color-sgs-blue-600: #004a99;
+  --color-sgs-blue-700: #003d80;
+  --color-sgs-blue-800: #003066;
+  --color-sgs-blue-900: #00244d;
+  --color-sgs-blue-950: #071a33;
+  --color-sgs-accent: #0056b3;
+  --color-sgs-accent-light: #4a87eb;
+  --color-sgs-accent-dark: #003d80;
+  --color-sgs-cyan: #06b6d4;
+  --color-sgs-cyan-light: #22d3ee;
+  --color-sgs-success: #16a34a;
+  --color-sgs-success-light: #22c55e;
+  --color-sgs-warning: #f59e0b;
+  --color-sgs-warning-light: #fbbf24;
+  --color-sgs-danger: #dc2626;
+  --color-sgs-danger-light: #ef4444;
+  --color-sgs-info: #0ea5e9;
+  --color-sgs-surface: #ffffff;
+  --color-sgs-surface-secondary: #f8fafc;
+  --color-sgs-surface-tertiary: #f1f5f9;
+  --color-sgs-surface-dark: #071a33;
+  --color-sgs-border: #e2e8f0;
+  --color-sgs-border-light: #f1f5f9;
+  --color-sgs-text-primary: #0f172a;
+  --color-sgs-text-secondary: #475569;
+  --color-sgs-text-tertiary: #94a3b8;
+  --color-sgs-text-inverse: #ffffff;
+  --color-sgs-overlay: rgba(0, 0, 0, 0.5);
+
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "Sora", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  --shadow-glow: 0 0 20px rgba(0, 86, 179, 0.15);
+  --shadow-glow-strong: 0 0 30px rgba(0, 86, 179, 0.25), 0 0 60px rgba(0, 86, 179, 0.1);
+  --shadow-glow-cyan: 0 0 20px rgba(6, 182, 212, 0.2);
+
+  --container-max: 1280px;
+
+  --animate-fade-in: fade-in 0.6s ease-out;
+  --animate-slide-up: slide-up 0.6s ease-out;
+  --animate-blur-in: blur-in 0.8s ease-out;
+  --animate-scan: scan-line 2s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes blur-in {
+    from { opacity: 0; filter: blur(8px); }
+    to { opacity: 1; filter: blur(0); }
+  }
+  @keyframes scan-line {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+}
+
+@layer base {
+  /* Smooth scroll é gerido pelo Lenis (src/lib/lenis.ts).
+     scroll-behavior nativo conflitaria com o Lenis, causando saltos.
+     Em reduced-motion o Lenis é desativado e o bloco abaixo força scroll auto. */
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-sgs-text-primary);
+    background-color: var(--color-sgs-surface);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--color-sgs-accent);
+    outline-offset: 2px;
+    border-radius: var(--radius-xs);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .container-sgs {
+    width: 100%;
+    max-width: var(--container-max);
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  @media (width >= 768px) {
+    .container-sgs {
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+}

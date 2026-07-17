@@ -1,0 +1,5 @@
+export { generateVoxelTargets } from './generateVoxelTargets'
+export type { VoxelInstanceData } from './generateVoxelTargets'
+export { VERTEX_SHADER } from './voxel.vert.glsl'
+export { FRAGMENT_SHADER } from './voxel.frag.glsl'
+export { default as VoxelObject } from './VoxelObject'
