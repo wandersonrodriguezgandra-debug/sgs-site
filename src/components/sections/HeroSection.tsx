@@ -1,7 +1,7 @@
 'use client'
 
-import { lazy, Suspense, useState, useEffect } from 'react'
-import { ArrowRight, Play, LayoutDashboard, FileText, Shield, BarChart3 } from 'lucide-react'
+import { lazy, Suspense, useState, useEffect, useRef } from 'react'
+import { ArrowRight, Play, LayoutDashboard, FileText, Shield, BarChart3, ChevronDown } from 'lucide-react'
 import Badge from '@/components/ui/Badge'
 import Text from '@/components/ui/Text'
 import Button from '@/components/ui/Button'
@@ -40,10 +40,26 @@ export default function HeroSection() {
   const webgl = useWebGLSupport()
   const isTouch = useIsTouchDevice()
   const [use3D, setUse3D] = useState(false)
+  const scrollIndicatorRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setUse3D(webgl.supported && !isTouch)
   }, [webgl.supported, isTouch])
+
+  // Scroll indicator bounce
+  useEffect(() => {
+    if (!scrollIndicatorRef.current) return
+    const el = scrollIndicatorRef.current
+    let frame: number
+    let t = 0
+    function animate() {
+      t += 0.03
+      el.style.transform = `translateY(${Math.sin(t) * 6}px)`
+      frame = requestAnimationFrame(animate)
+    }
+    frame = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frame)
+  }, [])
 
   return (
     <section
@@ -55,8 +71,10 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-sgs-blue-950 via-[#0a1628] to-sgs-blue-900" />
       <HeroBackground />
 
-      {/* Subtle vignette overlay */}
-      <div className="absolute inset-0 vignette pointer-events-none z-[1]" aria-hidden="true" />
+      {/* Vignette */}
+      <div className="absolute inset-0 pointer-events-none z-[1]" aria-hidden="true"
+        style={{ background: 'radial-gradient(ellipse at center, transparent 40%, rgba(7,26,51,0.7) 100%)' }}
+      />
 
       <div className="container-sgs relative z-10 py-24 md:py-0 w-full">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -93,7 +111,7 @@ export default function HeroSection() {
                   </Button>
                 </Magnetic>
                 <Magnetic strength={5} radius={200}>
-                  <Button size="lg" variant="outline" className="group" data-testid="hero-cta-modules">
+                  <Button size="lg" variant="outline" className="group border-white/20 text-white hover:bg-white/10" data-testid="hero-cta-modules">
                     <Play size={20} className="transition-transform duration-300 group-hover:scale-110" />
                     Conhecer o SGS
                   </Button>
@@ -142,6 +160,15 @@ export default function HeroSection() {
             </div>
           </Reveal>
         </div>
+      </div>
+
+      {/* Scroll indicator */}
+      <div
+        ref={scrollIndicatorRef}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
+      >
+        <span className="font-mono text-[10px] tracking-widest uppercase text-white/30">Role para explorar</span>
+        <ChevronDown className="h-5 w-5 text-white/30" />
       </div>
     </section>
   )

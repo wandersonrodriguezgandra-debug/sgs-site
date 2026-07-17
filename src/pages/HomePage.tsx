@@ -8,6 +8,8 @@ import SecuritySection from '@/components/sections/SecuritySection'
 import ProblemSection from '@/components/sections/ProblemSection'
 import ModulesShowcaseSection from '@/components/sections/ModulesShowcaseSection'
 import ConversionSection from '@/components/sections/ConversionSection'
+import ScannerSection from '@/components/sections/ScannerSection'
+import FrozenTimeSection from '@/components/sections/FrozenTimeSection'
 import { FaqJsonLd } from '@/components/seo/JsonLd'
 import { faqItems } from '@/config/faq'
 import ScrollProvider from '@/components/scroll/ScrollProvider'
@@ -51,9 +53,15 @@ export default function HomePage() {
           <ProblemSection />
         </SectionTransition>
 
+        {/* DRAMATIC: Scanner sweeps across identifying risks */}
+        <ScannerSection />
+
         <SectionTransition delay={0.05} parallax>
           <ModulesSection />
         </SectionTransition>
+
+        {/* DRAMATIC: Frozen time analysis */}
+        <FrozenTimeSection />
 
         <SectionTransition delay={0.05} stagger={0.15}>
           <ModulesShowcaseSection />
