@@ -3,7 +3,6 @@ import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useMagneticInteraction } from '@/hooks/useMagneticInteraction'
-import { useCursorTarget } from '@/hooks/useCursorTarget'
 import { motionTokens } from '@/components/motion/tokens'
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost'
@@ -59,7 +58,6 @@ function Button({
     80,
     !magnetic || isDisabled,
   )
-  useCursorTarget(ref, 'link')
 
   const classes = cn(
     'inline-flex items-center justify-center gap-2 font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-sgs-accent cursor-pointer select-none',

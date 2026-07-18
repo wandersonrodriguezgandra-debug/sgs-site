@@ -10,7 +10,6 @@ import BlurReveal from '@/components/motion/BlurReveal'
 import Stagger from '@/components/motion/Stagger'
 import ParallaxLayer from '@/components/motion/ParallaxLayer'
 import InteractiveSurface from '@/components/interaction/InteractiveSurface'
-import CursorTarget from '@/components/interaction/CursorTarget'
 import { ImageWithFallback } from '@/components/common/ImageWithFallback'
 
 const securityFeatures = [
@@ -63,7 +62,6 @@ export default function SecuritySection() {
         <Reveal direction="left" duration={1} distance={90}>
           <ParallaxLayer speed={26}>
             <InteractiveSurface tilt="high" spotlight="medium" glare depth="deep">
-              <CursorTarget type="view" label="Ver proteção">
                 <div
                   className="sgs-showcase-sheen group relative overflow-hidden rounded-2xl border border-white/15 bg-white/[0.05] p-2 shadow-[0_35px_100px_rgba(0,0,0,0.4)]"
                   data-testid="security-product-image"
@@ -91,7 +89,6 @@ export default function SecuritySection() {
                     </div>
                   </div>
                 </div>
-              </CursorTarget>
             </InteractiveSurface>
           </ParallaxLayer>
         </Reveal>

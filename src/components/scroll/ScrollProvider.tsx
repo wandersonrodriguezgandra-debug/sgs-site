@@ -40,14 +40,12 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
       }
 
       window.addEventListener('resize', refreshScrollLayout)
-      window.addEventListener('sgs:intro-complete', refreshScrollLayout)
       ScrollTrigger.refresh()
 
       cleanup = () => {
         window.cancelAnimationFrame(refreshFrame)
         window.cancelAnimationFrame(settleFrame)
         window.removeEventListener('resize', refreshScrollLayout)
-        window.removeEventListener('sgs:intro-complete', refreshScrollLayout)
         unbindAnchors()
         destroyLenis()
       }

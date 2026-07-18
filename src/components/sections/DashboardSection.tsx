@@ -9,7 +9,6 @@ import Text from '@/components/ui/Text'
 import Reveal from '@/components/motion/Reveal'
 import ParallaxLayer from '@/components/motion/ParallaxLayer'
 import InteractiveSurface from '@/components/interaction/InteractiveSurface'
-import CursorTarget from '@/components/interaction/CursorTarget'
 import { ImageWithFallback } from '@/components/common/ImageWithFallback'
 
 const features = [
@@ -49,7 +48,6 @@ export default function DashboardSection() {
         <Reveal direction="right" delay={0.15} duration={1} distance={80}>
           <ParallaxLayer speed={24} reversed>
             <InteractiveSurface tilt="high" spotlight="medium" glare depth="deep">
-              <CursorTarget type="view" label="Ver painel">
                 <div
                   className="overflow-hidden rounded-2xl border border-sgs-blue-100 bg-white shadow-[0_28px_80px_rgba(0,61,128,0.2)]"
                   data-testid="dashboard-product-image"
@@ -87,7 +85,6 @@ export default function DashboardSection() {
                     </div>
                   </div>
                 </div>
-              </CursorTarget>
             </InteractiveSurface>
           </ParallaxLayer>
         </Reveal>

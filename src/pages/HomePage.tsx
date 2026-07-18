@@ -9,7 +9,6 @@ import ScannerSection from '@/components/sections/ScannerSection'
 import { FaqJsonLd } from '@/components/seo/JsonLd'
 import { faqItems } from '@/config/faq'
 import ScrollProvider from '@/components/scroll/ScrollProvider'
-import ScrollProgress from '@/components/scroll/ScrollProgress'
 
 const DashboardSection = lazy(() => import('@/components/sections/DashboardSection'))
 const PricingSection = lazy(() => import('@/components/sections/PricingSection'))
@@ -28,7 +27,6 @@ export default function HomePage() {
   return (
     <ScrollProvider>
       <FaqJsonLd items={faqItems} />
-      <ScrollProgress />
       <main id="main-content" data-testid="page-home">
         <HeroSection />
         <ProductShowcaseSection />
