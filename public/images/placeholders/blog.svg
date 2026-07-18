@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400" fill="none">
-  <rect width="800" height="400" rx="8" fill="#f8fafc" stroke="#e2e8f0" stroke-width="1"/>
-  <rect x="24" y="24" width="752" height="200" rx="6" fill="#e2e8f0"/>
-  <rect x="24" y="242" width="600" height="14" rx="3" fill="#cbd5e1"/>
-  <rect x="24" y="268" width="480" height="14" rx="3" fill="#e2e8f0"/>
-  <rect x="24" y="294" width="520" height="14" rx="3" fill="#e2e8f0"/>
-  <text x="400" y="370" font-family="system-ui,sans-serif" font-size="11" fill="#94a3b8" text-anchor="middle">IMAGEM TEMPORÁRIA — Blog SGS</text>
-</svg>

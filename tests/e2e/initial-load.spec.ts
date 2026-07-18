@@ -22,7 +22,7 @@ test.describe('Initial Load', () => {
   })
 
   test('should return 404 for unknown routes', async ({ page }) => {
-    const response = await page.goto('/pagina-inexistente')
+    await page.goto('/pagina-inexistente')
     await expect(page.locator('[data-testid="page-not-found"]')).toBeVisible()
     await expect(page.locator('text=404')).toBeVisible()
   })

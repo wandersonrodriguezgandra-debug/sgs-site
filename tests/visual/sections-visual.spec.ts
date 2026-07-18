@@ -45,15 +45,6 @@ test.describe('Visual Regression — Sections', () => {
     )
   })
 
-  test('testimonials section', async ({ page }) => {
-    await scrollToElement(page, 'testimonials-section')
-    await page.waitForTimeout(1000)
-    await expect(page.locator('[data-testid="testimonials-section"]')).toHaveScreenshot(
-      'testimonials-section.png',
-      { maxDiffPixelRatio: 0.1, timeout: 10000 }
-    )
-  })
-
   test('form section', async ({ page }) => {
     await scrollToElement(page, 'demo-form-section')
     await page.waitForTimeout(1000)

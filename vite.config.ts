@@ -24,18 +24,6 @@ export default defineConfig({
           if (id.includes('node_modules/framer-motion')) {
             return 'motion'
           }
-          if (id.includes('node_modules/three') && !id.includes('@react-three')) {
-            return 'three-core'
-          }
-          if (id.includes('node_modules/@react-three/fiber')) {
-            return 'three-fiber'
-          }
-          if (id.includes('node_modules/@react-three/drei')) {
-            return 'three-drei'
-          }
-          if (id.includes('node_modules/@react-three/postprocessing')) {
-            return 'three-effects'
-          }
           if (id.includes('node_modules/gsap')) {
             return 'gsap'
           }

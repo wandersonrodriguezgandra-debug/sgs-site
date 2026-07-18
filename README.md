@@ -1,32 +1,34 @@
-# React + TypeScript + Vite
+# Site SGS
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Landing page institucional do SGS (Sistema de Gestão de Segurança), construída com React, TypeScript e Vite.
 
-Currently, two official plugins are available:
+## Desenvolvimento
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm ci
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+O servidor local usa `http://localhost:5173`.
+
+## Verificações
+
+```bash
+npm run lint
+npm run build
+npm run test:e2e:chromium
+```
+
+## Estrutura essencial
+
+- `src/`: aplicação React, componentes, configuração e estilos.
+- `public/`: assets estáticos usados pela aplicação.
+- `tests/`: testes funcionais, de acessibilidade e regressão visual.
+
+## Publicação
+
+O projeto `sgs-site` está hospedado no Cloudflare Pages. O build publicado é o conteúdo de `dist/`, gerado por `npm run build`.
+
+```bash
+npx wrangler pages deploy dist --project-name=sgs-site --branch=redesign-visual
+```

@@ -6,9 +6,7 @@ import { SoftwareAppJsonLd, OrganizationJsonLd } from '@/components/seo/JsonLd'
 import { MotionProvider } from '@/components/motion/MotionProvider'
 import { CinematicTimeProvider } from '@/providers/CinematicTimeProvider'
 import { AudioExperienceProvider } from '@/providers/AudioExperienceProvider'
-import { CinematicDebugProvider } from '@/providers/CinematicDebugProvider'
 import CursorProvider from '@/providers/CursorProvider'
-import CinematicDebugPanel from '@/components/three/CinematicDebugPanel'
 import CinematicPreloader from '@/components/intro/CinematicPreloader'
 import AudioControl from '@/components/ui/AudioControl'
 import GrainOverlay from '@/components/ui/GrainOverlay'
@@ -21,8 +19,7 @@ import { siteConfig } from '@/config/site'
 export default function App() {
   return (
     <BrowserRouter>
-      <CinematicDebugProvider>
-        <CinematicTimeProvider>
+      <CinematicTimeProvider>
           <AudioExperienceProvider>
             <MotionProvider>
               <ErrorBoundary>
@@ -48,13 +45,11 @@ export default function App() {
                   <Route path="*" element={<NotFoundPage />} />
                 </Routes>
                 <Footer />
-                <CinematicDebugPanel />
                 </CursorProvider>
               </ErrorBoundary>
             </MotionProvider>
           </AudioExperienceProvider>
-        </CinematicTimeProvider>
-      </CinematicDebugProvider>
+      </CinematicTimeProvider>
     </BrowserRouter>
   )
 }

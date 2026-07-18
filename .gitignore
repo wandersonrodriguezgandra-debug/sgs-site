@@ -26,11 +26,18 @@ dist-ssr
 *.sln
 *.sw?
 
-.vercel
-
-# Local browser runs and visual-design source files
+# Local tool state and generated audits
+/.agents/
+/.claude/
+/.codex/
+/.mimocode/
 /.playwright-cli/
+/.vercel/
+/.wrangler/
 /output/
-/ChatGPT Image*.png
-/image.png
-/crie_uma_animação_com_essas_im*.mp4
+/lighthouse-report.*
+
+# Local environment files
+.env
+.env.*
+!.env.example

@@ -1,4 +1,4 @@
-import { test as base, type Page } from '@playwright/test'
+import { type Page } from '@playwright/test'
 
 export async function waitForPageReady(page: Page) {
   await page.waitForLoadState('networkidle')

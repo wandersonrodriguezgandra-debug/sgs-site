@@ -29,8 +29,4 @@ test.describe('Visual Regression — Responsive', () => {
       { maxDiffPixelRatio: 0.1, timeout: 10000 }
     )
   })
-
-  test.skip('tablet viewport (unstable with WebGL)', async ({ page }) => {
-    // Full-page screenshots are unstable with WebGL/Three.js content
-  })
 })

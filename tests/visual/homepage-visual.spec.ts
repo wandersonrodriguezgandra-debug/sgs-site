@@ -11,11 +11,6 @@ test.describe('Visual Regression — Homepage', () => {
     })
   })
 
-  test.skip('desktop viewport full page (unstable with WebGL)', async ({ page }) => {
-    // Full-page screenshots are unstable with WebGL/Three.js content
-    // Using element-level screenshots instead
-  })
-
   test('hero section desktop', async ({ page }) => {
     test.setTimeout(30000)
     await page.setViewportSize(viewports.desktop)
