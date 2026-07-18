@@ -27,3 +27,10 @@ dist-ssr
 *.sw?
 
 .vercel
+
+# Local browser runs and visual-design source files
+/.playwright-cli/
+/output/
+/ChatGPT Image*.png
+/image.png
+/crie_uma_animação_com_essas_im*.mp4

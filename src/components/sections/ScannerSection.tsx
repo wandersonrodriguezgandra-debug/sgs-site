@@ -1,227 +1,139 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useEffect, useState } from 'react'
+import { m } from 'framer-motion'
+import { AlertTriangle, CheckCircle2, Clock3, FileWarning, ShieldCheck, UserRoundCheck } from 'lucide-react'
 import { useInView } from '@/hooks/useInView'
-import { AlertTriangle, CheckCircle, FileText, Users, Shield, Clock } from 'lucide-react'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import Reveal from '@/components/motion/Reveal'
+import ParallaxLayer from '@/components/motion/ParallaxLayer'
 
-const riskItems = [
-  { icon: AlertTriangle, label: 'Trabalho em altura', status: 'critical' as const, x: 15, y: 20 },
-  { icon: FileText, label: 'APR vencida', status: 'warning' as const, x: 70, y: 15 },
-  { icon: Users, label: '3 sem capacitação', status: 'critical' as const, x: 40, y: 65 },
-  { icon: Shield, label: 'EPI irregular', status: 'warning' as const, x: 75, y: 55 },
-  { icon: Clock, label: 'Inspeção atrasada', status: 'critical' as const, x: 25, y: 75 },
-  { icon: CheckCircle, label: 'DDS em dia', status: 'safe' as const, x: 60, y: 35 },
+const operationalItems = [
+  { icon: FileWarning, label: 'APR próxima do vencimento', context: 'Obra Norte · vence amanhã', tone: 'warning' as const },
+  { icon: AlertTriangle, label: 'Inspeção com ação pendente', context: 'Área de manutenção · alta prioridade', tone: 'critical' as const },
+  { icon: UserRoundCheck, label: 'Treinamento atualizado', context: 'Equipe operacional · evidência anexada', tone: 'safe' as const },
+  { icon: Clock3, label: 'DDS aguardando assinatura', context: 'Turno B · responsável notificado', tone: 'info' as const },
 ]
 
+const toneStyles = {
+  warning: 'border-amber-400/25 bg-amber-400/[0.08] text-amber-300',
+  critical: 'border-red-400/25 bg-red-400/[0.08] text-red-300',
+  safe: 'border-emerald-400/25 bg-emerald-400/[0.08] text-emerald-300',
+  info: 'border-cyan-400/25 bg-cyan-400/[0.08] text-cyan-300',
+}
+
 export default function ScannerSection() {
-  const sectionRef = useRef<HTMLDivElement>(null!)
-  const [ref, isInView] = useInView<HTMLDivElement>({ threshold: 0.1 })
-  const [scanProgress, setScanProgress] = useState(0)
-  const [activeRisk, setActiveRisk] = useState<number | null>(null)
   const reduced = useReducedMotion()
-  const rafRef = useRef<number>(0)
+  const [sectionRef, isInView] = useInView<HTMLDivElement>({ threshold: 0.18 })
+  const [activeIndex, setActiveIndex] = useState(0)
 
   useEffect(() => {
     if (reduced || !isInView) return
 
-    let startTime = 0
-    const DURATION = 4000
+    const interval = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % operationalItems.length)
+    }, 1500)
 
-    function tick() {
-      const now = performance.now()
-      if (!startTime) startTime = now
-      const elapsed = now - startTime
-      const progress = Math.min(1, elapsed / DURATION)
-      setScanProgress(progress)
-
-      // Activate risks as scanner passes
-      riskItems.forEach((item, i) => {
-        const itemProgress = item.x / 100
-        if (progress > itemProgress && progress < itemProgress + 0.15) {
-          setActiveRisk(i)
-        }
-      })
-
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(tick)
-      }
-    }
-
-    rafRef.current = requestAnimationFrame(tick)
-
-    return () => cancelAnimationFrame(rafRef.current)
+    return () => window.clearInterval(interval)
   }, [isInView, reduced])
 
   return (
     <section
-      ref={sectionRef}
       id="scanner"
-      className="relative py-20 md:py-32 overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #071a33 0%, #00244d 50%, #071a33 100%)' }}
+      ref={sectionRef}
+      className="relative overflow-hidden bg-sgs-blue-950 py-24 text-white md:py-32"
     >
-      {/* Grid background */}
-      <div
-        className="absolute inset-0 opacity-[0.08]"
-        style={{
-          backgroundImage: 'linear-gradient(rgba(74,135,235,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(74,135,235,0.5) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }}
-        aria-hidden="true"
-      />
+      <div className="sgs-dark-grid pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="pointer-events-none absolute -right-32 top-1/2 h-[34rem] w-[34rem] -translate-y-1/2 rounded-full bg-sgs-cyan/10 blur-3xl" aria-hidden="true" />
+      <div className="sgs-scanner-signal pointer-events-none absolute left-[12%] top-24 h-2 w-2 rounded-full bg-sgs-cyan" aria-hidden="true" />
+      <div className="sgs-scanner-signal sgs-scanner-signal-delay pointer-events-none absolute left-[28%] bottom-32 h-1.5 w-1.5 rounded-full bg-sgs-accent-light" aria-hidden="true" />
 
-      <div ref={ref} className="container-sgs relative z-10">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-sgs-cyan/20 bg-sgs-cyan/5 mb-6">
-            <div className="w-2 h-2 rounded-full bg-sgs-cyan animate-pulse" />
-            <span className="font-mono text-xs tracking-wider uppercase text-sgs-cyan">
-              Scanner de Riscos
-            </span>
-          </div>
-          <h2 className="font-heading text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
-            Identificamos riscos antes que eles se tornem problemas
-          </h2>
-          <p className="text-lg text-white/60 max-w-2xl mx-auto">
-            Nosso sistema varre continuamente sua operação, identificando
-            pendências, documentos vencidos e não conformidades em tempo real.
-          </p>
-        </div>
-
-        {/* Scanner visualization */}
-        <div className="relative max-w-5xl mx-auto">
-          {/* Main container */}
-          <div className="relative rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-sm overflow-hidden">
-            {/* Top bar */}
-            <div className="flex items-center justify-between px-6 py-3 border-b border-white/10">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-sgs-danger/80" />
-                <div className="w-3 h-3 rounded-full bg-sgs-warning/80" />
-                <div className="w-3 h-3 rounded-full bg-sgs-success/80" />
-              </div>
-              <span className="font-mono text-xs text-white/40">SGS Risk Scanner</span>
-              <div className="font-mono text-xs text-sgs-cyan">{Math.round(scanProgress * 100)}%</div>
+      <div className="container-sgs relative z-10 grid items-center gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
+        <Reveal direction="left" distance={58}>
+          <div>
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sgs-cyan/20 bg-sgs-cyan/[0.07] px-4 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-sgs-cyan">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-sgs-cyan" />
+              Visão operacional
             </div>
+            <h2 className="max-w-xl font-heading text-3xl font-bold leading-[1.08] text-white md:text-5xl">
+              Veja o que exige atenção antes de abrir cinco planilhas.
+            </h2>
+            <p className="mt-6 max-w-lg text-base leading-relaxed text-white/60 md:text-lg">
+              O painel reúne prazo, prioridade, local e responsável para transformar
+              pendências soltas em uma fila de trabalho objetiva.
+            </p>
 
-            {/* Scanner area */}
-            <div className="relative h-[400px] sm:h-[500px]">
-              {/* Risk items */}
-              {riskItems.map((item, i) => {
-                const Icon = item.icon
-                const discovered = scanProgress > item.x / 100
-                const isActive = activeRisk === i
-                const resolved = scanProgress > item.x / 100 + 0.3
-
-                return (
-                  <div
-                    key={i}
-                    className="absolute transition-all duration-500"
-                    style={{
-                      left: `${item.x}%`,
-                      top: `${item.y}%`,
-                      transform: discovered ? 'scale(1)' : 'scale(0)',
-                      opacity: discovered ? 1 : 0,
-                    }}
-                  >
-                    {/* Pulse ring */}
-                    {isActive && (
-                      <div
-                        className="absolute inset-0 -m-4 rounded-full border-2 animate-ping"
-                        style={{
-                          borderColor: item.status === 'critical' ? '#dc2626' : item.status === 'warning' ? '#f59e0b' : '#22c55e',
-                        }}
-                      />
-                    )}
-
-                    {/* Icon container */}
-                    <div
-                      className="relative flex items-center gap-3 px-4 py-3 rounded-xl border backdrop-blur-sm transition-all duration-300"
-                      style={{
-                        background: resolved
-                          ? 'rgba(34, 197, 94, 0.1)'
-                          : item.status === 'critical'
-                            ? 'rgba(220, 38, 38, 0.1)'
-                            : 'rgba(245, 158, 11, 0.1)',
-                        borderColor: resolved
-                          ? 'rgba(34, 197, 94, 0.3)'
-                          : item.status === 'critical'
-                            ? 'rgba(220, 38, 38, 0.3)'
-                            : 'rgba(245, 158, 11, 0.3)',
-                        boxShadow: isActive
-                          ? `0 0 20px ${resolved ? 'rgba(34, 197, 94, 0.2)' : item.status === 'critical' ? 'rgba(220, 38, 38, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`
-                          : 'none',
-                      }}
-                    >
-                      <Icon
-                        className="h-5 w-5 shrink-0"
-                        style={{
-                          color: resolved ? '#22c55e' : item.status === 'critical' ? '#dc2626' : '#f59e0b',
-                        }}
-                      />
-                      <div>
-                        <div className="text-sm font-medium text-white whitespace-nowrap">{item.label}</div>
-                        <div
-                          className="text-xs font-mono"
-                          style={{
-                            color: resolved ? '#22c55e' : item.status === 'critical' ? '#dc2626' : '#f59e0b',
-                          }}
-                        >
-                          {resolved ? '✓ Resolvido' : item.status === 'critical' ? '● Crítico' : '● Alerta'}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-
-              {/* Scanner beam */}
-              <div
-                className="absolute top-0 bottom-0 w-[3px] transition-none"
-                style={{
-                  left: `${scanProgress * 100}%`,
-                  background: 'linear-gradient(180deg, transparent, #06b6d4, #ffffff, #06b6d4, transparent)',
-                  boxShadow: '0 0 20px rgba(6, 182, 212, 0.6), 0 0 40px rgba(6, 182, 212, 0.3)',
-                }}
-              />
-
-              {/* Scanner glow */}
-              <div
-                className="absolute top-0 bottom-0 w-40 pointer-events-none"
-                style={{
-                  left: `${scanProgress * 100 - 8}%`,
-                  background: 'linear-gradient(90deg, transparent, rgba(6, 182, 212, 0.1), transparent)',
-                }}
-              />
-
-              {/* Progress line at bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-white/5">
-                <div
-                  className="h-full transition-none"
-                  style={{
-                    width: `${scanProgress * 100}%`,
-                    background: 'linear-gradient(90deg, #0056b3, #06b6d4)',
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Stats below */}
-          <div className="grid grid-cols-3 gap-4 mt-8">
-            {[
-              { label: 'Riscos identificados', value: '6', color: '#dc2626' },
-              { label: 'Ações corretivas', value: '4', color: '#f59e0b' },
-              { label: 'Resolvidos', value: '2', color: '#22c55e' },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center p-4 rounded-xl border border-white/5 bg-white/[0.02]">
-                <div className="text-2xl font-bold font-heading" style={{ color: stat.color }}>
-                  {stat.value}
+            <div className="mt-9 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+              {['Prioridade clara', 'Responsável visível', 'Histórico rastreável'].map((label) => (
+                <div key={label} className="flex items-center gap-2 text-sm font-medium text-white/75">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-sgs-success-light" aria-hidden="true" />
+                  {label}
                 </div>
-                <div className="text-xs text-white/40 mt-1">{stat.label}</div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
+        </Reveal>
+
+        <Reveal direction="right" distance={64} delay={0.1}>
+          <ParallaxLayer speed={16} reversed>
+            <div className="sgs-scanner-panel relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-2 shadow-[0_40px_120px_rgba(0,0,0,0.36)] backdrop-blur-sm">
+              <div className="sgs-scanner-scanline pointer-events-none absolute inset-x-8 top-8 z-10 h-px bg-gradient-to-r from-transparent via-sgs-cyan to-transparent" aria-hidden="true" />
+            <div className="rounded-[1.35rem] border border-white/[0.07] bg-[#08172c]/90 p-5 sm:p-7">
+              <div className="mb-6 flex items-center justify-between gap-4 border-b border-white/[0.08] pb-5">
+                <div>
+                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-sgs-cyan">Fila operacional</p>
+                  <p className="mt-1 font-heading text-lg font-semibold text-white">Ações prioritárias</p>
+                </div>
+                <div className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.08] px-3 py-1.5 text-[11px] font-semibold text-emerald-300">
+                  <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                  Atualizado agora
+                </div>
+              </div>
+
+              <div className="relative space-y-3">
+                <div
+                  className="pointer-events-none absolute -inset-x-3 h-24 rounded-2xl border border-sgs-cyan/20 bg-sgs-cyan/[0.035] shadow-[0_0_38px_rgba(6,182,212,0.08)] transition-transform duration-700 ease-out"
+                  style={{ transform: `translateY(${activeIndex * 108}px)` }}
+                  aria-hidden="true"
+                />
+
+                {operationalItems.map((item, index) => {
+                  const Icon = item.icon
+                  const active = index === activeIndex
+                  return (
+                    <m.div
+                      key={item.label}
+                      className={`relative flex min-h-24 items-center gap-4 rounded-2xl border px-4 py-4 transition-all duration-500 ${
+                        active ? 'border-white/15 bg-white/[0.07]' : 'border-white/[0.06] bg-white/[0.025] opacity-65'
+                      }`}
+                      animate={{ x: active ? 5 : 0, scale: active ? 1.012 : 1 }}
+                      transition={{ type: 'spring', stiffness: 260, damping: 24 }}
+                    >
+                      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${toneStyles[item.tone]}`}>
+                        <Icon className="h-5 w-5" aria-hidden="true" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-semibold text-white sm:text-base">{item.label}</p>
+                        <p className="mt-1 truncate text-xs text-white/45 sm:text-sm">{item.context}</p>
+                      </div>
+                      <span className={`hidden h-2.5 w-2.5 shrink-0 rounded-full sm:block ${active ? 'bg-sgs-cyan shadow-[0_0_14px_rgba(6,182,212,0.8)]' : 'bg-white/15'}`} />
+                    </m.div>
+                  )
+                })}
+              </div>
+
+              <div className="mt-6 flex items-center justify-between gap-4">
+                <span className="text-xs text-white/35">Interface ilustrativa do fluxo operacional</span>
+                <div className="flex gap-1.5" aria-label={`Item ${activeIndex + 1} de ${operationalItems.length}`}>
+                  {operationalItems.map((item, index) => (
+                    <span key={item.label} className={`h-1.5 rounded-full transition-all duration-500 ${index === activeIndex ? 'w-7 bg-sgs-cyan' : 'w-1.5 bg-white/15'}`} />
+                  ))}
+                </div>
+              </div>
+            </div>
+            </div>
+          </ParallaxLayer>
+        </Reveal>
       </div>
     </section>
   )

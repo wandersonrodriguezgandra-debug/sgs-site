@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, type FormEvent } from 'react'
+import { m } from 'framer-motion'
 import { CheckCircle2, Loader2 } from 'lucide-react'
 import FormField from '@/components/ui/FormField'
 import Card from '@/components/ui/Card'
@@ -8,34 +9,16 @@ import Section from '@/components/ui/Section'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 import Button from '@/components/ui/Button'
+import Reveal from '@/components/motion/Reveal'
+import ParallaxLayer from '@/components/motion/ParallaxLayer'
 
 interface FormData {
   nome: string
   empresa: string
-  cargo: string
   email: string
   telefone: string
-  colaboradores: string
-  interesse: string
   mensagem: string
 }
-
-const colaboradoresOptions = [
-  { label: 'Selecione...', value: '' },
-  { label: '1 a 10', value: '1-10' },
-  { label: '11 a 50', value: '11-50' },
-  { label: '51 a 200', value: '51-200' },
-  { label: '201 a 500', value: '201-500' },
-  { label: 'Mais de 500', value: '500+' },
-]
-
-const interesseOptions = [
-  { label: 'Selecione...', value: '' },
-  { label: 'Módulos', value: 'modulos' },
-  { label: 'Planos', value: 'planos' },
-  { label: 'Implantação', value: 'implantacao' },
-  { label: 'Outros', value: 'outros' },
-]
 
 function validateEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
@@ -49,11 +32,8 @@ function validatePhone(phone: string): boolean {
 const initialFormData: FormData = {
   nome: '',
   empresa: '',
-  cargo: '',
   email: '',
   telefone: '',
-  colaboradores: '',
-  interesse: '',
   mensagem: '',
 }
 
@@ -112,35 +92,47 @@ export default function DemoFormSection() {
     return (
     <Section id="contato" variant="muted" data-testid="demo-form-section">
       <div className="mx-auto max-w-2xl text-center" data-testid="form-success">
-        <Card className="p-12">
-          <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-sgs-success" />
+        <m.div initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}>
+          <Card className="sgs-form-success p-12">
+          <m.div initial={{ scale: 0.4, rotate: -20 }} animate={{ scale: 1, rotate: 0 }} transition={{ delay: 0.15, type: 'spring', stiffness: 220, damping: 14 }}>
+            <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-sgs-success" />
+          </m.div>
           <Heading as="h2" align="center" className="mb-2">
             Solicitação enviada!
           </Heading>
             <Text size="md" className="text-center">
-              Recebemos sua solicitação de demonstração. Nossa equipe entrará em
-              contato em até 24 horas úteis.
+              Recebemos sua solicitação. Nossa equipe usará os dados informados
+              para combinar os próximos passos com você.
             </Text>
           </Card>
+        </m.div>
         </div>
       </Section>
     )
   }
 
   return (
-    <Section id="contato" variant="muted" data-testid="demo-form-section">
-      <div className="mx-auto max-w-2xl">
+    <Section id="contato" variant="muted" className="relative overflow-hidden !py-24 md:!py-32" data-testid="demo-form-section">
+      <div className="sgs-light-grid pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="relative z-10 mx-auto max-w-3xl">
+        <Reveal>
         <div className="mb-10 text-center">
-          <Heading as="h2" align="center">
-            Solicitar demonstração
+          <div className="mb-5 inline-flex rounded-full border border-sgs-blue-100 bg-white px-4 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-sgs-accent shadow-sm">
+            Próximo passo
+          </div>
+          <Heading as="h2" align="center" className="!text-3xl !leading-[1.08] md:!text-5xl">
+            Veja o SGS aplicado à sua operação
           </Heading>
           <Text size="md" className="mt-4 text-center">
-            Preencha o formulário abaixo e nossa equipe entrará em contato para
-            agendar uma demonstração personalizada do SGS.
+            Conte o essencial. A demonstração será direcionada ao seu cenário,
+            sem apresentação genérica e sem compromisso.
           </Text>
         </div>
+        </Reveal>
 
-        <Card>
+        <Reveal delay={0.12}>
+        <ParallaxLayer speed={8}>
+        <Card className="sgs-form-card">
           <form onSubmit={handleSubmit} noValidate className="space-y-5" data-testid="demo-form">
             <div className="grid gap-5 sm:grid-cols-2">
               <FormField
@@ -163,12 +155,6 @@ export default function DemoFormSection() {
 
             <div className="grid gap-5 sm:grid-cols-2">
               <FormField
-                label="Cargo"
-                name="cargo"
-                value={formData.cargo}
-                onChange={handleChange}
-              />
-              <FormField
                 label="E-mail"
                 name="email"
                 type="email"
@@ -177,9 +163,6 @@ export default function DemoFormSection() {
                 value={formData.email}
                 onChange={handleChange}
               />
-            </div>
-
-            <div className="grid gap-5 sm:grid-cols-2">
               <FormField
                 label="Telefone"
                 name="telefone"
@@ -187,26 +170,9 @@ export default function DemoFormSection() {
                 error={errors.telefone}
                 value={formData.telefone}
                 onChange={handleChange}
-                placeholder="(11) 99999-0000"
-              />
-              <FormField
-                label="Quantidade de colaboradores"
-                name="colaboradores"
-                type="select"
-                options={colaboradoresOptions}
-                value={formData.colaboradores}
-                onChange={handleChange}
+                placeholder="(00) 00000-0000"
               />
             </div>
-
-            <FormField
-              label="Interesse"
-              name="interesse"
-              type="select"
-              options={interesseOptions}
-              value={formData.interesse}
-              onChange={handleChange}
-            />
 
             <FormField
               label="Mensagem"
@@ -273,6 +239,8 @@ export default function DemoFormSection() {
             )}
           </form>
         </Card>
+        </ParallaxLayer>
+        </Reveal>
       </div>
     </Section>
   )

@@ -61,14 +61,15 @@ export default function AudioControl() {
 
   if (!mounted) return null
 
-  if (typeof AudioContext === 'undefined' && typeof (window as any)?.webkitAudioContext === 'undefined') {
+  const webkitAudioContext = (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+  if (typeof AudioContext === 'undefined' && typeof webkitAudioContext === 'undefined') {
     return null
   }
 
   return (
     <div
       data-testid="audio-control"
-      className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-sgs-blue-900/80 backdrop-blur-sm rounded-full px-3 py-2 shadow-lg transition-all duration-300"
+      className="fixed bottom-5 right-5 z-50 hidden items-center gap-2 rounded-full border border-sgs-blue-100/80 bg-white/80 px-1.5 py-1.5 text-sgs-accent opacity-60 shadow-[0_12px_35px_rgba(7,26,51,0.14)] backdrop-blur-xl transition-all duration-300 hover:opacity-100 sm:flex"
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
     >
@@ -91,7 +92,7 @@ export default function AudioControl() {
         onKeyDown={handleKeyDown}
         aria-pressed={enabled}
         aria-label={enabled ? 'Desativar som' : 'Ativar som'}
-        className="flex items-center justify-center w-8 h-8 rounded-full text-sgs-accent hover:bg-sgs-accent/10 transition-colors focus-visible:outline-2 focus-visible:outline-sgs-accent outline-none"
+        className="flex h-8 w-8 items-center justify-center rounded-full text-sgs-accent transition-colors hover:bg-sgs-blue-50 focus-visible:outline-2 focus-visible:outline-sgs-accent outline-none"
       >
         {enabled ? <VolumeIcon volume={masterVolume} /> : <VolumeMutedIcon />}
       </button>

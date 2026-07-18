@@ -1,6 +1,6 @@
 'use client'
 
-import { Shield, Lock, Fingerprint, Database, Monitor, FileSearch } from 'lucide-react'
+import { Shield, Lock, Database, FileSearch } from 'lucide-react'
 import Section from '@/components/ui/Section'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
@@ -8,82 +8,114 @@ import Card from '@/components/ui/Card'
 import Reveal from '@/components/motion/Reveal'
 import BlurReveal from '@/components/motion/BlurReveal'
 import Stagger from '@/components/motion/Stagger'
+import ParallaxLayer from '@/components/motion/ParallaxLayer'
 import InteractiveSurface from '@/components/interaction/InteractiveSurface'
+import CursorTarget from '@/components/interaction/CursorTarget'
+import { ImageWithFallback } from '@/components/common/ImageWithFallback'
 
 const securityFeatures = [
   {
     icon: <Lock size={24} />,
     title: 'Controle de acesso',
-    description: 'Estrutura preparada para controle granular de permissões com perfis personalizados para cada tipo de usuário.',
-  },
-  {
-    icon: <Fingerprint size={24} />,
-    title: 'Perfis e permissões',
-    description: 'Boas práticas de definição de papéis e responsabilidades dentro da plataforma.',
+    description: 'Perfis configuráveis ajudam cada pessoa a acessar somente o que faz parte da sua rotina.',
   },
   {
     icon: <Database size={24} />,
     title: 'Registros e auditoria',
-    description: 'Histórico completo de todas as ações realizadas na plataforma para conformidade e rastreabilidade.',
+    description: 'Ações, responsáveis e evidências permanecem conectados para consulta e rastreabilidade.',
   },
   {
     icon: <Shield size={24} />,
-    title: 'Backups automáticos',
-    description: 'Estrutura preparada para backups periódicos garantindo a integridade dos seus dados.',
-  },
-  {
-    icon: <Monitor size={24} />,
     title: 'Proteção de dados',
-    description: 'Boas práticas de segurança da informação alinhadas com a LGPD e normas de proteção de dados.',
+    description: 'A plataforma adota práticas de segurança e privacidade compatíveis com dados de SST.',
   },
   {
     icon: <FileSearch size={24} />,
-    title: 'Monitoramento',
-    description: 'Estrutura preparada para monitoramento contínuo da segurança e desempenho da plataforma.',
+    title: 'Acompanhamento',
+    description: 'Eventos relevantes ficam visíveis para apoiar verificação, suporte e melhoria contínua.',
   },
 ]
 
 export default function SecuritySection() {
   return (
-    <Section id="security" variant="dark">
-      {/* Shield glow effect */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full opacity-10 blur-3xl pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(0,86,179,0.5) 0%, transparent 60%)' }} aria-hidden="true" />
+    <Section id="security" variant="dark" className="relative overflow-hidden">
+      <div className="sgs-dark-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
+      <div className="absolute -right-28 top-1/4 h-[500px] w-[500px] rounded-full bg-sgs-cyan/15 blur-3xl pointer-events-none" aria-hidden="true" />
 
       <Reveal>
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="h-px w-12 bg-gradient-to-r from-transparent to-sgs-accent-light/40" />
-          <Shield className="h-5 w-5 text-sgs-accent-light" />
-          <div className="h-px w-12 bg-gradient-to-l from-transparent to-sgs-accent-light/40" />
+          <div className="h-px w-12 bg-gradient-to-r from-transparent to-sgs-cyan/50" />
+          <Shield className="h-5 w-5 text-sgs-cyan" />
+          <div className="h-px w-12 bg-gradient-to-l from-transparent to-sgs-cyan/50" />
         </div>
-        <Heading size="h2" align="center" className="mb-4 text-sgs-text-inverse">
-          Seus dados protegidos em todas as etapas
+        <Heading size="h2" align="center" className="mb-4 !text-3xl !leading-[1.08] !text-white md:!text-5xl">
+          Segurança que acompanha o fluxo inteiro
         </Heading>
       </Reveal>
       <BlurReveal delay={0.1} blur={4}>
-        <Text size="lg" className="mb-12 max-w-2xl mx-auto text-center text-white/60">
+        <Text size="lg" className="mb-14 max-w-2xl mx-auto text-center text-white/60">
           Sua informação é tratada com responsabilidade. Trabalhamos com as melhores
           práticas de segurança para garantir proteção em cada camada do sistema.
         </Text>
       </BlurReveal>
-      <Stagger className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {securityFeatures.map((feature) => (
-          <Reveal key={feature.title}>
-            <InteractiveSurface tilt="subtle" depth="flat" className="h-full">
-              <Card className="bg-white/5 border-white/10 h-full" hover={false}>
-                <div className="w-12 h-12 rounded-lg bg-sgs-accent/20 flex items-center justify-center text-sgs-accent-light mb-4">
-                  {feature.icon}
+
+      <div className="relative z-10 grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14">
+        <Reveal direction="left" duration={1} distance={90}>
+          <ParallaxLayer speed={26}>
+            <InteractiveSurface tilt="high" spotlight="medium" glare depth="deep">
+              <CursorTarget type="view" label="Ver proteção">
+                <div
+                  className="sgs-showcase-sheen group relative overflow-hidden rounded-2xl border border-white/15 bg-white/[0.05] p-2 shadow-[0_35px_100px_rgba(0,0,0,0.4)]"
+                  data-testid="security-product-image"
+                >
+                  <ImageWithFallback
+                    src="/images/product/sgs-intelligence.webp"
+                    alt="Painel do SGS em uma central de segurança com indicadores holográficos"
+                    className="aspect-[16/9] w-full rounded-xl object-cover transition-transform duration-[1800ms] ease-out group-hover:scale-[1.05]"
+                    decoding="async"
+                  />
+                  <div className="absolute inset-2 rounded-xl bg-gradient-to-tr from-sgs-blue-950/25 via-transparent to-sgs-cyan/10" aria-hidden="true" />
+
+                  <div className="sgs-showcase-float absolute left-6 top-6 rounded-xl border border-white/70 bg-white/[0.92] px-4 py-3 shadow-xl backdrop-blur-md">
+                    <div className="text-[10px] uppercase tracking-[0.16em] text-sgs-text-tertiary">Governança</div>
+                    <div className="text-sm font-bold text-sgs-blue-950">LGPD por padrão</div>
+                  </div>
+
+                  <div className="sgs-showcase-float-reverse absolute bottom-6 right-6 flex items-center gap-2 rounded-xl border border-emerald-100 bg-white/[0.92] px-4 py-3 shadow-xl backdrop-blur-md">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-sgs-success">
+                      <Shield className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-sgs-blue-950">Proteção ativa</div>
+                      <div className="text-[10px] text-sgs-text-tertiary">rastreabilidade contínua</div>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="font-heading text-lg font-semibold text-sgs-text-inverse mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-sm text-white/60 leading-relaxed">
-                  {feature.description}
-                </p>
-              </Card>
+              </CursorTarget>
             </InteractiveSurface>
-          </Reveal>
-        ))}
-      </Stagger>
+          </ParallaxLayer>
+        </Reveal>
+
+        <Stagger className="grid gap-4 sm:grid-cols-2" staggerDelay={0.09}>
+          {securityFeatures.map((feature) => (
+            <Reveal key={feature.title} direction="right" distance={40}>
+              <InteractiveSurface tilt="medium" spotlight="subtle" depth="shallow" className="h-full">
+                <Card className="h-full border-white/10 bg-white/[0.05] shadow-lg backdrop-blur-sm" hover={false}>
+                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-sgs-cyan/10 text-sgs-cyan">
+                    {feature.icon}
+                  </div>
+                  <h3 className="mb-2 font-heading text-base font-semibold text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-white/55">
+                    {feature.description}
+                  </p>
+                </Card>
+              </InteractiveSurface>
+            </Reveal>
+          ))}
+        </Stagger>
+      </div>
     </Section>
   )
 }

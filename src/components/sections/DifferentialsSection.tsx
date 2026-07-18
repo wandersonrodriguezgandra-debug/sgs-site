@@ -1,7 +1,7 @@
 'use client'
 
 import {
-  LayoutDashboard, Palette, Puzzle, Cloud, Expand,
+  LayoutDashboard, Palette, Puzzle, Cloud,
   FileText, Zap, Bell, History,
 } from 'lucide-react'
 import Section from '@/components/ui/Section'
@@ -31,11 +31,6 @@ const differentials = [
     icon: <Cloud size={28} />,
     title: '100% na nuvem',
     description: 'Acesse de qualquer lugar, a qualquer hora, sem necessidade de instalação ou manutenção de servidores.',
-  },
-  {
-    icon: <Expand size={28} />,
-    title: 'Escalável',
-    description: 'Cresça sem limites. O SGS acompanha o crescimento da sua empresa com planos flexíveis.',
   },
   {
     icon: <FileText size={28} />,

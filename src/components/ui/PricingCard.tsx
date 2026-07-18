@@ -1,3 +1,4 @@
+import { m } from 'framer-motion'
 import { Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/Card'
@@ -11,14 +12,20 @@ interface PricingCardProps {
   className?: string
 }
 
-export default function PricingCard({ plan, index: _index, className }: PricingCardProps) {
+export default function PricingCard({ plan, index, className }: PricingCardProps) {
   return (
-    <div
+    <m.div
       className={cn(
-        'relative',
+        'sgs-pricing-card relative h-full',
         plan.highlighted && 'md:scale-105 z-10',
         className
       )}
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.55, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+      whileHover={{ y: -8, rotateX: 1.5, rotateY: plan.highlighted ? 0 : index % 2 === 0 ? -1.2 : 1.2 }}
+      style={{ transformPerspective: 900 }}
     >
       {plan.highlighted && (
         <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
@@ -60,6 +67,6 @@ export default function PricingCard({ plan, index: _index, className }: PricingC
           {plan.cta}
         </Button>
       </Card>
-    </div>
+    </m.div>
   )
 }

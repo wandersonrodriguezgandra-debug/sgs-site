@@ -16,22 +16,38 @@ export default function ScrollProvider({ children }: ScrollProviderProps) {
     let cleanup: (() => void) | undefined
 
     async function init() {
-      const { ScrollTrigger } = await import('@/lib/gsap')
       const { initLenis, destroyLenis, bindAnchorLinks } = await import('@/lib/lenis')
+      const { ScrollTrigger } = await import('@/lib/gsap')
 
       // Inicializa smooth scroll (no-op em reduced-motion — respeita acessibilidade)
-      initLenis()
+      const lenis = initLenis()
 
       // Roteia âncoras da mesma página pelo scroll suave
       const unbindAnchors = bindAnchorLinks()
 
+      let refreshFrame = 0
+      let settleFrame = 0
+
+      const refreshScrollLayout = () => {
+        window.cancelAnimationFrame(refreshFrame)
+        window.cancelAnimationFrame(settleFrame)
+        refreshFrame = window.requestAnimationFrame(() => {
+          settleFrame = window.requestAnimationFrame(() => {
+            lenis?.resize()
+            ScrollTrigger.refresh()
+          })
+        })
+      }
+
+      window.addEventListener('resize', refreshScrollLayout)
+      window.addEventListener('sgs:intro-complete', refreshScrollLayout)
       ScrollTrigger.refresh()
 
-      const handleResize = () => ScrollTrigger.refresh()
-      window.addEventListener('resize', handleResize)
-
       cleanup = () => {
-        window.removeEventListener('resize', handleResize)
+        window.cancelAnimationFrame(refreshFrame)
+        window.cancelAnimationFrame(settleFrame)
+        window.removeEventListener('resize', refreshScrollLayout)
+        window.removeEventListener('sgs:intro-complete', refreshScrollLayout)
         unbindAnchors()
         destroyLenis()
       }

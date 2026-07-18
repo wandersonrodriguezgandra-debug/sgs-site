@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useCallback } from 'react'
 import { m, AnimatePresence } from 'framer-motion'
-import { X, ArrowRight, CheckCircle } from 'lucide-react'
+import { X, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import Button from '@/components/ui/Button'
 import Badge from '@/components/ui/Badge'
+import { ImageWithFallback } from '@/components/common/ImageWithFallback'
 import { getIcon } from '@/lib/icons'
 
 interface DialogModule {
@@ -25,14 +25,39 @@ interface ModuleDetailsDialogProps {
   onClose: () => void
 }
 
-const genericFeatures = [
-  'Gestão completa de documentos e registros',
-  'Controle de prazos e vencimentos automático',
-  'Relatórios personalizados e exportáveis',
-  'Integração com os demais módulos do sistema',
-  'Notificações e alertas inteligentes',
-  'Histórico completo para auditoria',
-]
+const categoryCapabilities: Record<string, string[]> = {
+  Gestão: [
+    'Dados vinculados ao contexto da operação',
+    'Responsáveis, prazos e andamento no mesmo fluxo',
+    'Histórico disponível para consulta e auditoria',
+  ],
+  Documentos: [
+    'Registros organizados com contexto e evidências',
+    'Validades e pendências fáceis de acompanhar',
+    'Integração com planos de ação e responsáveis',
+  ],
+  Segurança: [
+    'Acesso orientado por perfis e responsabilidades',
+    'Rastreabilidade das alterações relevantes',
+    'Informação protegida ao longo do processo',
+  ],
+  Analytics: [
+    'Indicadores consolidados em uma única visão',
+    'Filtros para investigar prioridades e evolução',
+    'Dados preparados para apoiar decisões',
+  ],
+  Comunicação: [
+    'Alertas vinculados ao evento que exige atenção',
+    'Responsáveis informados no momento adequado',
+    'Continuidade entre aviso, ação e registro',
+  ],
+}
+
+function getPreviewImage(category: string): string {
+  if (category === 'Analytics') return '/images/product/cockpit-sst.webp'
+  if (category === 'Segurança') return '/images/product/sgs-intelligence.webp'
+  return '/images/product/sgs-responsive.webp'
+}
 
 function ModuleDetailsDialog({
   module,
@@ -152,28 +177,31 @@ function ModuleDetailsDialog({
             </div>
 
             <div className="px-6 py-4">
-              <div className="rounded-xl bg-sgs-surface-secondary border border-sgs-border border-dashed p-8 text-center">
-                <div className="flex flex-col items-center gap-2 text-sgs-text-tertiary">
-                  <ArrowRight size={24} className="text-sgs-accent" />
-                  <p className="text-sm font-medium text-sgs-text-secondary">
-                    IMAGEM TEMPORÁRIA — substituir pela captura oficial
-                  </p>
-                  <p className="text-xs">Preview do módulo {module.name}</p>
+              <div className="group relative overflow-hidden rounded-xl border border-sgs-blue-100 bg-sgs-blue-950 shadow-[0_18px_45px_rgba(7,26,51,0.16)]">
+                <ImageWithFallback
+                  src={getPreviewImage(module.category)}
+                  alt={`Visão da plataforma SGS relacionada ao módulo ${module.name}`}
+                  className="aspect-[16/7] w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.035]"
+                  decoding="async"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-sgs-blue-950/70 via-transparent to-transparent" aria-hidden="true" />
+                <div className="absolute bottom-3 left-3 rounded-full border border-white/15 bg-sgs-blue-950/70 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75 backdrop-blur-md">
+                  Visão integrada do SGS
                 </div>
               </div>
             </div>
 
             <div className="px-6 pb-4">
               <h3 className="font-heading text-base font-semibold text-sgs-text-primary mb-3">
-                Funcionalidades
+                Como este módulo se conecta
               </h3>
               <ul className="space-y-2">
-                {genericFeatures.map((feature, i) => (
+                {(categoryCapabilities[module.category] ?? categoryCapabilities.Gestão).map((feature) => (
                   <li
-                    key={i}
+                    key={feature}
                     className="flex items-start gap-2 text-sm text-sgs-text-secondary"
                   >
-                    <CheckCircle
+                    <CheckCircle2
                       size={16}
                       className="text-sgs-success mt-0.5 shrink-0"
                     />
@@ -184,10 +212,13 @@ function ModuleDetailsDialog({
             </div>
 
             <div className="px-6 pb-6 pt-2">
-              <Button className="w-full" size="lg">
-                Solicitar demonstração
-                <ArrowRight size={18} />
-              </Button>
+              <button
+                type="button"
+                onClick={onClose}
+                className="w-full rounded-xl border border-sgs-blue-100 bg-sgs-blue-50 px-5 py-3 text-sm font-semibold text-sgs-accent transition-colors hover:border-sgs-blue-200 hover:bg-sgs-blue-100"
+              >
+                Continuar explorando os módulos
+              </button>
             </div>
           </m.div>
         </div>

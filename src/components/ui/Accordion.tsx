@@ -23,7 +23,7 @@ export default function Accordion({ items, className }: AccordionProps) {
 
   return (
     <div
-      className={cn('divide-y divide-sgs-border rounded-xl border border-sgs-border overflow-hidden', className)}
+      className={cn('divide-y divide-sgs-border overflow-hidden rounded-2xl border border-sgs-border bg-white', className)}
     >
       {items.map(item => {
         const isOpen = openId === item.id
@@ -34,7 +34,7 @@ export default function Accordion({ items, className }: AccordionProps) {
               type="button"
               data-testid={`accordion-${item.id}`}
               onClick={() => toggle(item.id)}
-              className="flex w-full items-center justify-between px-6 py-5 text-left font-heading text-lg font-medium text-sgs-text-primary transition-colors hover:bg-sgs-surface-secondary"
+              className="flex w-full items-center justify-between gap-5 px-5 py-5 text-left font-heading text-base font-medium text-sgs-text-primary transition-colors hover:bg-sgs-surface-secondary sm:px-6 sm:text-lg"
               aria-expanded={isOpen}
               aria-controls={`accordion-content-${item.id}`}
             >

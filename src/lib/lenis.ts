@@ -2,7 +2,7 @@ import Lenis from 'lenis'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import { prefersReducedMotion } from '@/lib/reduced-motion'
 
-// Gerenciador singleton do Lenis (smooth scroll) integrado ao GSAP ScrollTrigger.
+// Gerenciador singleton do Lenis para a rolagem suave da experiência.
 // Mantém uma única instância global e permite que hooks (ex.: useNarrativeProgress)
 // leiam o progresso suavizado sem cada um instanciar seu próprio listener.
 
@@ -47,6 +47,8 @@ export function initLenis(): Lenis | null {
 
   // Sincroniza ScrollTrigger a cada frame do Lenis
   lenis.on('scroll', () => {
+    // O ScrollTrigger precisa receber o progresso suavizado do Lenis para
+    // manter as transições vinculadas ao scroll sincronizadas.
     ScrollTrigger.update()
     if (lenis) emit(lenis)
   })
@@ -57,8 +59,8 @@ export function initLenis(): Lenis | null {
     lenis?.raf(time)
     rafId = requestAnimationFrame(raf)
   }
-  rafId = requestAnimationFrame(raf)
   gsap.ticker.lagSmoothing(0)
+  rafId = requestAnimationFrame(raf)
 
   // Handle de debug em DEV para QA de scroll
   if (import.meta.env.DEV && typeof window !== 'undefined') {

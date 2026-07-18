@@ -11,6 +11,7 @@ import CursorProvider from '@/providers/CursorProvider'
 import CinematicDebugPanel from '@/components/three/CinematicDebugPanel'
 import CinematicPreloader from '@/components/intro/CinematicPreloader'
 import AudioControl from '@/components/ui/AudioControl'
+import GrainOverlay from '@/components/ui/GrainOverlay'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import HomePage from '@/pages/HomePage'
@@ -26,6 +27,7 @@ export default function App() {
             <MotionProvider>
               <ErrorBoundary>
                 <CursorProvider>
+                <GrainOverlay />
                 <CinematicPreloader />
                 <PageSEO title="Home" description="Sistema de Gestão de Segurança do Trabalho" />
                 <SoftwareAppJsonLd

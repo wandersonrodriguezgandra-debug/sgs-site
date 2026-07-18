@@ -68,10 +68,8 @@ export function Header() {
     <header
       data-testid="header"
       className={cn(
-        'fixed inset-x-0 top-0 z-50 transition-all duration-500',
-        isScrolled
-          ? 'bg-white/80 backdrop-blur-xl shadow-[0_1px_0_rgba(0,0,0,0.05)]'
-          : 'bg-transparent',
+        'fixed inset-x-0 top-0 z-50 border-b border-sgs-blue-100/70 bg-white/[0.88] backdrop-blur-xl transition-all duration-500',
+        isScrolled ? 'shadow-[0_10px_35px_rgba(0,61,128,0.08)]' : 'shadow-[0_1px_0_rgba(0,61,128,0.04)]',
       )}
     >
       <div className="container-sgs">
@@ -90,11 +88,10 @@ export function Header() {
                   <a
                     href={link.href}
                     data-testid={`nav-link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
+                    aria-current={isActive ? 'page' : undefined}
                     className={cn(
                       'relative rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200',
-                      isScrolled
-                        ? 'text-sgs-text-secondary hover:text-sgs-accent hover:bg-sgs-blue-50'
-                        : 'text-white/90 hover:text-white hover:bg-white/10',
+                      'text-sgs-text-secondary hover:text-sgs-accent hover:bg-sgs-blue-50',
                     )}
                   >
                     <span className="flex items-center gap-1">
@@ -109,7 +106,7 @@ export function Header() {
                         layoutId="nav-indicator"
                         className={cn(
                           'absolute -bottom-1 left-3 right-3 h-0.5 rounded-full',
-                          isScrolled ? 'bg-sgs-accent' : 'bg-white'
+                          'bg-sgs-accent'
                         )}
                         transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                       />
@@ -141,9 +138,7 @@ export function Header() {
               data-testid="login-link"
               className={cn(
                 'text-sm font-medium transition-colors duration-200',
-                isScrolled
-                  ? 'text-sgs-text-secondary hover:text-sgs-accent'
-                  : 'text-white/90 hover:text-white',
+                'text-sgs-text-secondary hover:text-sgs-accent',
               )}
             >
               {headerCta.login.label}
@@ -161,9 +156,7 @@ export function Header() {
             aria-expanded={isDrawerOpen}
             className={cn(
               'rounded-lg p-2 transition-colors duration-200 lg:hidden',
-              isScrolled
-                ? 'text-sgs-text-primary hover:bg-sgs-blue-50'
-                : 'text-white hover:bg-white/10',
+              'text-sgs-text-primary hover:bg-sgs-blue-50',
             )}
           >
             {isDrawerOpen ? (
@@ -214,6 +207,7 @@ export function Header() {
                     <a
                       href={link.href}
                       onClick={closeDrawer}
+                      aria-current={activeSection === link.href.replace('#', '') ? 'page' : undefined}
                       className={cn(
                         'block rounded-lg px-4 py-3 text-base font-medium transition-colors hover:bg-sgs-blue-50 hover:text-sgs-accent',
                         activeSection === link.href.replace('#', '')

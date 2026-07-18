@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, useCallback } from 'react'
+import { getLenis } from '@/lib/lenis'
 import { prefersReducedMotion } from '@/lib/reduced-motion'
 import { cn } from '@/lib/utils'
 
@@ -15,13 +16,10 @@ function shouldPlay(): boolean {
     const intro = params.get('intro')
     if (intro === 'force') return true
     if (intro === 'off') return false
-    if (navigator.webdriver) return false
-    try {
-      const stored = JSON.parse(localStorage.getItem(LS_KEY) || '{}')
-      if (stored.introSeen) return false
-    } catch { /* ignore */ }
+    // A home precisa começar diretamente no vídeo. A abertura cinematográfica
+    // permanece disponível apenas para apresentações com ?intro=force.
+    return false
   } catch { return false }
-  return true
 }
 
 export default function CinematicPreloader() {
@@ -57,6 +55,8 @@ export default function CinematicPreloader() {
     focusMainContent()
     setActive(false)
     document.body.style.overflow = ''
+    getLenis()?.start()
+    window.dispatchEvent(new CustomEvent('sgs:intro-complete'))
   }, [active, persistIntroSeen, focusMainContent])
 
   const handleSkipKeyDown = useCallback((e: React.KeyboardEvent) => {
@@ -66,17 +66,12 @@ export default function CinematicPreloader() {
   useEffect(() => {
     if (!active) return
     let cancelled = false
+    const activeLenis = getLenis()
     cancelledRef.current = false
 
     async function run() {
-      let lenis: any = null
-      try {
-        const mod = await import('@/lib/lenis')
-        lenis = mod.getLenis()
-      } catch { /* ok */ }
-
       if (cancelled || !rootRef.current) return
-      lenis?.stop()
+      activeLenis?.stop()
       document.body.style.overflow = 'hidden'
       window.scrollTo(0, 0)
 
@@ -242,6 +237,8 @@ export default function CinematicPreloader() {
       clearTimeout(skipTimer)
       clearTimeout(timeoutId)
       cancelAnimationFrame(animFrameRef.current)
+      document.body.style.overflow = ''
+      activeLenis?.start()
     }
   }, [active, reduced, skip, persistIntroSeen, focusMainContent])
 

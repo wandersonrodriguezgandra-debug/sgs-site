@@ -4,90 +4,73 @@ import { useEffect, useRef, type ReactNode } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
 
+type TransitionDirection = 'left' | 'right' | 'up'
+
 interface SectionTransitionProps {
   children: ReactNode
   className?: string
   delay?: number
-  stagger?: number
-  /** Apply subtle parallax depth during scroll */
-  parallax?: boolean
+  direction?: TransitionDirection
 }
 
 /**
- * Cinematic section reveal with blur-to-focus transition.
- * Uses opacity + translateY + filter:blur for safe layout.
- * Optional parallax adds depth during scroll.
+ * Entrada lateral de página com progressive enhancement. O conteúdo nasce
+ * visível e só recebe movimento quando o navegador confirma a interseção;
+ * assim uma falha de animação nunca deixa uma seção fora da tela.
  */
 export default function SectionTransition({
   children,
   className,
   delay = 0,
-  stagger,
-  parallax = false,
+  direction = 'up',
 }: SectionTransitionProps) {
   const ref = useRef<HTMLDivElement>(null!)
   const reduced = useReducedMotion()
 
   useEffect(() => {
-    if (reduced) return
+    const element = ref.current
+    if (reduced || !element) return
 
-    let ctx: { revert: () => void } | null = null
-    let cancelled = false
+    let animation: Animation | null = null
+    const offset = direction === 'left'
+      ? 'translate3d(-72px, 0, 0)'
+      : direction === 'right'
+        ? 'translate3d(72px, 0, 0)'
+        : 'translate3d(0, 48px, 0)'
 
-    async function init() {
-      const { gsap } = await import('@/lib/gsap')
-      if (cancelled || !ref.current) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return
 
-      const targets = stagger && ref.current.children.length > 0
-        ? ref.current.children
-        : ref.current
+      animation = element.animate(
+        [
+          { opacity: 0.35, transform: offset },
+          { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+        ],
+        {
+          duration: 900,
+          delay: delay * 1000,
+          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          fill: 'both',
+        },
+      )
+      observer.disconnect()
+    }, { threshold: 0.06, rootMargin: '0px 0px -6% 0px' })
 
-      ctx = gsap.context(() => {
-        // Main reveal animation
-        gsap.fromTo(
-          targets,
-          { opacity: 0, y: 56, filter: 'blur(14px)' },
-          {
-            opacity: 1,
-            y: 0,
-            filter: 'blur(0px)',
-            duration: 1.1,
-            delay,
-            stagger: stagger,
-            ease: 'expo.out',
-            scrollTrigger: {
-              trigger: ref.current,
-              start: 'top 85%',
-              toggleActions: 'play none none none',
-              once: true,
-            },
-            clearProps: 'filter',
-          },
-        )
-
-        // Optional parallax: subtle Y shift during scroll
-        if (parallax) {
-          gsap.to(ref.current, {
-            y: -20,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: ref.current,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1,
-            },
-          })
-        }
-      })
-    }
-
-    init()
+    observer.observe(element)
 
     return () => {
-      cancelled = true
-      if (ctx) ctx.revert()
+      observer.disconnect()
+      animation?.cancel()
     }
-  }, [reduced, delay, stagger, parallax])
+  }, [delay, direction, reduced])
 
-  return <div ref={ref} className={cn(className)}>{children}</div>
+  return (
+    <div
+      ref={ref}
+      data-page-transition={direction}
+      className={cn('relative overflow-clip', className)}
+    >
+      {children}
+    </div>
+  )
 }

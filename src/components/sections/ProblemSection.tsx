@@ -1,183 +1,136 @@
 'use client'
 
-import { ClipboardList, FileText, AlertTriangle, Search, X, TrendingDown } from 'lucide-react'
+import { AlertTriangle, ClipboardList, Files, Route } from 'lucide-react'
+import { m } from 'framer-motion'
 import Section from '@/components/ui/Section'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
-import Stagger from '@/components/motion/Stagger'
 import Reveal from '@/components/motion/Reveal'
-import BlurReveal from '@/components/motion/BlurReveal'
-import { cn } from '@/lib/utils'
+import Stagger from '@/components/motion/Stagger'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const problems = [
   {
     icon: ClipboardList,
-    title: 'Processos manuais',
-    description: 'Planilhas e papéis que consomem horas preciosas da sua equipe.',
-    stat: '15h/mês',
-    statLabel: 'perdidas por semana',
-    tilt: '-rotate-2',
-    offset: 'md:translate-y-4',
-    severity: 'critical' as const,
+    number: '01',
+    title: 'Rotinas espalhadas',
+    description: 'DDS, APR, inspeções e treinamentos vivem em arquivos diferentes e perdem o contexto da operação.',
   },
   {
-    icon: FileText,
-    title: 'Documentos dispersos',
-    description: 'Documentos espalhados em pastas, e-mails e drives sem organização.',
-    stat: '40%',
-    statLabel: 'dos documentos perdidos',
-    tilt: 'md:rotate-1',
-    offset: '',
-    severity: 'warning' as const,
+    icon: Files,
+    number: '02',
+    title: 'Documentos sem continuidade',
+    description: 'Prazos, responsáveis e evidências ficam desconectados, aumentando o retrabalho na hora da auditoria.',
   },
   {
     icon: AlertTriangle,
-    title: 'Riscos não identificados',
-    description: 'Perigos ocupacionais sem registro ou monitoramento adequado.',
-    stat: '73%',
-    statLabel: 'dos acidentes evitáveis',
-    tilt: '-md:rotate-1',
-    offset: 'md:translate-y-6',
-    severity: 'critical' as const,
-  },
-  {
-    icon: Search,
-    title: 'Auditorias complicadas',
-    description: 'Preparar auditorias exige horas de busca por documentos e registros.',
-    stat: '3 dias',
-    statLabel: 'de preparação',
-    tilt: 'md:rotate-2',
-    offset: 'md:-translate-y-1',
-    severity: 'warning' as const,
+    number: '03',
+    title: 'Risco sem prioridade clara',
+    description: 'A equipe enxerga pendências, mas não consegue distinguir rapidamente o que exige ação imediata.',
   },
 ]
 
-const severityStyles = {
-  critical: {
-    iconBg: 'bg-red-500/10',
-    iconColor: 'text-red-400',
-    border: 'border-red-500/20',
-    glow: 'hover:shadow-[0_0_30px_rgba(220,38,38,0.15)]',
-    statColor: 'text-red-400',
-  },
-  warning: {
-    iconBg: 'bg-amber-500/10',
-    iconColor: 'text-amber-400',
-    border: 'border-amber-500/20',
-    glow: 'hover:shadow-[0_0_30px_rgba(245,158,11,0.15)]',
-    statColor: 'text-amber-400',
-  },
-}
-
 export default function ProblemSection() {
+  const reduced = useReducedMotion()
+
   return (
-    <Section id="problema" variant="muted" data-testid="problem-section" className="relative overflow-hidden">
-      {/* Background chaos visualization */}
-      <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-        {/* Scattered lines */}
-        <svg className="absolute inset-0 w-full h-full opacity-[0.03]" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <line x1="10" y1="20" x2="35" y2="25" stroke="#dc2626" strokeWidth="0.3" />
-          <line x1="60" y1="15" x2="85" y2="30" stroke="#f59e0b" strokeWidth="0.3" />
-          <line x1="20" y1="70" x2="50" y2="65" stroke="#dc2626" strokeWidth="0.3" />
-          <line x1="70" y1="60" x2="90" y2="75" stroke="#f59e0b" strokeWidth="0.3" />
-          <line x1="5" y1="45" x2="30" y2="50" stroke="#dc2626" strokeWidth="0.3" />
-          <line x1="55" y1="40" x2="80" y2="45" stroke="#f59e0b" strokeWidth="0.3" />
-        </svg>
+    <Section
+      id="problema"
+      className="relative overflow-hidden bg-slate-50/45 !py-24 md:!py-32"
+      data-testid="problem-section"
+    >
+      <div className="sgs-light-grid pointer-events-none absolute inset-0 opacity-60" aria-hidden="true" />
+      <div className="pointer-events-none absolute -left-40 top-1/2 h-96 w-96 -translate-y-1/2 rounded-full bg-sgs-blue-100/55 blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -right-48 top-24 h-80 w-80 rounded-full bg-red-100/35 blur-3xl" aria-hidden="true" />
+
+      <div className="relative z-10">
+        <div className="mb-14 grid items-end gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+          <Reveal direction="left" distance={44}>
+            <div>
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-4 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-red-700">
+                <AlertTriangle className="h-4 w-4" aria-hidden="true" />
+                Onde a gestão trava
+                <span className="sgs-risk-pulse ml-1 h-1.5 w-1.5 rounded-full bg-red-500" aria-hidden="true" />
+              </div>
+              <Heading size="h2" className="max-w-3xl !text-3xl md:!text-5xl md:!leading-[1.08]">
+                Informação existe. O problema é ela chegar tarde e sem contexto.
+              </Heading>
+            </div>
+          </Reveal>
+
+          <Reveal direction="right" distance={44} delay={0.08}>
+            <Text size="lg" className="lg:pb-1">
+              Digitalizar SST não é trocar papel por tela. É conectar cada registro
+              à pessoa responsável, ao prazo correto e à decisão que precisa ser tomada.
+            </Text>
+          </Reveal>
+        </div>
+
+        <div className="relative">
+          <div className="sgs-risk-connector pointer-events-none absolute left-[16.5%] right-[16.5%] top-[8.25rem] hidden h-px md:block" aria-hidden="true" />
+          <Stagger className="relative grid gap-5 md:grid-cols-3" staggerDelay={0.14} direction="center">
+          {problems.map((problem, index) => {
+            const Icon = problem.icon
+            const featured = index === 1
+
+            return (
+              <m.article
+                key={problem.title}
+                data-testid={`problem-card-${problem.title.toLowerCase().replace(/\s+/g, '-')}`}
+                whileHover={reduced ? undefined : { y: featured ? -12 : -7, rotateX: featured ? 1.5 : 0.8, rotateY: index === 0 ? -1.5 : index === 2 ? 1.5 : 0 }}
+                transition={{ type: 'spring', stiffness: 220, damping: 18 }}
+                style={{ transformPerspective: 1200, transformStyle: 'preserve-3d' }}
+                className={featured
+                  ? 'group relative min-h-72 overflow-hidden rounded-3xl border border-sgs-blue-800 bg-sgs-blue-950 p-7 text-white shadow-[0_28px_80px_rgba(7,26,51,0.24)] [transform-style:preserve-3d] md:-translate-y-5'
+                  : 'group relative min-h-72 overflow-hidden rounded-3xl border border-sgs-blue-100 bg-white p-7 shadow-[0_20px_60px_rgba(7,26,51,0.07)] [transform-style:preserve-3d]'}
+              >
+                <div className={featured ? 'absolute inset-0 bg-gradient-to-br from-sgs-cyan/10 via-transparent to-transparent' : 'absolute inset-0 bg-gradient-to-br from-sgs-blue-50/45 via-transparent to-transparent'} aria-hidden="true" />
+                {featured && <div className="sgs-risk-pulse-ring pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full border border-sgs-cyan/35" aria-hidden="true" />}
+                <span className={featured
+                  ? 'relative z-10 font-mono text-xs font-semibold tracking-[0.2em] text-sgs-cyan'
+                  : 'relative z-10 font-mono text-xs font-semibold tracking-[0.2em] text-sgs-accent'}>
+                  {problem.number}
+                </span>
+                <div className={featured
+                  ? 'relative z-10 mt-12 flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 text-sgs-cyan'
+                  : 'relative z-10 mt-12 flex h-12 w-12 items-center justify-center rounded-2xl bg-sgs-blue-50 text-sgs-accent transition-colors duration-500 group-hover:bg-sgs-accent group-hover:text-white'}>
+                  <Icon className="h-6 w-6" aria-hidden="true" />
+                </div>
+                <h3 className={featured
+                  ? 'relative z-10 mt-5 font-heading text-xl font-semibold text-white'
+                  : 'relative z-10 mt-5 font-heading text-xl font-semibold text-sgs-text-primary'}>
+                  {problem.title}
+                </h3>
+                <p className={featured
+                  ? 'relative z-10 mt-3 text-sm leading-relaxed text-white/60'
+                  : 'relative z-10 mt-3 text-sm leading-relaxed text-sgs-text-secondary'}>
+                  {problem.description}
+                </p>
+                <span className={featured ? 'relative z-10 mt-8 block h-px w-16 bg-sgs-cyan/60' : 'relative z-10 mt-8 block h-px w-12 bg-sgs-blue-200 transition-all duration-500 group-hover:w-20 group-hover:bg-sgs-accent'} aria-hidden="true" />
+              </m.article>
+            )
+          })}
+          </Stagger>
+        </div>
+
+        <Reveal delay={0.18}>
+          <div className="mt-10 flex flex-col items-start justify-between gap-5 rounded-2xl border border-sgs-blue-100 bg-sgs-blue-50/60 px-6 py-5 sm:flex-row sm:items-center">
+            <div className="flex items-start gap-4">
+              <m.div
+                animate={reduced ? undefined : { x: [0, 5, 0] }}
+                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <Route className="mt-0.5 h-6 w-6 shrink-0 text-sgs-accent" aria-hidden="true" />
+              </m.div>
+              <div>
+                <p className="font-heading font-semibold text-sgs-text-primary">O SGS cria continuidade.</p>
+                <p className="mt-1 text-sm text-sgs-text-secondary">Do registro inicial ao plano de ação, sem perder responsáveis, evidências ou histórico.</p>
+              </div>
+            </div>
+            <span className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-sgs-accent">Contexto → ação</span>
+          </div>
+        </Reveal>
       </div>
-
-      <Reveal>
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <TrendingDown className="h-5 w-5 text-sgs-danger" />
-          <span className="font-mono text-xs tracking-widest uppercase text-sgs-danger/80">
-            O problema
-          </span>
-        </div>
-        <Heading size="h2" align="center" className="mb-4">
-          Gestão de segurança ainda no papel?
-        </Heading>
-      </Reveal>
-      <BlurReveal delay={0.1} blur={4}>
-        <Text size="lg" className="mb-8 max-w-2xl mx-auto text-center">
-          Planilhas, documentos desatualizados, falta de controle &mdash; sua equipe
-          perde tempo com processos manuais enquanto riscos reais ficam sem
-          monitoramento.
-        </Text>
-      </BlurReveal>
-
-      {/* Impact stats */}
-      <Reveal delay={0.15} className="mb-12">
-        <div className="flex flex-wrap justify-center gap-6 sm:gap-10">
-          {[
-            { value: '15h', label: 'perdidas por semana', color: '#dc2626' },
-            { value: '40%', label: 'documentos perdidos', color: '#f59e0b' },
-            { value: '73%', label: 'acidentes evitáveis', color: '#dc2626' },
-          ].map((stat) => (
-            <div key={stat.label} className="text-center">
-              <div className="text-3xl sm:text-4xl font-bold font-heading" style={{ color: stat.color }}>
-                {stat.value}
-              </div>
-              <div className="text-xs text-sgs-text-tertiary mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </Reveal>
-
-      <Stagger className="grid sm:grid-cols-2 gap-6 max-w-4xl mx-auto" staggerDelay={0.1}>
-        {problems.map((problem) => {
-          const Icon = problem.icon
-          const styles = severityStyles[problem.severity]
-          return (
-            <div
-              key={problem.title}
-              data-testid={`problem-card-${problem.title.toLowerCase().replace(/\s+/g, '-')}`}
-              className={cn(
-                'relative p-6 rounded-xl border bg-sgs-surface group',
-                'transition-all duration-300 hover:shadow-lg hover:-translate-y-1',
-                styles.border,
-                styles.glow,
-                problem.tilt,
-                problem.offset,
-              )}
-            >
-              {/* Severity dot */}
-              <div className="absolute top-3 right-3">
-                <div className={cn(
-                  'w-2 h-2 rounded-full',
-                  problem.severity === 'critical' ? 'bg-red-500 animate-pulse' : 'bg-amber-500'
-                )} />
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className={cn(
-                  'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl',
-                  styles.iconBg,
-                  styles.iconColor,
-                )}>
-                  <Icon className="h-6 w-6" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="font-heading text-lg font-semibold text-sgs-text-primary mb-1">
-                    {problem.title}
-                  </h3>
-                  <p className="text-sm text-sgs-text-secondary leading-relaxed">
-                    {problem.description}
-                  </p>
-                  {/* Impact stat */}
-                  <div className="mt-3 flex items-center gap-2">
-                    <X className="h-3 w-3 text-sgs-danger" />
-                    <span className={cn('text-sm font-bold', styles.statColor)}>
-                      {problem.stat}
-                    </span>
-                    <span className="text-xs text-sgs-text-tertiary">
-                      {problem.statLabel}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )
-        })}
-      </Stagger>
     </Section>
   )
 }

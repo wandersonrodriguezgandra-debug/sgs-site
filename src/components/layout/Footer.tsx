@@ -1,151 +1,71 @@
-import { Mail, Phone, MessageCircle, Globe } from 'lucide-react'
+import { ArrowUpRight, Globe, MessageCircle } from 'lucide-react'
 import { siteConfig } from '@/config/site'
 import Logo from '@/components/ui/Logo'
 
-const solutions = [
-  { label: 'Benefícios', href: '#benefits' },
+const footerLinks = [
+  { label: 'Experiência', href: '#experiencia' },
   { label: 'Módulos', href: '#modules' },
   { label: 'Como funciona', href: '#how-it-works' },
+  { label: 'Segurança', href: '#security' },
   { label: 'Planos', href: '#pricing' },
-]
-
-const modulesLinks = [
-  { label: 'DDS', href: '#module-dds' },
-  { label: 'APR', href: '#module-apr' },
-  { label: 'Inspeções', href: '#module-inspections' },
-  { label: 'Treinamentos', href: '#module-training' },
-  { label: 'Documentos', href: '#module-documents' },
-  { label: 'Dashboard', href: '#module-dashboard' },
-]
-
-const company = [
-  { label: 'Sobre', href: '#about' },
-  { label: 'Blog', href: '#blog' },
-  { label: 'Contato', href: '#contact' },
-  { label: 'Política de Privacidade', href: '#privacy' },
-  { label: 'Termos de Uso', href: '#terms' },
+  { label: 'Dúvidas', href: '#faq' },
+  { label: 'Contato', href: '#contato' },
 ]
 
 const socialLinks = [
-  { label: 'LinkedIn', href: siteConfig.contact.social.linkedin },
-  { label: 'Instagram', href: siteConfig.contact.social.instagram },
-  { label: 'YouTube', href: siteConfig.contact.social.youtube },
+  { label: 'LinkedIn', href: siteConfig.contact.social.linkedin, icon: Globe },
+  { label: 'Instagram', href: siteConfig.contact.social.instagram, icon: MessageCircle },
+  { label: 'YouTube', href: siteConfig.contact.social.youtube, icon: ArrowUpRight },
 ]
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
-  const whatsappDigits = siteConfig.contact.whatsapp.replace(/\D/g, '')
 
   return (
-    <footer data-testid="footer" className="bg-sgs-blue-950 text-sgs-text-inverse">
-      <div className="container-sgs py-12 lg:py-16">
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
-          <div className="sm:col-span-2 lg:col-span-2">
-            <Logo className="mb-4" />
-            <p className="max-w-sm text-sm leading-relaxed text-sgs-text-tertiary">
-              {siteConfig.description}
+    <footer data-testid="footer" className="relative overflow-hidden bg-sgs-blue-950 text-white">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-sgs-cyan/70 to-transparent" aria-hidden="true" />
+      <div className="pointer-events-none absolute -bottom-48 -right-32 h-96 w-96 rounded-full bg-sgs-accent/15 blur-3xl" aria-hidden="true" />
+
+      <div className="container-sgs relative z-10 py-12 md:py-16">
+        <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
+          <div>
+            <Logo className="mb-5 [&_span:first-child]:!text-white [&_span:last-child]:!text-white/45" />
+            <p className="max-w-md text-sm leading-relaxed text-white/50">
+              {siteConfig.description}. Uma operação conectada, rastreável e pronta para decisões melhores.
             </p>
-            <div className="mt-6 flex items-center gap-4">
-              {socialLinks.map((social) => (
+            <div className="mt-6 flex items-center gap-2">
+              {socialLinks.map(({ label, href, icon: Icon }) => (
                 <a
-                  key={social.label}
-                  href={social.href}
+                  key={label}
+                  href={href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  aria-label={social.label}
-                  className="rounded-lg p-2 text-sgs-text-tertiary transition-colors hover:text-sgs-accent-light hover:bg-white/5"
+                  aria-label={label}
+                  className="rounded-full border border-white/10 p-2.5 text-white/45 transition-[color,background-color,border-color,transform] duration-300 hover:-translate-y-1 hover:border-sgs-cyan/40 hover:bg-sgs-cyan/10 hover:text-sgs-cyan"
                 >
-                  <Globe className="h-5 w-5" aria-hidden="true" />
+                  <Icon className="h-4 w-4" aria-hidden="true" />
                 </a>
               ))}
             </div>
           </div>
 
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-sgs-text-inverse">
-              Soluções
-            </h3>
-            <ul className="space-y-3">
-              {solutions.map((item) => (
-                <li key={item.label}>
-                  <a
-                    href={item.href}
-                    className="text-sm text-sgs-text-tertiary transition-colors hover:text-sgs-accent-light"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-sgs-text-inverse">
-              Módulos
-            </h3>
-            <ul className="space-y-3">
-              {modulesLinks.map((item) => (
-                <li key={item.label}>
-                  <a
-                    href={item.href}
-                    className="text-sm text-sgs-text-tertiary transition-colors hover:text-sgs-accent-light"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-sgs-text-inverse">
-              Empresa
-            </h3>
-            <ul className="space-y-3">
-              {company.map((item) => (
-                <li key={item.label}>
-                  <a
-                    href={item.href}
-                    className="text-sm text-sgs-text-tertiary transition-colors hover:text-sgs-accent-light"
-                  >
-                    {item.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <nav className="flex flex-wrap gap-x-7 gap-y-4 lg:justify-end" aria-label="Navegação do rodapé">
+            {footerLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="group inline-flex items-center gap-1.5 text-sm font-medium text-white/55 transition-colors duration-300 hover:text-white"
+              >
+                {link.label}
+                <ArrowUpRight className="h-3.5 w-3.5 opacity-0 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:opacity-100" aria-hidden="true" />
+              </a>
+            ))}
+          </nav>
         </div>
 
-        <div className="mt-10 flex flex-wrap items-center gap-6 border-t border-sgs-blue-800 pt-8">
-          <a
-            href={`mailto:${siteConfig.contact.email}`}
-            className="flex items-center gap-2 text-sm text-sgs-text-tertiary transition-colors hover:text-sgs-accent-light"
-          >
-            <Mail className="h-4 w-4" aria-hidden="true" />
-            {siteConfig.contact.email}
-          </a>
-          <a
-            href={`tel:${siteConfig.contact.phone}`}
-            className="flex items-center gap-2 text-sm text-sgs-text-tertiary transition-colors hover:text-sgs-accent-light"
-          >
-            <Phone className="h-4 w-4" aria-hidden="true" />
-            {siteConfig.contact.phone}
-          </a>
-          <a
-            href={`https://wa.me/${whatsappDigits}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm text-sgs-text-tertiary transition-colors hover:text-sgs-accent-light"
-          >
-            <MessageCircle className="h-4 w-4" aria-hidden="true" />
-            WhatsApp
-          </a>
-        </div>
-
-        <div className="mt-6 border-t border-sgs-blue-800 pt-6">
-          <p className="text-center text-xs text-sgs-text-tertiary">
-            &copy; {currentYear} {siteConfig.name}. Todos os direitos reservados.
-          </p>
+        <div className="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between">
+          <p>&copy; {currentYear} {siteConfig.name}. Todos os direitos reservados.</p>
+          <p>Segurança do Trabalho com contexto, continuidade e controle.</p>
         </div>
       </div>
     </footer>

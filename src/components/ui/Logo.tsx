@@ -22,7 +22,7 @@ function Logo({
           <span className="font-heading font-bold text-xl tracking-tight text-sgs-accent leading-none">
             SGS
           </span>
-          <span className="text-xs text-sgs-text-tertiary leading-none mt-0.5">
+          <span className="mt-0.5 whitespace-nowrap text-xs leading-none text-sgs-text-tertiary">
             Segurança do Trabalho
           </span>
         </div>

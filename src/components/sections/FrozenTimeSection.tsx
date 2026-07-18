@@ -22,6 +22,8 @@ export default function FrozenTimeSection() {
   const [frozen, setFrozen] = useState(false)
   const [analysisComplete, setAnalysisComplete] = useState(false)
   const reduced = useReducedMotion()
+  const isFrozen = reduced || frozen
+  const isAnalysisComplete = reduced || analysisComplete
 
   useEffect(() => {
     if (reduced || !isInView) return
@@ -50,7 +52,7 @@ export default function FrozenTimeSection() {
           style={{
             background: 'radial-gradient(circle, rgba(6,182,212,0.08) 0%, transparent 60%)',
             transition: 'all 1s ease',
-            transform: frozen ? 'translate(-50%, -50%) scale(1.2)' : 'translate(-50%, -50%) scale(1)',
+            transform: isFrozen ? 'translate(-50%, -50%) scale(1.2)' : 'translate(-50%, -50%) scale(1)',
           }}
         />
       </div>
@@ -76,7 +78,7 @@ export default function FrozenTimeSection() {
         {/* Frozen elements visualization */}
         <div className="relative max-w-4xl mx-auto h-[400px] sm:h-[500px]">
           {/* Time freeze overlay */}
-          {frozen && (
+          {isFrozen && (
             <div
               className="absolute inset-0 z-10 pointer-events-none"
               style={{
@@ -89,8 +91,8 @@ export default function FrozenTimeSection() {
           {/* Floating items */}
           {floatingItems.map((item, i) => {
             const Icon = item.icon
-            const revealed = isInView && !reduced
-            const isAnalyzed = analysisComplete
+            const revealed = reduced || isInView
+            const isAnalyzed = isAnalysisComplete
 
             return (
               <div
@@ -100,11 +102,11 @@ export default function FrozenTimeSection() {
                   left: `${item.x}%`,
                   top: `${item.y}%`,
                   transform: revealed
-                    ? `rotate(${item.rotation}deg) scale(${frozen ? 0.95 : 1})`
+                    ? `rotate(${item.rotation}deg) scale(${isFrozen ? 0.95 : 1})`
                     : `rotate(${item.rotation + 20}deg) scale(0) translateY(30px)`,
                   opacity: revealed ? 1 : 0,
                   transitionDelay: `${item.delay}s`,
-                  animation: frozen && !reduced
+                  animation: isFrozen && !reduced
                     ? `float ${3 + i * 0.3}s ease-in-out infinite ${i * 0.2}s`
                     : 'none',
                 }}
@@ -117,10 +119,10 @@ export default function FrozenTimeSection() {
                       : 'rgba(255, 255, 255, 0.03)',
                     borderColor: isAnalyzed
                       ? 'rgba(34, 197, 94, 0.3)'
-                      : frozen
+                      : isFrozen
                         ? 'rgba(6, 182, 212, 0.2)'
                         : 'rgba(255, 255, 255, 0.06)',
-                    boxShadow: frozen
+                    boxShadow: isFrozen
                       ? '0 0 20px rgba(6, 182, 212, 0.1)'
                       : 'none',
                   }}
@@ -129,7 +131,7 @@ export default function FrozenTimeSection() {
                     <Icon
                       className="h-4 w-4"
                       style={{
-                        color: isAnalyzed ? '#22c55e' : frozen ? '#06b6d4' : '#ffffff60',
+                        color: isAnalyzed ? '#22c55e' : isFrozen ? '#06b6d4' : '#ffffff60',
                       }}
                     />
                     <span className="text-xs font-mono text-white/60">{item.label}</span>
@@ -139,7 +141,7 @@ export default function FrozenTimeSection() {
                   </div>
 
                   {/* Frost effect when frozen */}
-                  {frozen && !isAnalyzed && (
+                  {isFrozen && !isAnalyzed && (
                     <div
                       className="absolute inset-0 rounded-xl pointer-events-none"
                       style={{
@@ -157,16 +159,16 @@ export default function FrozenTimeSection() {
             <div
               className="relative w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-all duration-1000"
               style={{
-                background: frozen
+                background: isFrozen
                   ? 'radial-gradient(circle, rgba(0,86,179,0.3) 0%, rgba(6,182,212,0.1) 50%, transparent 70%)'
                   : 'radial-gradient(circle, rgba(0,86,179,0.1) 0%, transparent 60%)',
-                boxShadow: frozen
-                  ? '0 0 60px rgba(6, 182, 212, 0.2), 0 0 120px rgba(0, 86, 179, 0.1)'
+                boxShadow: isFrozen
+                  ? '0 0 60px rgba(6, 182, 212, 0.18), 0 0 120px rgba(0, 86, 179, 0.08)'
                   : 'none',
               }}
             >
               {/* Rings */}
-              {frozen && (
+              {isFrozen && (
                 <>
                   <div className="absolute inset-0 rounded-full border border-sgs-cyan/20 animate-spin" style={{ animationDuration: '8s' }} />
                   <div className="absolute inset-4 rounded-full border border-sgs-accent/20 animate-spin" style={{ animationDuration: '12s', animationDirection: 'reverse' }} />
@@ -178,14 +180,14 @@ export default function FrozenTimeSection() {
               <div className="text-center">
                 <div className="font-heading text-2xl sm:text-3xl font-bold text-white">SGS</div>
                 <div className="font-mono text-[10px] text-sgs-cyan tracking-wider">
-                  {frozen ? (analysisComplete ? 'ANÁLISE OK' : 'ANALISANDO...') : 'AGUARDANDO'}
+                  {isFrozen ? (isAnalysisComplete ? 'ANÁLISE OK' : 'ANALISANDO...') : 'AGUARDANDO'}
                 </div>
               </div>
             </div>
           </div>
 
           {/* Connection lines when frozen */}
-          {frozen && (
+          {isFrozen && (
             <svg className="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true">
               {floatingItems.map((item, i) => (
                 <line
@@ -194,11 +196,11 @@ export default function FrozenTimeSection() {
                   y1="50%"
                   x2={`${item.x}%`}
                   y2={`${item.y}%`}
-                  stroke={analysisComplete ? 'rgba(34, 197, 94, 0.2)' : 'rgba(6, 182, 212, 0.15)'}
+                  stroke={isAnalysisComplete ? 'rgba(34, 197, 94, 0.2)' : 'rgba(6, 182, 212, 0.15)'}
                   strokeWidth="1"
                   strokeDasharray="4 4"
                   style={{
-                    opacity: analysisComplete ? 1 : 0.5,
+                    opacity: isAnalysisComplete ? 1 : 0.5,
                     transition: 'stroke 0.5s ease, opacity 0.5s ease',
                   }}
                 />
@@ -208,7 +210,7 @@ export default function FrozenTimeSection() {
         </div>
 
         {/* Analysis results */}
-        {analysisComplete && (
+        {isAnalysisComplete && (
           <div className="mt-12 grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {[
               { label: 'Riscos analisados', value: '6', icon: AlertTriangle, color: '#dc2626' },

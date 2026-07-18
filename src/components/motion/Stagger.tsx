@@ -1,6 +1,5 @@
-import { Children, useMemo, type ReactNode } from 'react'
-import { m } from 'framer-motion'
-import { useInView } from '@/hooks/useInView'
+import { Children, useEffect, useRef, type ReactNode } from 'react'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
 
 type StaggerDirection = 'forward' | 'center'
@@ -14,28 +13,6 @@ interface StaggerProps {
   delay?: number
 }
 
-function getChildVariants(direction: StaggerDirection, index: number, total: number) {
-  const base = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' as const } },
-  }
-
-  if (direction === 'center') {
-    const mid = (total - 1) / 2
-    const distance = Math.abs(index - mid)
-    const customDelay = distance * 0.1
-    return {
-      ...base,
-      visible: {
-        ...base.visible,
-        transition: { ...base.visible.transition, delay: customDelay },
-      },
-    }
-  }
-
-  return base
-}
-
 export default function Stagger({
   children,
   className,
@@ -44,41 +21,59 @@ export default function Stagger({
   direction = 'forward',
   delay = 0,
 }: StaggerProps) {
-  const [ref, isInView] = useInView<HTMLDivElement>({
-    threshold: 0.1,
-    triggerOnce: once,
-  })
-
+  const ref = useRef<HTMLDivElement>(null)
+  const reduced = useReducedMotion()
   const childrenArray = Children.toArray(children)
   const total = childrenArray.length
 
-  const containerVariants = useMemo(() => ({
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        delay,
-        staggerChildren: direction === 'center' ? 0 : staggerDelay,
-      },
-    },
-  }), [delay, direction, staggerDelay])
+  useEffect(() => {
+    const container = ref.current
+    if (!container || reduced) return
+
+    const animations: Animation[] = []
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return
+
+      const items = Array.from(container.querySelectorAll<HTMLElement>(':scope > [data-stagger-item]'))
+      items.forEach((item, index) => {
+        const sequenceIndex = direction === 'center'
+          ? Math.abs(index - (items.length - 1) / 2)
+          : index
+
+        animations.push(item.animate(
+          [
+            { opacity: 0, transform: 'translate3d(0, 24px, 0)' },
+            { opacity: 1, transform: 'translate3d(0, 0, 0)' },
+          ],
+          {
+            duration: 620,
+            delay: (delay + sequenceIndex * staggerDelay) * 1000,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            fill: 'both',
+          },
+        ))
+      })
+
+      if (once) observer.disconnect()
+    }, { threshold: 0.08 })
+
+    observer.observe(container)
+    return () => {
+      observer.disconnect()
+      animations.forEach((animation) => animation.cancel())
+    }
+  }, [delay, direction, once, reduced, staggerDelay, total])
 
   return (
-    <m.div
+    <div
       ref={ref}
       className={cn(className)}
-      variants={containerVariants}
-      initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
     >
-      {childrenArray.map((child, index) => {
-        const variants = getChildVariants(direction, index, total)
-        return (
-          <m.div key={index} variants={variants}>
-            {child}
-          </m.div>
-        )
-      })}
-    </m.div>
+      {childrenArray.map((child, index) => (
+        <div key={index} data-stagger-item>
+          {child}
+        </div>
+      ))}
+    </div>
   )
 }

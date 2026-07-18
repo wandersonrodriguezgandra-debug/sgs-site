@@ -1,62 +1,39 @@
 'use client'
 
 import {
-  BarChart3, TrendingUp, Users, FileText, Bell, PieChart,
-  Download, Filter, Eye,
+  BarChart3, Users, FileText, Bell,
 } from 'lucide-react'
 import Section from '@/components/ui/Section'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
-import Card from '@/components/ui/Card'
 import Reveal from '@/components/motion/Reveal'
+import ParallaxLayer from '@/components/motion/ParallaxLayer'
 import InteractiveSurface from '@/components/interaction/InteractiveSurface'
 import CursorTarget from '@/components/interaction/CursorTarget'
-import AnimatedCounter from '@/components/scroll/AnimatedCounter'
-import AnimatedChart from '@/components/scroll/AnimatedChart'
-
-// DADO DEMONSTRATIVO — substituir por dados reais do dashboard
-
-const stats = [
-  { label: 'Adesão DDS', value: 94, suffix: '%', color: 'var(--color-green-500, #22c55e)' },
-  { label: 'Documentos', value: 87, suffix: '%', color: 'var(--color-sgs-accent)' },
-  { label: 'Treinamentos', value: 72, suffix: '%', color: 'var(--color-amber-500, #f59e0b)' },
-]
-
-const chartBars = [
-  { label: 'Jan', value: 65, color: 'var(--color-sgs-accent)' },
-  { label: 'Fev', value: 72, color: 'var(--color-sgs-accent)' },
-  { label: 'Mar', value: 68, color: 'var(--color-sgs-accent)' },
-  { label: 'Abr', value: 80, color: 'var(--color-sgs-accent)' },
-  { label: 'Mai', value: 78, color: 'var(--color-sgs-accent)' },
-  { label: 'Jun', value: 87, color: 'var(--color-sgs-accent)' },
-]
+import { ImageWithFallback } from '@/components/common/ImageWithFallback'
 
 const features = [
   { icon: <BarChart3 size={20} />, text: 'Indicadores em tempo real' },
-  { icon: <TrendingUp size={20} />, text: 'Gráficos de evolução' },
   { icon: <Users size={20} />, text: 'Gestão de colaboradores' },
   { icon: <FileText size={20} />, text: 'Documentos centralizados' },
   { icon: <Bell size={20} />, text: 'Alertas de vencimentos' },
-  { icon: <PieChart size={20} />, text: 'Relatórios profissionais' },
-  { icon: <Download size={20} />, text: 'Exportação de dados' },
-  { icon: <Filter size={20} />, text: 'Filtros avançados' },
-  { icon: <Eye size={20} />, text: 'Visão consolidada' },
 ]
 
 export default function DashboardSection() {
   return (
-    <Section id="dashboard" data-through-screen="true">
-      <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <Section id="dashboard" className="!py-24 md:!py-32" data-through-screen="true">
+      <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-16">
         <Reveal direction="left">
           <div className="space-y-6">
-            <Heading size="h2">
-              Conheça o painel do SGS
+            <div className="inline-flex items-center rounded-full border border-sgs-blue-100 bg-sgs-blue-50 px-4 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-sgs-accent">
+              Cockpit SST
+            </div>
+            <Heading size="h2" className="!text-3xl !leading-[1.08] md:!text-5xl">
+              O dia começa com a prioridade certa.
             </Heading>
             <Text size="lg">
-              Tenha uma visão completa e em tempo real de todos os indicadores
-              de Segurança do Trabalho da sua empresa. O dashboard do SGS
-              centraliza informações, facilita a tomada de decisão e mantém sua
-              equipe alinhada.
+              O dashboard reúne o que venceu, o que está em risco e o que precisa
+              de ação hoje. Menos tempo procurando dados; mais tempo conduzindo a operação.
             </Text>
             <div className="grid sm:grid-cols-2 gap-3">
               {features.map((feat) => (
@@ -69,70 +46,50 @@ export default function DashboardSection() {
           </div>
         </Reveal>
 
-        <Reveal direction="right" delay={0.15}>
-          <InteractiveSurface tilt="medium" spotlight="medium" glare depth="shallow">
-            <CursorTarget type="view" label="Ver painel">
-              <Card className="p-0 overflow-hidden" hover={false}>
-                <div className="bg-sgs-blue-50 p-6 md:p-8">
-                  <div className="rounded-xl overflow-hidden border border-sgs-border bg-white shadow-lg">
-                    {/* Window controls */}
-                    <div className="p-4 border-b border-sgs-border flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="flex gap-1.5">
-                          <div className="w-2.5 h-2.5 rounded-full bg-red-400" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-yellow-400" />
-                          <div className="w-2.5 h-2.5 rounded-full bg-green-400" />
-                        </div>
-                        <span className="text-xs text-sgs-text-tertiary ml-2">SGS Dashboard</span>
+        <Reveal direction="right" delay={0.15} duration={1} distance={80}>
+          <ParallaxLayer speed={24} reversed>
+            <InteractiveSurface tilt="high" spotlight="medium" glare depth="deep">
+              <CursorTarget type="view" label="Ver painel">
+                <div
+                  className="overflow-hidden rounded-2xl border border-sgs-blue-100 bg-white shadow-[0_28px_80px_rgba(0,61,128,0.2)]"
+                  data-testid="dashboard-product-image"
+                >
+                  <div className="flex items-center justify-between border-b border-sgs-blue-100 px-5 py-3">
+                    <div className="flex gap-1.5">
+                      <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                      <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                    </div>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-sgs-text-tertiary">
+                      Cockpit SST
+                    </span>
+                  </div>
+
+                  <div className="sgs-showcase-sheen group relative overflow-hidden">
+                    <ImageWithFallback
+                      src="/images/product/cockpit-sst.webp"
+                      alt="Cockpit SST do SGS exibido em um monitor"
+                      className="aspect-[4/3] w-full object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.045]"
+                      decoding="async"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-sgs-blue-950/20 via-transparent to-white/10" aria-hidden="true" />
+
+                    <div className="sgs-showcase-float absolute bottom-5 left-5 rounded-xl border border-white/70 bg-white/90 px-4 py-3 shadow-xl backdrop-blur-md">
+                      <div className="flex items-center gap-2 text-xs font-bold text-sgs-success">
+                        <span className="h-2 w-2 rounded-full bg-sgs-success animate-pulse" />
+                        Operação acompanhada em tempo real
                       </div>
                     </div>
 
-                    <div className="p-5 space-y-5">
-                      {/* Animated counters row */}
-                      <div className="grid grid-cols-3 gap-3">
-                        {stats.map((stat) => (
-                          <div key={stat.label} className="text-center p-3 bg-sgs-surface-secondary rounded-lg">
-                            <div className="text-lg font-bold text-sgs-text-primary">
-                              <AnimatedCounter to={stat.value} suffix={stat.suffix} duration={2} />
-                            </div>
-                            <div className="text-xs text-sgs-text-tertiary mt-1">{stat.label}</div>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Animated chart */}
-                      <div className="bg-sgs-surface-secondary rounded-lg p-4">
-                        <div className="flex items-center gap-2 mb-3 text-xs text-sgs-text-tertiary">
-                          <BarChart3 size={14} />
-                          <span>Evolução de indicadores</span>
-                        </div>
-                        <AnimatedChart
-                          bars={chartBars}
-                          height={140}
-                          className="px-1"
-                          barClassName="rounded-t-sm"
-                          scrub
-                        />
-                      </div>
-
-                      {/* Alert items */}
-                      <div className="space-y-2">
-                        {['DDS Julho: 94% de adesão', '5 documentos vencendo esta semana', '3 treinamentos agendados'].map((item, i) => (
-                          <div key={i} className="flex items-center gap-2 text-xs text-sgs-text-secondary p-2 bg-sgs-surface-secondary rounded-md">
-                            <Bell size={12} className="text-sgs-accent shrink-0" />
-                            {item}
-                          </div>
-                        ))}
-                      </div>
+                    <div className="sgs-showcase-float-reverse absolute right-5 top-5 rounded-xl border border-white/70 bg-white/90 px-4 py-3 shadow-xl backdrop-blur-md">
+                      <div className="text-[10px] uppercase tracking-wider text-sgs-text-tertiary">Visão consolidada</div>
+                      <div className="text-lg font-bold text-sgs-blue-950">100% integrada</div>
                     </div>
                   </div>
-                  <p className="text-xs text-sgs-text-tertiary text-center mt-4 italic">
-                    DADO DEMONSTRATIVO — substituir pela captura oficial do SGS e dados reais da API.
-                  </p>
                 </div>
-              </Card>
-            </CursorTarget>
-          </InteractiveSurface>
+              </CursorTarget>
+            </InteractiveSurface>
+          </ParallaxLayer>
         </Reveal>
       </div>
     </Section>

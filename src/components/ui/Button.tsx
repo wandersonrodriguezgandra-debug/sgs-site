@@ -1,7 +1,10 @@
-import type { ReactNode, MouseEvent } from 'react'
+import { useRef, type ReactNode, type MouseEvent, type RefObject } from 'react'
 import { motion } from 'framer-motion'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { useMagneticInteraction } from '@/hooks/useMagneticInteraction'
+import { useCursorTarget } from '@/hooks/useCursorTarget'
+import { motionTokens } from '@/components/motion/tokens'
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost'
 type ButtonSize = 'sm' | 'md' | 'lg'
@@ -16,6 +19,8 @@ interface ButtonProps {
   disabled?: boolean
   loading?: boolean
   type?: 'button' | 'submit' | 'reset'
+  /** Pull magnético em direção ao cursor (assinatura Lusion). Ligado por padrão. */
+  magnetic?: boolean
   'data-testid'?: string
 }
 
@@ -42,12 +47,22 @@ function Button({
   disabled = false,
   loading = false,
   type = 'button',
+  magnetic = true,
   ...rest
 }: ButtonProps) {
   const isDisabled = disabled || loading
+  const ref = useRef<HTMLElement>(null!)
+
+  const { x, y } = useMagneticInteraction(
+    ref,
+    motionTokens.magnetic.strong,
+    80,
+    !magnetic || isDisabled,
+  )
+  useCursorTarget(ref, 'link')
 
   const classes = cn(
-    'inline-flex items-center justify-center gap-2 font-medium transition-all duration-200 focus-visible:outline-2 focus-visible:outline-sgs-accent cursor-pointer select-none',
+    'inline-flex items-center justify-center gap-2 font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-sgs-accent cursor-pointer select-none',
     variantStyles[variant],
     sizeStyles[size],
     isDisabled && 'opacity-50 pointer-events-none',
@@ -56,7 +71,8 @@ function Button({
 
   const motionProps = {
     className: classes,
-    whileHover: isDisabled ? {} : { scale: 1.03, y: -1 },
+    style: { x, y },
+    whileHover: isDisabled ? {} : { scale: 1.03 },
     whileTap: isDisabled ? {} : { scale: 0.97 },
     onClick,
     transition: { type: 'spring' as const, stiffness: 400, damping: 25 },
@@ -65,7 +81,11 @@ function Button({
 
   if (href) {
     return (
-      <motion.a href={href} {...motionProps}>
+      <motion.a
+        ref={ref as unknown as RefObject<HTMLAnchorElement>}
+        href={href}
+        {...motionProps}
+      >
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
         {children}
       </motion.a>
@@ -73,7 +93,12 @@ function Button({
   }
 
   return (
-    <motion.button type={type} disabled={isDisabled} {...motionProps}>
+    <motion.button
+      ref={ref as unknown as RefObject<HTMLButtonElement>}
+      type={type}
+      disabled={isDisabled}
+      {...motionProps}
+    >
       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
       {children}
     </motion.button>

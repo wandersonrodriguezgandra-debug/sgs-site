@@ -1,0 +1,254 @@
+@keyframes sgs-showcase-float {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(-1.5deg); }
+  50% { transform: translate3d(0, -16px, 0) rotate(1.5deg); }
+}
+
+@keyframes sgs-showcase-float-reverse {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(1.5deg); }
+  50% { transform: translate3d(0, 14px, 0) rotate(-1.5deg); }
+}
+
+@keyframes sgs-showcase-sheen {
+  0%, 18% { transform: translateX(-140%) skewX(-18deg); opacity: 0; }
+  28% { opacity: 0.75; }
+  45%, 100% { transform: translateX(240%) skewX(-18deg); opacity: 0; }
+}
+
+@keyframes sgs-showcase-scanline {
+  0%, 12% { transform: translateY(0); opacity: 0; }
+  20% { opacity: 0.9; }
+  82% { opacity: 0.9; }
+  100% { transform: translateY(360px); opacity: 0; }
+}
+
+@keyframes sgs-showcase-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes sgs-showcase-orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes sgs-risk-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(0.85); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes sgs-risk-pulse-ring {
+  0% { opacity: 0.15; transform: scale(0.7); }
+  70%, 100% { opacity: 0; transform: scale(1.35); }
+}
+
+@keyframes sgs-risk-connector {
+  from { background-position: 0 0; }
+  to { background-position: 24px 0; }
+}
+
+@keyframes sgs-how-works-orbit {
+  from { transform: rotate(0deg) scale(0.92); opacity: 0.18; }
+  50% { transform: rotate(180deg) scale(1.04); opacity: 0.5; }
+  to { transform: rotate(360deg) scale(0.92); opacity: 0.18; }
+}
+
+@keyframes sgs-scanner-signal {
+  0%, 100% { opacity: 0.2; transform: translate3d(0, 0, 0) scale(0.8); box-shadow: 0 0 0 rgba(34, 211, 238, 0); }
+  50% { opacity: 1; transform: translate3d(32px, 14px, 0) scale(1.2); box-shadow: 0 0 22px rgba(34, 211, 238, 0.85); }
+}
+
+@keyframes sgs-scanner-scanline {
+  0%, 16% { transform: translateY(0); opacity: 0; }
+  26% { opacity: 0.9; }
+  78% { opacity: 0.9; }
+  100% { transform: translateY(470px); opacity: 0; }
+}
+
+@keyframes sgs-faq-signal {
+  0%, 100% { transform: scaleX(0.35); opacity: 0.3; }
+  50% { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes sgs-form-success {
+  from { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.24); }
+  to { box-shadow: 0 0 0 18px rgba(16, 185, 129, 0); }
+}
+
+.sgs-showcase-float {
+  animation: sgs-showcase-float 5.5s ease-in-out infinite;
+}
+
+.sgs-showcase-float-reverse {
+  animation: sgs-showcase-float-reverse 6.5s ease-in-out infinite;
+}
+
+.sgs-showcase-sheen {
+  position: relative;
+  overflow: hidden;
+}
+
+.sgs-showcase-sheen::after {
+  content: '';
+  position: absolute;
+  inset: -35% auto -35% -30%;
+  width: 22%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.78), transparent);
+  filter: blur(8px);
+  animation: sgs-showcase-sheen 6.5s ease-in-out infinite;
+}
+
+.sgs-showcase-scanline {
+  animation: sgs-showcase-scanline 4.8s ease-in-out infinite;
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.7);
+}
+
+.sgs-showcase-marquee {
+  display: flex;
+  width: max-content;
+  animation: sgs-showcase-marquee 24s linear infinite;
+}
+
+.sgs-showcase-orbit {
+  animation: sgs-showcase-orbit 18s linear infinite;
+}
+
+.sgs-risk-pulse {
+  animation: sgs-risk-pulse 1.8s ease-in-out infinite;
+}
+
+.sgs-risk-pulse-ring {
+  animation: sgs-risk-pulse-ring 2.8s ease-out infinite;
+}
+
+.sgs-risk-connector {
+  background-image: linear-gradient(90deg, rgba(0, 86, 179, 0.18) 50%, transparent 50%);
+  background-size: 12px 1px;
+  animation: sgs-risk-connector 1.6s linear infinite;
+}
+
+.sgs-how-works-orbit {
+  animation: sgs-how-works-orbit 18s linear infinite;
+}
+
+.sgs-step-card {
+  transform-style: preserve-3d;
+}
+
+.sgs-step-card::after {
+  content: '';
+  position: absolute;
+  inset: auto 1.5rem 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.55), transparent);
+  opacity: 0;
+  transform: scaleX(0.4);
+  transition: opacity 400ms ease, transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sgs-step-card:hover::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.sgs-step-progress {
+  opacity: 0;
+  transition: opacity 300ms ease, transform 500ms ease;
+}
+
+.sgs-step-card:hover .sgs-step-progress {
+  opacity: 1;
+  transform: translateX(-100%) scaleX(1.25);
+}
+
+.sgs-scanner-signal {
+  animation: sgs-scanner-signal 5s ease-in-out infinite;
+}
+
+.sgs-scanner-signal-delay {
+  animation-delay: -2.4s;
+}
+
+.sgs-scanner-panel {
+  transform-style: preserve-3d;
+}
+
+.sgs-scanner-scanline {
+  animation: sgs-scanner-scanline 5.6s ease-in-out infinite;
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.78);
+}
+
+.sgs-pricing-card {
+  transform-style: preserve-3d;
+}
+
+.sgs-pricing-card .bg-sgs-surface {
+  transition: border-color 400ms ease, box-shadow 400ms ease, background-color 400ms ease;
+}
+
+.sgs-pricing-card:hover .bg-sgs-surface {
+  border-color: rgba(0, 86, 179, 0.35);
+  box-shadow: 0 28px 70px rgba(7, 26, 51, 0.12);
+}
+
+.sgs-faq-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.sgs-faq-signal {
+  position: absolute;
+  z-index: -1;
+  left: 12%;
+  right: 12%;
+  top: -1px;
+  height: 2px;
+  transform-origin: center;
+  background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.85), transparent);
+  animation: sgs-faq-signal 3.6s ease-in-out infinite;
+}
+
+.sgs-form-card {
+  box-shadow: 0 28px 90px rgba(7, 26, 51, 0.1);
+}
+
+.sgs-form-success {
+  animation: sgs-form-success 1.2s ease-out 0.35s both;
+}
+
+.sgs-light-grid {
+  background-image:
+    linear-gradient(rgba(0, 86, 179, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 86, 179, 0.07) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse at center, black 12%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 12%, transparent 72%);
+}
+
+.sgs-dark-grid {
+  background-image:
+    linear-gradient(rgba(74, 135, 235, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(74, 135, 235, 0.12) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: radial-gradient(ellipse at center, black 10%, transparent 74%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 10%, transparent 74%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sgs-showcase-float,
+  .sgs-showcase-float-reverse,
+  .sgs-showcase-sheen::after,
+  .sgs-showcase-scanline,
+  .sgs-showcase-marquee,
+  .sgs-showcase-orbit,
+  .sgs-risk-pulse,
+  .sgs-risk-pulse-ring,
+  .sgs-risk-connector,
+  .sgs-how-works-orbit,
+  .sgs-scanner-signal,
+  .sgs-scanner-scanline,
+  .sgs-faq-signal,
+  .sgs-form-success {
+    animation: none !important;
+  }
+}
