@@ -10,7 +10,6 @@ import { FaqJsonLd } from '@/components/seo/JsonLd'
 import { faqItems } from '@/config/faq'
 import ScrollProvider from '@/components/scroll/ScrollProvider'
 import ScrollProgress from '@/components/scroll/ScrollProgress'
-import ScrollStack from '@/components/scroll/ScrollStack'
 
 const DashboardSection = lazy(() => import('@/components/sections/DashboardSection'))
 const PricingSection = lazy(() => import('@/components/sections/PricingSection'))
@@ -31,19 +30,17 @@ export default function HomePage() {
       <FaqJsonLd items={faqItems} />
       <ScrollProgress />
       <main id="main-content" data-testid="page-home">
-        <ScrollStack>
-          <HeroSection />
-          <ProductShowcaseSection />
-          <ProblemSection />
-          <ScannerSection />
-          <ModulesShowcaseSection />
-          <HowItWorksSection />
-          <SuspenseWrapper><DashboardSection /></SuspenseWrapper>
-          <SecuritySection />
-          <SuspenseWrapper><PricingSection /></SuspenseWrapper>
-          <SuspenseWrapper><FAQSection /></SuspenseWrapper>
-          <SuspenseWrapper><DemoFormSection /></SuspenseWrapper>
-        </ScrollStack>
+        <HeroSection />
+        <ProductShowcaseSection />
+        <ProblemSection />
+        <ScannerSection />
+        <ModulesShowcaseSection />
+        <HowItWorksSection />
+        <SuspenseWrapper><DashboardSection /></SuspenseWrapper>
+        <SecuritySection />
+        <SuspenseWrapper><PricingSection /></SuspenseWrapper>
+        <SuspenseWrapper><FAQSection /></SuspenseWrapper>
+        <SuspenseWrapper><DemoFormSection /></SuspenseWrapper>
       </main>
     </ScrollProvider>
   )
