@@ -192,7 +192,6 @@ export default function ModulesShowcaseSection() {
         {selectedModule && (
           <ModuleDetailsDialog
             module={selectedModule}
-            layoutId={`module-${selectedModule.name}`}
             open
             onClose={() => setSelectedModule(null)}
           />

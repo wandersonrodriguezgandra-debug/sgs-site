@@ -1,9 +1,6 @@
-import { useRef, type ReactNode, type MouseEvent, type RefObject } from 'react'
-import { motion } from 'framer-motion'
+import type { ReactNode, MouseEvent } from 'react'
 import { Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useMagneticInteraction } from '@/hooks/useMagneticInteraction'
-import { motionTokens } from '@/components/motion/tokens'
 
 type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost'
 type ButtonSize = 'sm' | 'md' | 'lg'
@@ -18,8 +15,6 @@ interface ButtonProps {
   disabled?: boolean
   loading?: boolean
   type?: 'button' | 'submit' | 'reset'
-  /** Pull magnético em direção ao cursor (assinatura Lusion). Ligado por padrão. */
-  magnetic?: boolean
   'data-testid'?: string
 }
 
@@ -46,60 +41,41 @@ function Button({
   disabled = false,
   loading = false,
   type = 'button',
-  magnetic = true,
   ...rest
 }: ButtonProps) {
   const isDisabled = disabled || loading
-  const ref = useRef<HTMLElement>(null!)
-
-  const { x, y } = useMagneticInteraction(
-    ref,
-    motionTokens.magnetic.strong,
-    80,
-    !magnetic || isDisabled,
-  )
 
   const classes = cn(
-    'inline-flex items-center justify-center gap-2 font-medium transition-colors duration-200 focus-visible:outline-2 focus-visible:outline-sgs-accent cursor-pointer select-none',
+    // hover:scale-[1.03] / active:scale-[0.97] — motionTokens.scale.hover/press
+    'inline-flex items-center justify-center gap-2 font-medium transition-[background-color,color,transform] duration-200 hover:scale-[1.03] active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-sgs-accent cursor-pointer select-none',
     variantStyles[variant],
     sizeStyles[size],
     isDisabled && 'opacity-50 pointer-events-none',
     className
   )
 
-  const motionProps = {
-    className: classes,
-    style: { x, y },
-    whileHover: isDisabled ? {} : { scale: 1.03 },
-    whileTap: isDisabled ? {} : { scale: 0.97 },
-    onClick,
-    transition: { type: 'spring' as const, stiffness: 400, damping: 25 },
-    'data-testid': rest['data-testid'] || undefined,
-  }
+  const testId = rest['data-testid'] || undefined
 
   if (href) {
     return (
-      <motion.a
-        ref={ref as unknown as RefObject<HTMLAnchorElement>}
-        href={href}
-        {...motionProps}
-      >
+      <a href={href} className={classes} onClick={onClick} data-testid={testId}>
         {loading && <Loader2 className="h-4 w-4 animate-spin" />}
         {children}
-      </motion.a>
+      </a>
     )
   }
 
   return (
-    <motion.button
-      ref={ref as unknown as RefObject<HTMLButtonElement>}
+    <button
       type={type}
       disabled={isDisabled}
-      {...motionProps}
+      className={classes}
+      onClick={onClick}
+      data-testid={testId}
     >
       {loading && <Loader2 className="h-4 w-4 animate-spin" />}
       {children}
-    </motion.button>
+    </button>
   )
 }
 

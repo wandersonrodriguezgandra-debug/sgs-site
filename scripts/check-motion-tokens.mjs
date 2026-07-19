@@ -23,8 +23,6 @@ const LEGACY_ALLOWLIST = new Set(
     'src/components/motion/Reveal.tsx',
     'src/components/motion/Stagger.tsx',
     'src/components/sections/HowItWorksSection.tsx',
-    'src/components/ui/Button.tsx',
-    'src/hooks/useMagneticInteraction.ts',
   ].map((p) => p.split('/').join(sep)),
 )
 

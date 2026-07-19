@@ -46,7 +46,7 @@ export default function DashboardSection() {
         </Reveal>
 
         <Reveal direction="right" delay={0.15} duration={1} distance={80}>
-          <ParallaxLayer speed={24} reversed>
+          <ParallaxLayer speed={16} reversed>
             <InteractiveSurface tilt="high" spotlight="medium" glare depth="deep">
                 <div
                   className="overflow-hidden rounded-2xl border border-sgs-blue-100 bg-white shadow-[0_28px_80px_rgba(0,61,128,0.2)]"

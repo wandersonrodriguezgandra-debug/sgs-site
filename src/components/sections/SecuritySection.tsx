@@ -60,7 +60,7 @@ export default function SecuritySection() {
 
       <div className="relative z-10 grid items-center gap-12 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14">
         <Reveal direction="left" duration={1} distance={90}>
-          <ParallaxLayer speed={26}>
+          <ParallaxLayer speed={16}>
             <InteractiveSurface tilt="high" spotlight="medium" glare depth="deep">
                 <div
                   className="sgs-showcase-sheen group relative overflow-hidden rounded-2xl border border-white/15 bg-white/[0.05] p-2 shadow-[0_35px_100px_rgba(0,0,0,0.4)]"

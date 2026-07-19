@@ -20,7 +20,6 @@ interface DialogModule {
 
 interface ModuleDetailsDialogProps {
   module: DialogModule | null
-  layoutId: string
   open: boolean
   onClose: () => void
 }
@@ -90,7 +89,7 @@ function ModuleDetailsDialog({
         )
         dialogRef.current?.animate(
           [
-            { opacity: 0, transform: `translate3d(0, ${motionTokens.distance.medium}px, 0) scale(0.97)` },
+            { opacity: 0, transform: `translate3d(0, ${motionTokens.distance.medium}px, 0) scale(${motionTokens.scale.press})` },
             { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' },
           ],
           { duration: motionTokens.duration.normal * 1000, easing, fill: 'both' },

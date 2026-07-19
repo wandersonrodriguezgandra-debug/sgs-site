@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 interface ParallaxLayerProps {
   children: ReactNode
   className?: string
-  /** Clamped to motionTokens.parallax.strong (30px) — secondary captures only. */
+  /** Clamped to motionTokens.parallax.max (16px, Fase 3) — secondary captures only. */
   speed?: number
   direction?: 'vertical' | 'horizontal'
   reversed?: boolean
@@ -27,7 +27,7 @@ export default function ParallaxLayer({
   const ref = useRef<HTMLDivElement>(null)
   const reduced = useReducedMotion()
   const isTouch = useIsTouchDevice()
-  const clampedSpeed = Math.min(speed, motionTokens.parallax.strong)
+  const clampedSpeed = Math.min(speed, motionTokens.parallax.max)
 
   useEffect(() => {
     const el = ref.current

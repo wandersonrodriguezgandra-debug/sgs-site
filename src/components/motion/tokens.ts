@@ -54,8 +54,10 @@ export const motionTokens = {
   },
   parallax: {
     subtle: 10,
-    normal: 20,
-    strong: 30,
+    normal: 16,
+    // Teto aprovado na Fase 3: nenhum parallax excede 16px, mesmo em
+    // seções que antes pediam mais (Dashboard/Security).
+    max: 16,
   },
   tilt: {
     subtle: 3,
@@ -71,10 +73,9 @@ export const motionTokens = {
     shallow: 12,
     deep: 30,
   },
-  magnetic: {
-    subtle: 3,
-    medium: 7,
-    strong: 11,
+  scale: {
+    press: 0.97,
+    hover: 1.03,
   },
   spotlight: {
     size: 400,
