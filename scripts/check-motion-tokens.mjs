@@ -22,7 +22,6 @@ const LEGACY_ALLOWLIST = new Set(
     'src/components/motion/BlurReveal.tsx',
     'src/components/motion/Reveal.tsx',
     'src/components/motion/Stagger.tsx',
-    'src/components/sections/HowItWorksSection.tsx',
   ].map((p) => p.split('/').join(sep)),
 )
 

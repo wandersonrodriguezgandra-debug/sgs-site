@@ -1,6 +1,3 @@
-'use client'
-
-import { m } from 'framer-motion'
 import { ArrowDown, CheckCircle2 } from 'lucide-react'
 import Section from '@/components/ui/Section'
 import Heading from '@/components/ui/Heading'
@@ -43,12 +40,9 @@ export default function HowItWorksSection() {
 
         <Stagger className="sgs-how-works-list relative space-y-4" staggerDelay={0.08}>
           {steps.map((step, index) => (
-            <m.article
+            <article
               key={step.number}
-              className="sgs-step-card group relative overflow-hidden rounded-2xl border border-sgs-blue-100 bg-white p-6 shadow-[0_18px_50px_rgba(7,26,51,0.06)] transition-[border-color,box-shadow] duration-500 hover:border-sgs-blue-300 hover:shadow-[0_26px_70px_rgba(0,86,179,0.12)] sm:p-7"
-              whileHover={{ y: -6, rotateX: 1.5, rotateY: index % 2 === 0 ? -1.2 : 1.2 }}
-              transition={{ type: 'spring', stiffness: 220, damping: 22 }}
-              style={{ transformPerspective: 900 }}
+              className="sgs-step-card group relative overflow-hidden rounded-2xl border border-sgs-blue-100 bg-white p-6 shadow-[0_18px_50px_rgba(7,26,51,0.06)] transition-[border-color,box-shadow,transform] duration-500 ease-out hover:-translate-y-1.5 hover:border-sgs-blue-300 hover:shadow-[0_26px_70px_rgba(0,86,179,0.12)] sm:p-7"
             >
               <div className="absolute inset-y-0 left-0 w-1 origin-bottom scale-y-0 bg-gradient-to-b from-sgs-cyan to-sgs-accent transition-transform duration-500 group-hover:scale-y-100" aria-hidden="true" />
               <div className="sgs-step-progress absolute left-0 top-1/2 h-px w-8 -translate-x-full bg-gradient-to-r from-transparent to-sgs-cyan" aria-hidden="true" />
@@ -70,7 +64,7 @@ export default function HowItWorksSection() {
                   </p>
                 </div>
               </div>
-            </m.article>
+            </article>
           ))}
         </Stagger>
       </div>
