@@ -140,3 +140,40 @@ ou trocar essas imagens por conta própria. Se a confirmação chegar, a
 substituição (se necessária) deve ser um item específico, revisado e
 aprovado isoladamente — não uma decisão tomada dentro do trabalho de
 outra peça.
+
+## 2026-07-19 — Peças 1b e 10 (shader/WebGL) bloqueadas: plano original nunca recebido
+
+**Contexto**: a sequência da Imersão autorizada lista as peças na ordem
+7 → 1b → 8 → 9 → 1c → 1d → 2 → 3, referenciando "o plano já aprovado" para
+as peças 1b, 1c, 1d, 2 e 3. Só o adendo com as peças 7, 8, 9 e 10 chegou
+a esta sessão, com descrição técnica completa. O conteúdo das peças 1b
+(scanner em luz de shader), 1c, 1d, 2 e 3 nunca foi apresentado — nem o
+plano original, nem um resumo — apesar de terem sido perguntadas
+diretamente (ver troca anterior nesta sessão).
+
+**Decisão**: as peças 7, 8, 9 e 10 foram implementadas nesta sessão
+porque o adendo trazia detalhe técnico suficiente para decidir com
+segurança (paleta, estrutura de conteúdo, comportamento em
+reduced-motion). A peça 1b — a primeira que exige WebGL — foi
+explicitamente pulada por instrução do usuário ("seguir só com as peças
+já descritas por ora"). A peça 10 (tiers de textura high/low por
+capacidade de dispositivo) depende inteiramente de 1b existir primeiro
+(não há textura sem uma camada WebGL para consumi-la), então também fica
+bloqueada por consequência direta, não por escolha independente.
+
+**Por que não avancei sozinho**: reintroduzir WebGL neste projeto é uma
+mudança de stack real — nova dependência, novo runtime, orçamento de
+chunk (≤180KB lazy, fora do caminho crítico, conforme os trilhos da
+Imersão), decisão de qual técnica de shader usar para "luz" sobre o
+scanner, e os tiers de qualidade por `deviceMemory`/`hardwareConcurrency`/
+DPR da peça 10. O Sprint 0 já removeu Three.js do projeto por não ter
+consumidor real — reintroduzir wecGL sem as especificações exatas que o
+"dono" presumivelmente já decidiu (e que estão no plano que não chegou)
+seria inventar arquitetura em uma área de alto risco de performance e
+orçamento de bundle, o oposto do rigor que guiou a migração de animações.
+
+**Como aplicar esta decisão**: 1b e 10 seguem bloqueadas até o conteúdo
+real do plano original (peças 1b, 1c, 1d, 2, 3) ser fornecido. Quando
+chegar, tratar como uma etapa própria — não encaixar apressadamente no
+que já foi implementado sem revisar se a base (arco de luminância, tipo
+de capítulos, dualidade) já commitada precisa de ajuste para acomodá-la.
