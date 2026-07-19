@@ -35,9 +35,9 @@ export default function PricingSection() {
       </p>
       <ParallaxLayer speed={10}>
         <Stagger className="sgs-scrollbar-none flex snap-x snap-mandatory gap-5 overflow-x-auto pb-6 md:grid md:grid-cols-2 md:overflow-visible xl:grid-cols-4" staggerDelay={0.1}>
-          {plans.map((plan, index) => (
+          {plans.map((plan) => (
             <div key={plan.name} className="w-[80vw] max-w-sm shrink-0 snap-center md:w-auto md:max-w-none">
-              <PricingCard plan={plan} index={index} />
+              <PricingCard plan={plan} />
             </div>
           ))}
         </Stagger>

@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { SkipLink } from '@/components/common/SkipLink'
 import { ErrorBoundary } from '@/components/common/ErrorBoundary'
-import { MotionProvider } from '@/components/motion/MotionProvider'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import HomePage from '@/pages/HomePage'
@@ -11,18 +10,16 @@ import NotFoundPage from '@/pages/NotFoundPage'
 export default function App() {
   return (
     <BrowserRouter>
-      <MotionProvider>
-        <ErrorBoundary>
-          <SkipLink />
-          <Header />
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/privacidade" element={<PrivacyPage />} />
-            <Route path="*" element={<NotFoundPage />} />
-          </Routes>
-          <Footer />
-        </ErrorBoundary>
-      </MotionProvider>
+      <ErrorBoundary>
+        <SkipLink />
+        <Header />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/privacidade" element={<PrivacyPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+        <Footer />
+      </ErrorBoundary>
     </BrowserRouter>
   )
 }

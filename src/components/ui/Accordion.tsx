@@ -1,7 +1,8 @@
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 import { ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { motionTokens, cssEase } from '@/components/motion/tokens'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 interface AccordionItem {
   id: string
@@ -12,6 +13,57 @@ interface AccordionItem {
 interface AccordionProps {
   items: AccordionItem[]
   className?: string
+}
+
+const EASING = cssEase(motionTokens.ease.smooth)
+
+function AccordionPanel({ id, isOpen, children }: { id: string; isOpen: boolean; children: React.ReactNode }) {
+  const contentRef = useRef<HTMLDivElement>(null)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const isFirstRender = useRef(true)
+  const reduced = useReducedMotion()
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current
+    const content = contentRef.current
+    if (!wrapper || !content) return
+
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      wrapper.style.height = isOpen ? 'auto' : '0px'
+      wrapper.style.opacity = isOpen ? '1' : '0'
+      return
+    }
+
+    if (reduced) {
+      wrapper.style.height = isOpen ? 'auto' : '0px'
+      wrapper.style.opacity = isOpen ? '1' : '0'
+      return
+    }
+
+    const targetHeight = content.getBoundingClientRect().height
+    const animation = wrapper.animate(
+      [
+        { height: isOpen ? '0px' : `${targetHeight}px`, opacity: isOpen ? 0 : 1 },
+        { height: isOpen ? `${targetHeight}px` : '0px', opacity: isOpen ? 1 : 0 },
+      ],
+      { duration: motionTokens.duration.normal * 1000, easing: EASING, fill: 'forwards' },
+    )
+
+    return () => animation.cancel()
+  }, [isOpen, reduced])
+
+  return (
+    <div
+      ref={wrapperRef}
+      id={id}
+      role="region"
+      className="overflow-hidden"
+      style={{ height: 0 }}
+    >
+      <div ref={contentRef}>{children}</div>
+    </div>
+  )
 }
 
 export default function Accordion({ items, className }: AccordionProps) {
@@ -46,23 +98,11 @@ export default function Accordion({ items, className }: AccordionProps) {
                 )}
               />
             </button>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  id={`accordion-content-${item.id}`}
-                  role="region"
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className="overflow-hidden"
-                >
-                  <div className="px-6 pb-5 text-sgs-text-secondary leading-relaxed">
-                    {item.content}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <AccordionPanel id={`accordion-content-${item.id}`} isOpen={isOpen}>
+              <div className="px-6 pb-5 text-sgs-text-secondary leading-relaxed">
+                {item.content}
+              </div>
+            </AccordionPanel>
           </div>
         )
       })}
