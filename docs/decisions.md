@@ -38,3 +38,72 @@ componente deve continuar seguindo o orçamento de performance já
 estabelecido (transform/opacity apenas, lazy-by-proximity quando aplicável,
 sem inflar ainda mais o bundle inicial), para não piorar o número enquanto
 ele segue como débito conhecido.
+
+## 2026-07-19 — Prerender promovido a primeira etapa pós-Imersão
+
+**Decisão**: dentro da sequência de peças da Etapa Imersão (arco de
+luminância, tipografia de capítulos, dualidade risco/proteção, tiers de
+textura), o prerender estático descrito na decisão anterior é promovido a
+**primeira etapa do backlog depois que a Imersão terminar** — não mais "a
+retomar quando der", mas o próximo item de arquitetura com prioridade
+definida.
+
+**Por quê**: a Imersão adiciona camadas visuais adicionais (arco de
+luminância, tipografia de capítulos) que também competem por tempo de boot
+do React antes do primeiro paint. Resolver o CSR/LCP estrutural antes de
+empilhar mais peças em cima dele evita que o débito de performance cresça
+junto com a superfície visual da Imersão.
+
+## 2026-07-19 — CLS real sob scroll profundo (~1,9) no lazy mount do Scanner: investigado, não corrigido
+
+**Contexto**: o gate de Lighthouse já aceito mede CLS 0 porque o protocolo
+padrão do Lighthouse (`--preset=perf`) não simula scroll do usuário — a
+métrica é calculada só até a janela de carregamento inicial, antes de o
+Scanner sequer entrar em `rootMargin`. Um teste manual complementar via
+`PerformanceObserver` simulando scroll real (8x `wheel` events, viewport
+390×844) mediu **CLS ≈ 1.93–1.99**, disparado inteiramente pelo mount do
+`LazyScannerSection` (`src/pages/HomePage.tsx`) quando `isNear` vira `true`.
+
+**Causa raiz confirmada**: a Layout Instability API do browser atribui
+shift a qualquer nó que apareça com `previousRect: {0,0,0,0}` — ou seja,
+qualquer elemento que não existia geometricamente no frame anterior conta
+como shift ao aparecer, **mesmo que**:
+- o container pai já reserve a altura final via `min-height`/`height` desde
+  o placeholder;
+- um placeholder idêntico em altura seja mantido sobreposto por cima até um
+  frame depois do conteúdo real assentar;
+- o pai nunca mude de identidade (só o filho interno é trocado).
+
+Foram tentadas e descartadas nesta sessão, todas medidas e revertidas:
+1. Recalibrar a altura estimada do placeholder mobile (`100vh` → `2720px`,
+   medida real do `StaticStages` renderizado) — não mudou o CLS porque o
+   ambiente de teste (Playwright, viewport 390 sem `hasTouch`) não é
+   detectado como touch por `shouldPin()`, então monta `PinnedScanner`
+   (pinned), não `StaticStages`.
+2. Segurar `min-height` no wrapper por 2 frames (`requestAnimationFrame`
+   duplo) após o mount — não mudou nada, porque o shift é atribuído ao nó
+   filho que aparece, não ao pai que já tinha a altura certa.
+3. Overlap do placeholder (absolutamente posicionado, por cima) mantido
+   até um frame depois do real assentar — mesmo resultado; o nó real por
+   baixo do overlay ainda conta o shift ao nascer, mesmo coberto
+   visualmente.
+4. Manter o mesmo `<div id="scanner">` pai vivo, trocando só o filho
+   (`isNear ? <ScannerSection/> : <placeholder/>`) — mesmo resultado; o
+   filho interno "aparece do zero" de qualquer forma.
+
+**Por que não foi corrigido agora**: a única correção que resolveria de
+verdade — manter `<ScannerSection/>` real sempre montado no DOM desde o
+primeiro paint (com `visibility: hidden`, preservando geometria) — exige
+carregar o chunk do GSAP (~47KB gzip) no mount inicial da página, o que
+reintroduziria exatamente a competição pelo LCP que o lazy-loading por
+proximidade foi desenhado para evitar. É um trade-off arquitetural real
+(CLS sob scroll vs. LCP), não um bug com correção isolada, e a via mais
+sólida para resolvê-lo de verdade é a mesma do LCP: prerender estático,
+onde o Scanner nasceria com geometria definida no HTML antes mesmo da
+hidratação, eliminando o "nó aparece do zero" na raiz.
+
+**Como aplicar esta decisão**: o gate formal de Lighthouse (CLS 0) segue
+válido e não foi violado por nenhuma peça da Imersão — nenhuma peça nova
+piorou esse número. O CLS sob scroll profundo é débito pré-existente
+(confirmado idêntico antes e depois da peça 7 do arco de luminância) e
+deve ser resolvido junto do prerender, não isoladamente.
