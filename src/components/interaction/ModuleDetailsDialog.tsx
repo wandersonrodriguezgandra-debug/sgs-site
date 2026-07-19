@@ -1,13 +1,13 @@
 'use client'
 
 import { useEffect, useRef, useCallback } from 'react'
-import { m, AnimatePresence } from 'framer-motion'
 import { X, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
 import Badge from '@/components/ui/Badge'
 import { ImageWithFallback } from '@/components/common/ImageWithFallback'
 import { getIcon } from '@/lib/icons'
+import { motionTokens, cssEase } from '@/components/motion/tokens'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 interface DialogModule {
   icon: string
@@ -61,13 +61,13 @@ function getPreviewImage(category: string): string {
 
 function ModuleDetailsDialog({
   module,
-  layoutId,
   open,
   onClose,
 }: ModuleDetailsDialogProps) {
   const dialogRef = useRef<HTMLDivElement>(null)
+  const backdropRef = useRef<HTMLDivElement>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
-  const prefersReducedMotion = useReducedMotion()
+  const reduced = useReducedMotion()
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -82,6 +82,21 @@ function ModuleDetailsDialog({
       document.addEventListener('keydown', handleKeyDown)
       document.body.style.overflow = 'hidden'
 
+      if (!reduced) {
+        const easing = cssEase(motionTokens.ease.smooth)
+        backdropRef.current?.animate(
+          [{ opacity: 0 }, { opacity: 1 }],
+          { duration: motionTokens.duration.fast * 1000, easing, fill: 'both' },
+        )
+        dialogRef.current?.animate(
+          [
+            { opacity: 0, transform: `translate3d(0, ${motionTokens.distance.medium}px, 0) scale(0.97)` },
+            { opacity: 1, transform: 'translate3d(0, 0, 0) scale(1)' },
+          ],
+          { duration: motionTokens.duration.normal * 1000, easing, fill: 'both' },
+        )
+      }
+
       requestAnimationFrame(() => {
         dialogRef.current?.focus()
       })
@@ -95,135 +110,110 @@ function ModuleDetailsDialog({
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
     }
-  }, [open, handleKeyDown, onClose])
+  }, [open, handleKeyDown, onClose, reduced])
 
-  if (!module) return null
+  if (!module || !open) return null
 
   return (
-    <AnimatePresence>
-      {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-8 sm:items-center sm:p-6">
-          <m.div
-            key="dialog-backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: prefersReducedMotion ? 0 : 0.3 }}
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={onClose}
-            aria-hidden="true"
-          />
+    <div className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-8 sm:items-center sm:p-6">
+      <div
+        ref={backdropRef}
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+        aria-hidden="true"
+      />
 
-            <m.div
-              ref={dialogRef}
-              key={layoutId}
-              layoutId={prefersReducedMotion ? undefined : layoutId}
-              role="dialog"
-              data-testid="module-dialog"
-              aria-modal="true"
-              aria-label={`Detalhes do módulo ${module.name}`}
-            tabIndex={-1}
-            initial={
-              prefersReducedMotion
-                ? { opacity: 1, scale: 1 }
-                : { opacity: 0, scale: 0.95, y: 20 }
-            }
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={
-              prefersReducedMotion
-                ? { opacity: 1 }
-                : { opacity: 0, scale: 0.95, y: 20 }
-            }
-            transition={{
-              duration: prefersReducedMotion ? 0 : 0.35,
-              ease: 'easeOut',
-            }}
-            className={cn(
-              'relative w-full max-w-lg max-h-[85vh] overflow-y-auto',
-              'bg-sgs-surface rounded-2xl shadow-2xl border border-sgs-border',
-              'focus:outline-none z-10'
-            )}
-          >
-            <button
-              type="button"
-              data-testid="dialog-close"
-              onClick={onClose}
-              className="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-sgs-surface-secondary text-sgs-text-tertiary hover:bg-sgs-border hover:text-sgs-text-primary transition-colors"
-              aria-label="Fechar"
-            >
-              <X size={16} />
-            </button>
+      <div
+        ref={dialogRef}
+        role="dialog"
+        data-testid="module-dialog"
+        aria-modal="true"
+        aria-label={`Detalhes do módulo ${module.name}`}
+        tabIndex={-1}
+        className={cn(
+          'relative w-full max-w-lg max-h-[85vh] overflow-y-auto',
+          'bg-sgs-surface rounded-2xl shadow-2xl border border-sgs-border',
+          'focus:outline-none z-10'
+        )}
+      >
+        <button
+          type="button"
+          data-testid="dialog-close"
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-sgs-surface-secondary text-sgs-text-tertiary hover:bg-sgs-border hover:text-sgs-text-primary transition-colors"
+          aria-label="Fechar"
+        >
+          <X size={16} />
+        </button>
 
-            <div className="p-6 pb-4 border-b border-sgs-border">
-              <div className="flex items-center gap-4 mb-4">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-sgs-blue-50 text-sgs-accent shrink-0">
-                  {getIcon(module.icon, 28)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h2 className="font-heading text-xl font-bold text-sgs-text-primary truncate">
-                    {module.name}
-                  </h2>
-                  <div className="flex items-center gap-2 mt-1.5">
-                    <Badge variant="default">{module.category}</Badge>
-                    {module.badge && (
-                      <Badge variant="success">{module.badge}</Badge>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <p className="text-sgs-text-secondary leading-relaxed">
-                {module.description}
-              </p>
+        <div className="p-6 pb-4 border-b border-sgs-border">
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-sgs-blue-50 text-sgs-accent shrink-0">
+              {getIcon(module.icon, 28)}
             </div>
-
-            <div className="px-6 py-4">
-              <div className="group relative overflow-hidden rounded-xl border border-sgs-blue-100 bg-sgs-blue-950 shadow-[0_18px_45px_rgba(7,26,51,0.16)]">
-                <ImageWithFallback
-                  src={getPreviewImage(module.category)}
-                  alt={`Visão da plataforma SGS relacionada ao módulo ${module.name}`}
-                  className="aspect-[16/7] w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.035]"
-                  decoding="async"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-sgs-blue-950/70 via-transparent to-transparent" aria-hidden="true" />
-                <div className="absolute bottom-3 left-3 rounded-full border border-white/15 bg-sgs-blue-950/70 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75 backdrop-blur-md">
-                  Visão integrada do SGS
-                </div>
+            <div className="flex-1 min-w-0">
+              <h2 className="font-heading text-xl font-bold text-sgs-text-primary truncate">
+                {module.name}
+              </h2>
+              <div className="flex items-center gap-2 mt-1.5">
+                <Badge variant="default">{module.category}</Badge>
+                {module.badge && (
+                  <Badge variant="success">{module.badge}</Badge>
+                )}
               </div>
             </div>
-
-            <div className="px-6 pb-4">
-              <h3 className="font-heading text-base font-semibold text-sgs-text-primary mb-3">
-                Como este módulo se conecta
-              </h3>
-              <ul className="space-y-2">
-                {(categoryCapabilities[module.category] ?? categoryCapabilities.Gestão).map((feature) => (
-                  <li
-                    key={feature}
-                    className="flex items-start gap-2 text-sm text-sgs-text-secondary"
-                  >
-                    <CheckCircle2
-                      size={16}
-                      className="text-sgs-success mt-0.5 shrink-0"
-                    />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="px-6 pb-6 pt-2">
-              <button
-                type="button"
-                onClick={onClose}
-                className="w-full rounded-xl border border-sgs-blue-100 bg-sgs-blue-50 px-5 py-3 text-sm font-semibold text-sgs-accent transition-colors hover:border-sgs-blue-200 hover:bg-sgs-blue-100"
-              >
-                Continuar explorando os módulos
-              </button>
-            </div>
-          </m.div>
+          </div>
+          <p className="text-sgs-text-secondary leading-relaxed">
+            {module.description}
+          </p>
         </div>
-      )}
-    </AnimatePresence>
+
+        <div className="px-6 py-4">
+          <div className="group relative overflow-hidden rounded-xl border border-sgs-blue-100 bg-sgs-blue-950 shadow-[0_18px_45px_rgba(7,26,51,0.16)]">
+            <ImageWithFallback
+              src={getPreviewImage(module.category)}
+              alt={`Visão da plataforma SGS relacionada ao módulo ${module.name}`}
+              className="aspect-[16/7] w-full object-cover opacity-90 transition-transform duration-700 group-hover:scale-[1.035]"
+              decoding="async"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-sgs-blue-950/70 via-transparent to-transparent" aria-hidden="true" />
+            <div className="absolute bottom-3 left-3 rounded-full border border-white/15 bg-sgs-blue-950/70 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-white/75 backdrop-blur-md">
+              Visão integrada do SGS
+            </div>
+          </div>
+        </div>
+
+        <div className="px-6 pb-4">
+          <h3 className="font-heading text-base font-semibold text-sgs-text-primary mb-3">
+            Como este módulo se conecta
+          </h3>
+          <ul className="space-y-2">
+            {(categoryCapabilities[module.category] ?? categoryCapabilities.Gestão).map((feature) => (
+              <li
+                key={feature}
+                className="flex items-start gap-2 text-sm text-sgs-text-secondary"
+              >
+                <CheckCircle2
+                  size={16}
+                  className="text-sgs-success mt-0.5 shrink-0"
+                />
+                <span>{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="px-6 pb-6 pt-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-full rounded-xl border border-sgs-blue-100 bg-sgs-blue-50 px-5 py-3 text-sm font-semibold text-sgs-accent transition-colors hover:border-sgs-blue-200 hover:bg-sgs-blue-100"
+          >
+            Continuar explorando os módulos
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 

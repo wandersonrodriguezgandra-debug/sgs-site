@@ -85,3 +85,8 @@ export const motionTokens = {
     scrub: 0.65,
   },
 }
+
+/** CSS easing string for a Web Animations API `easing` option, built from an `ease.*` token. */
+export function cssEase(token: readonly [number, number, number, number]): string {
+  return `cubic-bezier(${token[0]},${token[1]},${token[2]},${token[3]})`
+}
