@@ -144,7 +144,13 @@ export function bindAnchorLinks(onBeforeScroll?: () => void): () => void {
     e.preventDefault()
     onBeforeScroll?.()
 
-    if (window.location.hash !== href) history.pushState(null, '', href)
+    if (window.location.hash !== href) {
+      history.pushState(null, '', href)
+      // pushState never fires the native 'hashchange' event — dispatch our
+      // own so listeners that need to react to same-document hash changes
+      // (e.g. lazy sections deciding whether to mount) aren't missed.
+      window.dispatchEvent(new HashChangeEvent('hashchange'))
+    }
 
     window.requestAnimationFrame(() => {
       scrollToHash(href)
