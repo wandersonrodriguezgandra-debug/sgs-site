@@ -30,7 +30,8 @@ export default function HeroWebGLScene() {
       if (disposed || !container) return
 
       const tier = getDeviceTier()
-      const particleCount = isTouch || tier === 'low' ? 220 : 480
+
+      const particleCount = isTouch || tier === 'low' ? 260 : 620
 
       const renderer = new Renderer({
         alpha: true,
@@ -51,11 +52,11 @@ export default function HeroWebGLScene() {
       const positions = new Float32Array(particleCount * 3)
       const seeds = new Float32Array(particleCount)
       for (let i = 0; i < particleCount; i++) {
-        const radius = Math.random() * 3.2
+        const radius = Math.random() * 2.4
         const angle = Math.random() * Math.PI * 2
         positions[i * 3] = Math.cos(angle) * radius
-        positions[i * 3 + 1] = Math.sin(angle) * radius * 0.6
-        positions[i * 3 + 2] = (Math.random() - 0.5) * 2
+        positions[i * 3 + 1] = Math.sin(angle) * radius * 0.55
+        positions[i * 3 + 2] = (Math.random() - 0.5) * 1.5
         seeds[i] = Math.random() * Math.PI * 2
       }
 
@@ -80,7 +81,7 @@ export default function HeroWebGLScene() {
             p.x += sin(uTime * 0.15 + seed) * 0.08;
             p.y += cos(uTime * 0.12 + seed * 1.3) * 0.08;
             vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
-            gl_PointSize = (2.0 + sin(seed) * 1.5) * (4.0 / -mvPosition.z);
+            gl_PointSize = (5.0 + sin(seed) * 2.5) * (6.0 / -mvPosition.z);
             gl_Position = projectionMatrix * mvPosition;
           }
         `,
@@ -92,12 +93,12 @@ export default function HeroWebGLScene() {
             vec2 uv = gl_PointCoord - 0.5;
             float d = length(uv);
             if (d > 0.5) discard;
-            float alpha = smoothstep(0.5, 0.0, d);
+            float alpha = 1.0 - smoothstep(0.0, 0.5, d);
             vec3 accent = vec3(0.0, 0.337, 0.702);
             vec3 cyan = vec3(0.024, 0.714, 0.831);
             vec3 color = mix(accent, cyan, sin(vSeed) * 0.5 + 0.5);
-            color = mix(color, vec3(1.0), uPulse * 0.4);
-            gl_FragColor = vec4(color, alpha * (0.35 + uPulse * 0.4));
+            color = mix(color, vec3(1.0), uPulse * 0.5);
+            gl_FragColor = vec4(color, alpha * (0.65 + uPulse * 0.35));
           }
         `,
         uniforms: {
