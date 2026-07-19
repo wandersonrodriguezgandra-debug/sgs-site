@@ -2,10 +2,9 @@
 // Bloqueia motion local (spring/elastic/back/duração e easing soltos) fora
 // das fontes canônicas em src/components/motion/tokens.ts e src/lib/gsap.ts.
 //
-// LEGACY_ALLOWLIST é débito conhecido de antes da migração ao Motion System
-// (Fase 4, etapa 2): esta lista só pode encolher conforme cada arquivo for
-// migrado. Nenhum arquivo novo deve ser adicionado — uma violação fora da
-// allowlist falha o build.
+// LEGACY_ALLOWLIST era o débito conhecido da migração ao Motion System
+// (Fase 4, etapa 2) — zerada. Mantida como Set vazio de propósito: qualquer
+// entrada futura é débito novo, não histórico, e deve vir com justificativa.
 import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join, relative, sep } from 'node:path'
 
@@ -17,11 +16,7 @@ const EXCLUDED_FILES = new Set([
 ])
 
 const LEGACY_ALLOWLIST = new Set(
-  [
-    'src/components/motion/BlurReveal.tsx',
-    'src/components/motion/Reveal.tsx',
-    'src/components/motion/Stagger.tsx',
-  ].map((p) => p.split('/').join(sep)),
+  /** @type {string[]} */ ([]).map((p) => p.split('/').join(sep)),
 )
 
 const RULES = [

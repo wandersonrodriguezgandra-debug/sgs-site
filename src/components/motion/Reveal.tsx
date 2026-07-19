@@ -1,6 +1,9 @@
 import { useEffect, useRef, type ReactNode } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { motionTokens, cssEase } from '@/components/motion/tokens'
 import { cn } from '@/lib/utils'
+
+const EASING = cssEase(motionTokens.ease.sgs)
 
 type Direction = 'up' | 'down' | 'left' | 'right' | 'none'
 
@@ -48,7 +51,7 @@ export default function Reveal({
         {
           duration: duration * 1000,
           delay: delay * 1000,
-          easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+          easing: EASING,
           fill: 'both',
         },
       )
