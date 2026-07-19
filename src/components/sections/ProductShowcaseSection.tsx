@@ -1,7 +1,7 @@
 'use client'
 
 import { m } from 'framer-motion'
-import { CheckCircle2, MonitorSmartphone, Radio, ScanLine, Sparkles } from 'lucide-react'
+import { MonitorSmartphone, Radio, ScanLine } from 'lucide-react'
 import Section from '@/components/ui/Section'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
@@ -9,12 +9,6 @@ import { ImageWithFallback } from '@/components/common/ImageWithFallback'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import Reveal from '@/components/motion/Reveal'
 import ParallaxLayer from '@/components/motion/ParallaxLayer'
-
-const experiencePoints = [
-  'Mesma operação no computador, tablet e celular',
-  'Indicadores atualizados em tempo real',
-  'Fluxos de campo conectados ao painel central',
-]
 
 export default function ProductShowcaseSection() {
   const reduced = useReducedMotion()
@@ -31,13 +25,6 @@ export default function ProductShowcaseSection() {
 
       <div className="relative z-10 grid items-center gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-16">
         <div className="space-y-7">
-          <Reveal direction="right" distance={34} duration={0.75}>
-            <div className="inline-flex items-center gap-2 rounded-full border border-sgs-blue-200 bg-white px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-sgs-accent shadow-lg shadow-sgs-blue-100/60">
-              <Sparkles className="h-4 w-4" />
-              Uma experiência, todas as telas
-            </div>
-          </Reveal>
-
           <Reveal direction="right" distance={42} delay={0.08} duration={0.9}>
             <Heading size="h2" className="max-w-xl !text-3xl !leading-[1.08] text-sgs-blue-950 md:!text-5xl">
               O SGS acompanha sua operação em qualquer lugar
@@ -50,19 +37,6 @@ export default function ProductShowcaseSection() {
               Cada decisão chega à equipe certa sem perder contexto.
             </Text>
           </Reveal>
-
-          <div className="space-y-3">
-            {experiencePoints.map((point, index) => (
-              <Reveal key={point} direction="right" distance={28} delay={0.24 + index * 0.08} duration={0.7}>
-                <div
-                  className="group flex items-center gap-3 rounded-xl border border-sgs-blue-100 bg-white/90 px-4 py-3 text-sm font-medium text-sgs-text-primary shadow-sm transition-[transform,border-color,box-shadow] duration-300 hover:translate-x-1 hover:border-sgs-blue-300 hover:shadow-md"
-                >
-                  <CheckCircle2 className="h-5 w-5 shrink-0 text-sgs-success transition-transform duration-300 group-hover:scale-110" />
-                  {point}
-                </div>
-              </Reveal>
-            ))}
-          </div>
         </div>
 
         <Reveal direction="left" distance={58} delay={0.12} duration={1}>

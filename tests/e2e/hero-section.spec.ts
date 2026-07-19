@@ -15,7 +15,6 @@ test.describe('Hero Section', () => {
 
     await expect(heroSection).toBeVisible()
     await expect(heroSection).toHaveAttribute('aria-labelledby', 'hero-title')
-    await expect(page.locator('[data-testid="hero-badge"]')).toHaveText('Gestão de SST conectada')
     await expect(heading).toBeVisible()
     await expect(heading).toHaveAttribute('id', 'hero-title')
     await expect(heading).toHaveText(heroTitle)

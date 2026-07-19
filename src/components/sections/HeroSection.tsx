@@ -21,12 +21,6 @@ const operationalCycle = [
   },
 ] as const
 
-const operationalProofs = [
-  'Isolamento por empresa',
-  'Privacidade e LGPD por padrão',
-  'Histórico rastreável de ações',
-] as const
-
 export default function HeroSection() {
   return (
     <section
@@ -38,14 +32,6 @@ export default function HeroSection() {
       <div className="container-sgs flex min-h-[100svh] items-center py-28 sm:py-32 lg:py-36">
         <div className="grid w-full gap-14 lg:grid-cols-[minmax(0,1.3fr)_minmax(20rem,0.7fr)] lg:items-center lg:gap-16 xl:gap-24">
           <div>
-            <p
-              data-testid="hero-badge"
-              className="mb-8 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.18em] text-sgs-blue-200 sm:text-sm"
-            >
-              <span className="h-px w-8 bg-sgs-blue-300" aria-hidden="true" />
-              Gestão de SST conectada
-            </p>
-
             <h1
               id="hero-title"
               data-testid="hero-title"
@@ -77,21 +63,6 @@ export default function HeroSection() {
                 Conhecer os módulos
               </a>
             </div>
-
-            <ul
-              aria-label="Compromissos operacionais do SGS"
-              className="mt-10 grid border-y border-white/20 sm:grid-cols-3"
-            >
-              {operationalProofs.map((proof) => (
-                <li
-                  key={proof}
-                  className="flex min-h-14 items-center gap-3 border-b border-white/15 py-4 text-sm leading-5 text-white/80 last:border-b-0 sm:border-r sm:border-b-0 sm:px-4 sm:first:pl-0 sm:last:border-r-0 sm:last:pr-0"
-                >
-                  <span className="h-1.5 w-1.5 shrink-0 bg-sgs-blue-300" aria-hidden="true" />
-                  {proof}
-                </li>
-              ))}
-            </ul>
           </div>
 
           <aside aria-labelledby="hero-cycle-title" className="lg:border-l lg:border-white/20 lg:pl-12">

@@ -1,6 +1,6 @@
 'use client'
 
-import { AlertTriangle, ClipboardList, Files, Route } from 'lucide-react'
+import { AlertTriangle, ClipboardList, Files } from 'lucide-react'
 import { m } from 'framer-motion'
 import Section from '@/components/ui/Section'
 import Heading from '@/components/ui/Heading'
@@ -47,11 +47,6 @@ export default function ProblemSection() {
         <div className="mb-14 grid items-end gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <Reveal direction="left" distance={44}>
             <div>
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-red-100 bg-red-50 px-4 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-red-700">
-                <AlertTriangle className="h-4 w-4" aria-hidden="true" />
-                Onde a gestão trava
-                <span className="sgs-risk-pulse ml-1 h-1.5 w-1.5 rounded-full bg-red-500" aria-hidden="true" />
-              </div>
               <Heading size="h2" className="max-w-3xl !text-3xl md:!text-5xl md:!leading-[1.08]">
                 Informação existe. O problema é ela chegar tarde e sem contexto.
               </Heading>
@@ -112,24 +107,6 @@ export default function ProblemSection() {
           })}
           </Stagger>
         </div>
-
-        <Reveal delay={0.18}>
-          <div className="mt-10 flex flex-col items-start justify-between gap-5 rounded-2xl border border-sgs-blue-100 bg-sgs-blue-50/60 px-6 py-5 sm:flex-row sm:items-center">
-            <div className="flex items-start gap-4">
-              <m.div
-                animate={reduced ? undefined : { x: [0, 5, 0] }}
-                transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <Route className="mt-0.5 h-6 w-6 shrink-0 text-sgs-accent" aria-hidden="true" />
-              </m.div>
-              <div>
-                <p className="font-heading font-semibold text-sgs-text-primary">O SGS cria continuidade.</p>
-                <p className="mt-1 text-sm text-sgs-text-secondary">Do registro inicial ao plano de ação, sem perder responsáveis, evidências ou histórico.</p>
-              </div>
-            </div>
-            <span className="shrink-0 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-sgs-accent">Contexto → ação</span>
-          </div>
-        </Reveal>
       </div>
     </Section>
   )

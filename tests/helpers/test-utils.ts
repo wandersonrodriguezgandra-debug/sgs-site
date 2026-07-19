@@ -33,7 +33,6 @@ export const TEST_IDS = {
   MENU_TOGGLE: 'menu-toggle',
   PAGE_HOME: 'page-home',
   HERO_SECTION: 'hero-section',
-  HERO_BADGE: 'hero-badge',
   HERO_TITLE: 'hero-title',
   HERO_CTA_DEMO: 'hero-cta-demo',
   HERO_CTA_MODULES: 'hero-cta-modules',
