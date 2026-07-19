@@ -18,11 +18,8 @@ export const motionTokens = {
     smooth: [0.4, 0, 0.2, 1] as const,
     cinematic: [0.65, 0, 0.35, 1] as const,
     sgs: [0.16, 1, 0.3, 1] as const,
-    overshoot: [0.34, 1.56, 0.64, 1] as const,
-    elastic: [0.68, -0.55, 0.27, 1.55] as const,
     power3Out: [0.33, 1, 0.68, 1] as const,
     expoOut: [0.19, 1, 0.22, 1] as const,
-    spring: { type: 'spring' as const, stiffness: 300, damping: 30 },
   },
   gsapEase: {
     sgs: 'sgs',
@@ -30,9 +27,7 @@ export const motionTokens = {
     power4: 'power4.out',
     power3: 'power3.out',
     power2: 'power2.out',
-    back: 'back.out(1.7)',
     smooth: 'power2.inOut',
-    elastic: 'elastic.out(1, 0.5)',
   },
   reveal: {
     charStagger: 0.018,
@@ -86,10 +81,7 @@ export const motionTokens = {
     subtleOpacity: 0.1,
     mediumOpacity: 0.18,
   },
-  spring: {
-    tilt: { stiffness: 300, damping: 30 },
-    magnetic: { stiffness: 150, damping: 15 },
-    cursor: { stiffness: 250, damping: 25 },
-    gentle: { stiffness: 120, damping: 20 },
+  scanner: {
+    scrub: 0.65,
   },
 }
