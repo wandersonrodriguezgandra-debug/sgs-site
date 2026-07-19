@@ -10,6 +10,7 @@ import { FaqJsonLd, OrganizationJsonLd, SoftwareAppJsonLd } from '@/components/s
 import { faqItems } from '@/config/faq'
 import { siteConfig } from '@/config/site'
 import ScrollProvider from '@/components/scroll/ScrollProvider'
+import LuminanceArc from '@/components/motion/LuminanceArc'
 import { useInView } from '@/hooks/useInView'
 import { shouldPin } from '@/lib/scanner-pin'
 
@@ -78,18 +79,19 @@ export default function HomePage() {
         logo={siteConfig.logo}
       />
       <FaqJsonLd items={faqItems} />
+      <LuminanceArc />
       <main id="main-content" data-testid="page-home">
-        <HeroSection />
-        <ProductShowcaseSection />
-        <ProblemSection />
-        <LazyScannerSection />
-        <ModulesShowcaseSection />
-        <HowItWorksSection />
-        <SuspenseWrapper><DashboardSection /></SuspenseWrapper>
-        <SecuritySection />
-        <SuspenseWrapper><PricingSection /></SuspenseWrapper>
-        <SuspenseWrapper><FAQSection /></SuspenseWrapper>
-        <SuspenseWrapper><DemoFormSection /></SuspenseWrapper>
+        <div data-luminance="0"><HeroSection /></div>
+        <div data-luminance="0.15"><ProductShowcaseSection /></div>
+        <div data-luminance="0.3"><ProblemSection /></div>
+        <div data-luminance="0.45"><LazyScannerSection /></div>
+        <div data-luminance="0.6"><ModulesShowcaseSection /></div>
+        <div data-luminance="0.7"><HowItWorksSection /></div>
+        <div data-luminance="0.8"><SuspenseWrapper><DashboardSection /></SuspenseWrapper></div>
+        <div data-luminance="0.85"><SecuritySection /></div>
+        <div data-luminance="0.92"><SuspenseWrapper><PricingSection /></SuspenseWrapper></div>
+        <div data-luminance="0.97"><SuspenseWrapper><FAQSection /></SuspenseWrapper></div>
+        <div data-luminance="1"><SuspenseWrapper><DemoFormSection /></SuspenseWrapper></div>
       </main>
     </ScrollProvider>
   )
