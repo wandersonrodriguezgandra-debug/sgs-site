@@ -107,3 +107,36 @@ válido e não foi violado por nenhuma peça da Imersão — nenhuma peça nova
 piorou esse número. O CLS sob scroll profundo é débito pré-existente
 (confirmado idêntico antes e depois da peça 7 do arco de luminância) e
 deve ser resolvido junto do prerender, não isoladamente.
+
+## 2026-07-19 — Mapeamento dos 3 WebP: sem confirmação, sem substituição fabricada
+
+**Contexto**: o adendo da Imersão pediu, antes da peça 1c (reveals de
+shader sobre capturas de produto), mapear onde os 3 WebP de produto
+aparecem e propor substituição por capturas de tenant demonstrativo caso a
+confirmação de variáveis de ambiente do formulário (pendência já antiga)
+não chegasse a tempo.
+
+**Mapeamento** (via grep no código-fonte):
+- `cockpit-sst.webp` — usado em `DashboardSection.tsx`,
+  `ScannerSection.tsx` (preview interno do `PinnedScanner`/`StaticStages`)
+  e `ModuleDetailsDialog.tsx` (categoria "Analytics").
+- `sgs-intelligence.webp` — usado em `SecuritySection.tsx` e
+  `ModuleDetailsDialog.tsx` (categoria "Segurança").
+- `sgs-responsive.webp` — usado em `ProductShowcaseSection.tsx` e
+  `ModuleDetailsDialog.tsx` (categoria default/fallback).
+
+**Decisão**: não fabricar imagens de "tenant demonstrativo" para
+substituir essas 3 capturas. Criar dados ou telas fictícias que aparentem
+ser de um cliente real, sem confirmação explícita do que pode ou não ser
+mostrado, contradiz o princípio anti-invenção que guia o projeto desde a
+Fase 1 (nada de dados fabricados, números inventados ou UI que finja ser
+uma tela real do produto sem sê-lo). As 3 imagens atuais permanecem em uso
+como estão — elas já são as aprovadas e em produção, mesmo que a
+confirmação formal das variáveis de ambiente do formulário siga pendente
+separadamente.
+
+**Como aplicar esta decisão**: nenhuma peça da Imersão deve tentar gerar
+ou trocar essas imagens por conta própria. Se a confirmação chegar, a
+substituição (se necessária) deve ser um item específico, revisado e
+aprovado isoladamente — não uma decisão tomada dentro do trabalho de
+outra peça.
