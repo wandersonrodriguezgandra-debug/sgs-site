@@ -1,18 +1,43 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { m } from 'framer-motion'
-import { AlertTriangle, CheckCircle2, Clock3, FileWarning, ShieldCheck, UserRoundCheck } from 'lucide-react'
-import { useInView } from '@/hooks/useInView'
+import { useEffect, useRef, useState } from 'react'
+import { AlertTriangle, FileWarning, ShieldCheck, UserRoundCheck } from 'lucide-react'
+import { gsap } from '@/lib/gsap'
+import { motionTokens } from '@/components/motion/tokens'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useIsTouchDevice } from '@/hooks/useIsTouchDevice'
+import { ImageWithFallback } from '@/components/common/ImageWithFallback'
 import Reveal from '@/components/motion/Reveal'
-import ParallaxLayer from '@/components/motion/ParallaxLayer'
 
-const operationalItems = [
-  { icon: FileWarning, label: 'APR próxima do vencimento', context: 'Obra Norte · vence amanhã', tone: 'warning' as const },
-  { icon: AlertTriangle, label: 'Inspeção com ação pendente', context: 'Área de manutenção · alta prioridade', tone: 'critical' as const },
-  { icon: UserRoundCheck, label: 'Treinamento atualizado', context: 'Equipe operacional · evidência anexada', tone: 'safe' as const },
-  { icon: Clock3, label: 'DDS aguardando assinatura', context: 'Turno B · responsável notificado', tone: 'info' as const },
+const stages = [
+  {
+    number: '01',
+    title: 'Detectar',
+    description: 'O sistema identifica o risco assim que ele é registrado em campo.',
+    icon: FileWarning,
+    item: { label: 'APR próxima do vencimento', context: 'Obra Norte · vence amanhã', tone: 'warning' as const },
+  },
+  {
+    number: '02',
+    title: 'Classificar',
+    description: 'Criticidade e prioridade de resposta são definidas automaticamente.',
+    icon: AlertTriangle,
+    item: { label: 'Inspeção com ação pendente', context: 'Área de manutenção · alta prioridade', tone: 'critical' as const },
+  },
+  {
+    number: '03',
+    title: 'Agir',
+    description: 'Responsável, prazo e medida de controle ficam associados ao risco.',
+    icon: UserRoundCheck,
+    item: { label: 'Treinamento atualizado', context: 'Equipe operacional · evidência anexada', tone: 'safe' as const },
+  },
+  {
+    number: '04',
+    title: 'Comprovar',
+    description: 'Documentos e histórico consolidam a evidência para auditoria.',
+    icon: ShieldCheck,
+    item: { label: 'DDS aguardando assinatura', context: 'Turno B · responsável notificado', tone: 'info' as const },
+  },
 ]
 
 const toneStyles = {
@@ -22,119 +47,174 @@ const toneStyles = {
   info: 'border-cyan-400/25 bg-cyan-400/[0.08] text-cyan-300',
 }
 
-export default function ScannerSection() {
-  const reduced = useReducedMotion()
-  const [sectionRef, isInView] = useInView<HTMLDivElement>({ threshold: 0.18 })
-  const [activeIndex, setActiveIndex] = useState(0)
+function StageCard({ stage }: { stage: (typeof stages)[number] }) {
+  const Icon = stage.icon
+  return (
+    <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4">
+      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${toneStyles[stage.item.tone]}`}>
+        <Icon className="h-5 w-5" aria-hidden="true" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold text-white sm:text-base">{stage.item.label}</p>
+        <p className="mt-1 truncate text-xs text-white/45 sm:text-sm">{stage.item.context}</p>
+      </div>
+    </div>
+  )
+}
+
+function DashboardPreview() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-white/15 bg-white shadow-[0_28px_80px_rgba(0,0,0,0.4)]">
+      <div className="flex items-center justify-between border-b border-sgs-blue-100 px-5 py-3">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-sgs-text-tertiary">Cockpit SST</span>
+        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-sgs-success">
+          <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+          Auditável
+        </span>
+      </div>
+      <ImageWithFallback
+        src="/images/product/cockpit-sst.webp"
+        alt="Cockpit SST do SGS com os riscos já tratados e documentados"
+        className="aspect-[4/3] w-full object-cover"
+        decoding="async"
+      />
+    </div>
+  )
+}
+
+function StaticStages() {
+  return (
+    <section id="scanner" className="relative bg-sgs-blue-950 py-24 text-white md:py-32">
+      <div className="container-sgs">
+        <Reveal>
+          <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-sgs-blue-200">
+            Da observação à evidência
+          </p>
+          <h2 className="max-w-xl font-heading text-3xl font-bold leading-[1.08] text-white md:text-5xl">
+            Veja o que exige atenção antes de abrir cinco planilhas.
+          </h2>
+        </Reveal>
+
+        <div className="mt-12 space-y-4">
+          {stages.map((stage) => (
+            <Reveal key={stage.number} distance={motionTokens.distance.medium}>
+              <div>
+                <p className="mb-2 text-xs font-semibold uppercase tracking-[0.16em] text-sgs-blue-200">
+                  {stage.number} · {stage.title}
+                </p>
+                <p className="mb-3 max-w-lg text-sm leading-relaxed text-white/60">{stage.description}</p>
+                <StageCard stage={stage} />
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal distance={motionTokens.distance.medium}>
+          <div className="mt-10 max-w-md">
+            <DashboardPreview />
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  )
+}
+
+function PinnedScanner() {
+  const sectionRef = useRef<HTMLElement>(null)
+  const stageRefs = useRef<Array<HTMLDivElement | null>>([])
+  const dashboardRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (reduced || !isInView) return
+    const section = sectionRef.current
+    const dashboard = dashboardRef.current
+    if (!section || !dashboard) return
 
-    const interval = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % operationalItems.length)
-    }, 1500)
+    const ctx = gsap.context(() => {
+      const cardEls = stageRefs.current.filter((el): el is HTMLDivElement => el !== null)
+      gsap.set(cardEls, { autoAlpha: 0, y: motionTokens.distance.dramatic })
+      gsap.set(dashboard, { autoAlpha: 0, scale: 1.04 })
 
-    return () => window.clearInterval(interval)
-  }, [isInView, reduced])
+      const timeline = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: '+=220%',
+          scrub: motionTokens.scanner.scrub,
+          pin: true,
+          onEnter: () => gsap.set(cardEls, { willChange: 'transform, opacity' }),
+          onLeaveBack: () => gsap.set(cardEls, { willChange: 'auto' }),
+          onLeave: () => gsap.set(cardEls, { willChange: 'auto' }),
+        },
+      })
+
+      cardEls.forEach((el, index) => {
+        timeline.to(el, { autoAlpha: 1, y: 0, ease: motionTokens.gsapEase.expo, duration: 1 }, index === 0 ? 0 : '>-0.15')
+        if (index > 0) {
+          timeline.to(cardEls[index - 1], { autoAlpha: 0.35, ease: motionTokens.gsapEase.power2, duration: 0.6 }, '<')
+        }
+      })
+
+      timeline.to(dashboard, { autoAlpha: 1, scale: 1, ease: motionTokens.gsapEase.expo, duration: 1.2 }, '>-0.1')
+    }, section)
+
+    return () => ctx.revert()
+  }, [])
 
   return (
     <section
       id="scanner"
       ref={sectionRef}
-      className="relative overflow-hidden bg-sgs-blue-950 py-24 text-white md:py-32"
+      className="relative flex h-screen items-center overflow-hidden bg-sgs-blue-950 text-white"
     >
-      <div className="sgs-dark-grid pointer-events-none absolute inset-0" aria-hidden="true" />
-      <div className="pointer-events-none absolute -right-32 top-1/2 h-[34rem] w-[34rem] -translate-y-1/2 rounded-full bg-sgs-cyan/10 blur-3xl" aria-hidden="true" />
-      <div className="sgs-scanner-signal pointer-events-none absolute left-[12%] top-24 h-2 w-2 rounded-full bg-sgs-cyan" aria-hidden="true" />
-      <div className="sgs-scanner-signal sgs-scanner-signal-delay pointer-events-none absolute left-[28%] bottom-32 h-1.5 w-1.5 rounded-full bg-sgs-accent-light" aria-hidden="true" />
+        <div className="sgs-dark-grid pointer-events-none absolute inset-0" aria-hidden="true" />
 
-      <div className="container-sgs relative z-10 grid items-center gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
-        <Reveal direction="left" distance={58}>
+        <div className="container-sgs relative z-10 grid items-center gap-14 lg:grid-cols-[0.78fr_1.22fr] lg:gap-20">
           <div>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sgs-cyan/20 bg-sgs-cyan/[0.07] px-4 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-sgs-cyan">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-sgs-cyan" />
-              Visão operacional
-            </div>
+            <p className="mb-6 text-xs font-semibold uppercase tracking-[0.18em] text-sgs-blue-200">
+              Da observação à evidência
+            </p>
             <h2 className="max-w-xl font-heading text-3xl font-bold leading-[1.08] text-white md:text-5xl">
               Veja o que exige atenção antes de abrir cinco planilhas.
             </h2>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-white/60 md:text-lg">
-              O painel reúne prazo, prioridade, local e responsável para transformar
-              pendências soltas em uma fila de trabalho objetiva.
+              Detectar, classificar, agir e comprovar — o ciclo operacional que o SGS
+              conduz do registro em campo até a evidência auditável.
             </p>
+          </div>
 
-            <div className="mt-9 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-              {['Prioridade clara', 'Responsável visível', 'Histórico rastreável'].map((label) => (
-                <div key={label} className="flex items-center gap-2 text-sm font-medium text-white/75">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-sgs-success-light" aria-hidden="true" />
-                  {label}
-                </div>
-              ))}
+          <div className="relative h-[26rem]">
+            {stages.map((stage, index) => (
+              <div
+                key={stage.number}
+                ref={(el) => { stageRefs.current[index] = el }}
+                className="absolute inset-x-0 top-0"
+                style={{ top: `${index * 6.5}rem` }}
+              >
+                <StageCard stage={stage} />
+              </div>
+            ))}
+
+            <div ref={dashboardRef} className="absolute inset-x-0 bottom-0 max-w-md">
+              <DashboardPreview />
             </div>
           </div>
-        </Reveal>
-
-        <Reveal direction="right" distance={64} delay={0.1}>
-          <ParallaxLayer speed={16} reversed>
-            <div className="sgs-scanner-panel relative overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.055] p-2 shadow-[0_40px_120px_rgba(0,0,0,0.36)] backdrop-blur-sm">
-              <div className="sgs-scanner-scanline pointer-events-none absolute inset-x-8 top-8 z-10 h-px bg-gradient-to-r from-transparent via-sgs-cyan to-transparent" aria-hidden="true" />
-            <div className="rounded-[1.35rem] border border-white/[0.07] bg-[#08172c]/90 p-5 sm:p-7">
-              <div className="mb-6 flex items-center justify-between gap-4 border-b border-white/[0.08] pb-5">
-                <div>
-                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-sgs-cyan">Fila operacional</p>
-                  <p className="mt-1 font-heading text-lg font-semibold text-white">Ações prioritárias</p>
-                </div>
-                <div className="flex items-center gap-2 rounded-full border border-emerald-400/20 bg-emerald-400/[0.08] px-3 py-1.5 text-[11px] font-semibold text-emerald-300">
-                  <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
-                  Atualizado agora
-                </div>
-              </div>
-
-              <div className="relative space-y-3">
-                <div
-                  className="pointer-events-none absolute -inset-x-3 h-24 rounded-2xl border border-sgs-cyan/20 bg-sgs-cyan/[0.035] shadow-[0_0_38px_rgba(6,182,212,0.08)] transition-transform duration-700 ease-out"
-                  style={{ transform: `translateY(${activeIndex * 108}px)` }}
-                  aria-hidden="true"
-                />
-
-                {operationalItems.map((item, index) => {
-                  const Icon = item.icon
-                  const active = index === activeIndex
-                  return (
-                    <m.div
-                      key={item.label}
-                      className={`relative flex min-h-24 items-center gap-4 rounded-2xl border px-4 py-4 transition-all duration-500 ${
-                        active ? 'border-white/15 bg-white/[0.07]' : 'border-white/[0.06] bg-white/[0.025] opacity-65'
-                      }`}
-                      animate={{ x: active ? 5 : 0, scale: active ? 1.012 : 1 }}
-                      transition={{ type: 'spring', stiffness: 260, damping: 24 }}
-                    >
-                      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${toneStyles[item.tone]}`}>
-                        <Icon className="h-5 w-5" aria-hidden="true" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="truncate text-sm font-semibold text-white sm:text-base">{item.label}</p>
-                        <p className="mt-1 truncate text-xs text-white/45 sm:text-sm">{item.context}</p>
-                      </div>
-                      <span className={`hidden h-2.5 w-2.5 shrink-0 rounded-full sm:block ${active ? 'bg-sgs-cyan shadow-[0_0_14px_rgba(6,182,212,0.8)]' : 'bg-white/15'}`} />
-                    </m.div>
-                  )
-                })}
-              </div>
-
-              <div className="mt-6 flex items-center justify-between gap-4">
-                <span className="text-xs text-white/35">Interface ilustrativa do fluxo operacional</span>
-                <div className="flex gap-1.5" aria-label={`Item ${activeIndex + 1} de ${operationalItems.length}`}>
-                  {operationalItems.map((item, index) => (
-                    <span key={item.label} className={`h-1.5 rounded-full transition-all duration-500 ${index === activeIndex ? 'w-7 bg-sgs-cyan' : 'w-1.5 bg-white/15'}`} />
-                  ))}
-                </div>
-              </div>
-            </div>
-            </div>
-          </ParallaxLayer>
-        </Reveal>
-      </div>
+        </div>
     </section>
   )
+}
+
+export default function ScannerSection() {
+  const reduced = useReducedMotion()
+  const isTouch = useIsTouchDevice()
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    setReady(true)
+  }, [])
+
+  if (!ready || reduced || isTouch) {
+    return <StaticStages />
+  }
+
+  return <PinnedScanner />
 }

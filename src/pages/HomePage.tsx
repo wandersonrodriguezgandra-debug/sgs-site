@@ -5,13 +5,13 @@ import HowItWorksSection from '@/components/sections/HowItWorksSection'
 import SecuritySection from '@/components/sections/SecuritySection'
 import ProblemSection from '@/components/sections/ProblemSection'
 import ModulesShowcaseSection from '@/components/sections/ModulesShowcaseSection'
-import ScannerSection from '@/components/sections/ScannerSection'
 import { PageSEO } from '@/components/common/PageSEO'
 import { FaqJsonLd, OrganizationJsonLd, SoftwareAppJsonLd } from '@/components/seo/JsonLd'
 import { faqItems } from '@/config/faq'
 import { siteConfig } from '@/config/site'
 import ScrollProvider from '@/components/scroll/ScrollProvider'
 
+const ScannerSection = lazy(() => import('@/components/sections/ScannerSection'))
 const DashboardSection = lazy(() => import('@/components/sections/DashboardSection'))
 const PricingSection = lazy(() => import('@/components/sections/PricingSection'))
 const FAQSection = lazy(() => import('@/components/sections/FAQSection'))
@@ -48,7 +48,7 @@ export default function HomePage() {
         <HeroSection />
         <ProductShowcaseSection />
         <ProblemSection />
-        <ScannerSection />
+        <SuspenseWrapper><ScannerSection /></SuspenseWrapper>
         <ModulesShowcaseSection />
         <HowItWorksSection />
         <SuspenseWrapper><DashboardSection /></SuspenseWrapper>
