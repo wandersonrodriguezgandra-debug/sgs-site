@@ -4,10 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import { AlertTriangle, FileWarning, ShieldCheck, UserRoundCheck } from 'lucide-react'
 import { gsap } from '@/lib/gsap'
 import { motionTokens } from '@/components/motion/tokens'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { useIsTouchDevice } from '@/hooks/useIsTouchDevice'
 import { ImageWithFallback } from '@/components/common/ImageWithFallback'
 import Reveal from '@/components/motion/Reveal'
+import { shouldPin } from '@/lib/scanner-pin'
 
 const stages = [
   {
@@ -84,7 +83,7 @@ function DashboardPreview() {
 
 function StaticStages() {
   return (
-    <section id="scanner" className="relative bg-sgs-blue-950 py-24 text-white md:py-32">
+    <section className="relative bg-sgs-blue-950 py-24 text-white md:py-32">
       <div className="container-sgs">
         <Reveal>
           <p className="mb-4 text-xs font-semibold uppercase tracking-[0.18em] text-sgs-blue-200">
@@ -162,7 +161,6 @@ function PinnedScanner() {
 
   return (
     <section
-      id="scanner"
       ref={sectionRef}
       className="relative flex h-screen items-center overflow-hidden bg-sgs-blue-950 text-white"
     >
@@ -204,17 +202,14 @@ function PinnedScanner() {
 }
 
 export default function ScannerSection() {
-  const reduced = useReducedMotion()
-  const isTouch = useIsTouchDevice()
-  const [ready, setReady] = useState(false)
+  const [pinned, setPinned] = useState(shouldPin)
 
   useEffect(() => {
-    setReady(true)
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const handler = () => setPinned(shouldPin())
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
   }, [])
 
-  if (!ready || reduced || isTouch) {
-    return <StaticStages />
-  }
-
-  return <PinnedScanner />
+  return pinned ? <PinnedScanner /> : <StaticStages />
 }

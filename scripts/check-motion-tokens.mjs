@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 // Bloqueia motion local (spring/elastic/back/duração e easing soltos) fora
 // das fontes canônicas em src/components/motion/tokens.ts e src/lib/gsap.ts.
+//
+// LEGACY_ALLOWLIST é débito conhecido de antes da migração ao Motion System
+// (Fase 4, etapa 2): esta lista só pode encolher conforme cada arquivo for
+// migrado. Nenhum arquivo novo deve ser adicionado — uma violação fora da
+// allowlist falha o build.
 import { readdirSync, readFileSync, statSync } from 'node:fs'
-import { join, relative } from 'node:path'
+import { join, relative, sep } from 'node:path'
 
 const ROOT = join(import.meta.dirname, '..')
 const SRC = join(ROOT, 'src')
@@ -10,6 +15,20 @@ const EXCLUDED_FILES = new Set([
   join(SRC, 'components', 'motion', 'tokens.ts'),
   join(SRC, 'lib', 'gsap.ts'),
 ])
+
+const LEGACY_ALLOWLIST = new Set(
+  [
+    'src/components/layout/Header.tsx',
+    'src/components/motion/BlurReveal.tsx',
+    'src/components/motion/Reveal.tsx',
+    'src/components/motion/Stagger.tsx',
+    'src/components/sections/HowItWorksSection.tsx',
+    'src/components/sections/ModulesShowcaseSection.tsx',
+    'src/components/sections/ProblemSection.tsx',
+    'src/components/ui/Button.tsx',
+    'src/hooks/useMagneticInteraction.ts',
+  ].map((p) => p.split('/').join(sep)),
+)
 
 const RULES = [
   { name: "Framer Motion spring ({ type: 'spring' })", pattern: /type:\s*['"]spring['"]/g },
@@ -32,11 +51,14 @@ function walk(dir, files = []) {
 }
 
 const files = walk(SRC).filter((f) => !EXCLUDED_FILES.has(f))
-const violations = []
+const blocking = []
+const legacy = []
 
 for (const file of files) {
+  const relPath = relative(ROOT, file)
   const content = readFileSync(file, 'utf8')
   const lines = content.split('\n')
+  const bucket = LEGACY_ALLOWLIST.has(relPath) ? legacy : blocking
 
   for (const rule of RULES) {
     rule.pattern.lastIndex = 0
@@ -44,8 +66,8 @@ for (const file of files) {
     while ((match = rule.pattern.exec(content))) {
       const upTo = content.slice(0, match.index)
       const line = upTo.split('\n').length
-      violations.push({
-        file: relative(ROOT, file),
+      bucket.push({
+        file: relPath,
         line,
         rule: rule.name,
         snippet: lines[line - 1]?.trim().slice(0, 100) ?? '',
@@ -54,15 +76,24 @@ for (const file of files) {
   }
 }
 
-if (violations.length === 0) {
-  console.log('check-motion-tokens: nenhuma violação encontrada.')
+if (legacy.length > 0) {
+  console.log(`check-motion-tokens: ${legacy.length} violação(ões) em débito conhecido (allowlist, não bloqueia):\n`)
+  for (const v of legacy) {
+    console.log(`  ${v.file}:${v.line} — ${v.rule}`)
+  }
+  console.log('')
+}
+
+if (blocking.length === 0) {
+  console.log('check-motion-tokens: nenhuma violação bloqueante fora da allowlist.')
   process.exit(0)
 }
 
-console.log(`check-motion-tokens: ${violations.length} violação(ões) encontrada(s):\n`)
-for (const v of violations) {
+console.log(`check-motion-tokens: ${blocking.length} violação(ões) BLOQUEANTE(S) fora da allowlist:\n`)
+for (const v of blocking) {
   console.log(`  ${v.file}:${v.line} — ${v.rule}`)
   console.log(`    ${v.snippet}`)
 }
+console.log('\nArquivos novos não entram na allowlist — migre para os tokens canônicos.')
 
 process.exit(1)
