@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { createPortal } from 'react-dom'
 import { useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { useScrollHeader } from '@/hooks/useScrollHeader'
@@ -134,13 +134,9 @@ export function Header() {
                     </span>
                     {/* Active section indicator */}
                     {isActive && (
-                      <motion.div
-                        layoutId="nav-indicator"
-                        className={cn(
-                          'absolute -bottom-1 left-3 right-3 h-0.5 rounded-full',
-                          'bg-sgs-accent'
-                        )}
-                        transition={{ type: 'spring', stiffness: 350, damping: 30 }}
+                      <span
+                        className="absolute -bottom-1 left-3 right-3 h-0.5 rounded-full bg-sgs-accent"
+                        aria-hidden="true"
                       />
                     )}
                   </a>
@@ -190,88 +186,97 @@ export function Header() {
         </div>
       </div>
 
-      <AnimatePresence>
-        {isDrawerOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              onClick={closeDrawer}
-              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
-              aria-hidden="true"
-            />
-            <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-              className="fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-xl lg:hidden"
-              role="dialog"
-              aria-modal="true"
-              aria-label="Menu de navegação"
-            >
-              <div className="flex h-16 items-center justify-between px-4 border-b border-sgs-border-light">
-                <Logo href={resolveHomeHref('#hero')} />
-                <button
-                  type="button"
-                  onClick={closeDrawer}
-                  aria-label="Fechar menu"
-                  className="rounded-lg p-2 text-sgs-text-primary hover:bg-sgs-blue-50"
-                >
-                  <X className="h-6 w-6" aria-hidden="true" />
-                </button>
-              </div>
-              <nav className="flex flex-col gap-1 px-4 py-4" aria-label="Navegação mobile">
-                {navigationLinks.map((link) => (
-                  <div key={link.href}>
-                    <a
-                      href={resolveHomeHref(link.href)}
-                      onClick={closeDrawer}
-                      aria-current={isHomePage && activeSection === link.href.replace('#', '') ? 'location' : undefined}
-                      className={cn(
-                        'block rounded-lg px-4 py-3 text-base font-medium transition-colors hover:bg-sgs-blue-50 hover:text-sgs-accent',
-                        isHomePage && activeSection === link.href.replace('#', '')
-                          ? 'text-sgs-accent bg-sgs-blue-50'
-                          : 'text-sgs-text-primary'
-                      )}
-                    >
-                      {link.label}
-                    </a>
-                    {link.children && (
-                      <div className="ml-4 mt-1 flex flex-col gap-1 border-l border-sgs-border-light pl-4">
-                        {link.children.map((child) => (
-                          <a
-                            key={child.href}
-                            href={resolveHomeHref(child.href)}
-                            onClick={closeDrawer}
-                            className="block rounded-lg px-3 py-2 text-sm font-medium text-sgs-text-secondary transition-colors hover:bg-sgs-blue-50 hover:text-sgs-accent"
-                          >
-                            {child.label}
-                          </a>
-                        ))}
-                      </div>
+      {typeof document !== 'undefined' && createPortal(
+        <>
+          {/*
+            Rendered via portal into document.body: the header uses
+            backdrop-blur (backdrop-filter), which creates a new
+            containing block for descendants — a `position: fixed`
+            child would resolve against the header's own box (its
+            ~65px height) instead of the viewport, collapsing the
+            drawer down to the header's height instead of covering
+            the screen.
+          */}
+          <div
+            onClick={closeDrawer}
+            aria-hidden="true"
+            className={cn(
+              'fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-200 lg:hidden',
+              isDrawerOpen ? 'opacity-100' : 'pointer-events-none opacity-0',
+            )}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu de navegação"
+            aria-hidden={!isDrawerOpen}
+            className={cn(
+              'fixed inset-y-0 right-0 z-50 w-full max-w-sm bg-white shadow-xl transition-[transform,visibility] duration-300 ease-out lg:hidden',
+              isDrawerOpen
+                ? 'visible translate-x-0'
+                : 'invisible translate-x-full pointer-events-none delay-300',
+            )}
+          >
+            <div className="flex h-16 items-center justify-between px-4 border-b border-sgs-border-light">
+              <Logo href={resolveHomeHref('#hero')} />
+              <button
+                type="button"
+                onClick={closeDrawer}
+                aria-label="Fechar menu"
+                className="rounded-lg p-2 text-sgs-text-primary hover:bg-sgs-blue-50"
+              >
+                <X className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+            <nav className="flex flex-col gap-1 px-4 py-4" aria-label="Navegação mobile">
+              {navigationLinks.map((link) => (
+                <div key={link.href}>
+                  <a
+                    href={resolveHomeHref(link.href)}
+                    onClick={closeDrawer}
+                    aria-current={isHomePage && activeSection === link.href.replace('#', '') ? 'location' : undefined}
+                    className={cn(
+                      'block rounded-lg px-4 py-3 text-base font-medium transition-colors hover:bg-sgs-blue-50 hover:text-sgs-accent',
+                      isHomePage && activeSection === link.href.replace('#', '')
+                        ? 'text-sgs-accent bg-sgs-blue-50'
+                        : 'text-sgs-text-primary'
                     )}
-                  </div>
-                ))}
-              </nav>
-              <div className="flex flex-col gap-3 border-t border-sgs-border px-4 py-6">
-                <Button href={resolveHomeHref(headerCta.demo.href)} className="w-full">
-                  {headerCta.demo.label}
-                </Button>
-                <a
-                  href="/privacidade"
-                  onClick={closeDrawer}
-                  className="w-full rounded-lg bg-sgs-blue-50 px-6 py-2.5 text-center text-sm font-semibold text-sgs-accent transition-colors hover:bg-sgs-blue-100"
-                >
-                  Política de Privacidade
-                </a>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+                  >
+                    {link.label}
+                  </a>
+                  {link.children && (
+                    <div className="ml-4 mt-1 flex flex-col gap-1 border-l border-sgs-border-light pl-4">
+                      {link.children.map((child) => (
+                        <a
+                          key={child.href}
+                          href={resolveHomeHref(child.href)}
+                          onClick={closeDrawer}
+                          className="block rounded-lg px-3 py-2 text-sm font-medium text-sgs-text-secondary transition-colors hover:bg-sgs-blue-50 hover:text-sgs-accent"
+                        >
+                          {child.label}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </nav>
+            <div className="flex flex-col gap-3 border-t border-sgs-border px-4 py-6">
+              <Button href={resolveHomeHref(headerCta.demo.href)} className="w-full">
+                {headerCta.demo.label}
+              </Button>
+              <a
+                href="/privacidade"
+                onClick={closeDrawer}
+                className="w-full rounded-lg bg-sgs-blue-50 px-6 py-2.5 text-center text-sm font-semibold text-sgs-accent transition-colors hover:bg-sgs-blue-100"
+              >
+                Política de Privacidade
+              </a>
+            </div>
+          </div>
+        </>,
+        document.body,
+      )}
     </header>
   )
 }

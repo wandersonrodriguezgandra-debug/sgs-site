@@ -18,7 +18,6 @@ const EXCLUDED_FILES = new Set([
 
 const LEGACY_ALLOWLIST = new Set(
   [
-    'src/components/layout/Header.tsx',
     'src/components/motion/BlurReveal.tsx',
     'src/components/motion/Reveal.tsx',
     'src/components/motion/Stagger.tsx',
