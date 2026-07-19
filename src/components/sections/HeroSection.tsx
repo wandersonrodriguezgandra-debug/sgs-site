@@ -1,3 +1,5 @@
+import HeroWebGLScene from '@/components/motion/HeroWebGLScene'
+
 const operationalCycle = [
   {
     number: '01',
@@ -29,6 +31,7 @@ export default function HeroSection() {
       data-testid="hero-section"
       className="relative min-h-[100svh] border-b border-white/15 bg-sgs-blue-950 text-white"
     >
+      <HeroWebGLScene />
       <div className="container-sgs flex min-h-[100svh] items-center py-28 sm:py-32 lg:py-36">
         <div className="grid w-full gap-14 lg:grid-cols-[minmax(0,1.3fr)_minmax(20rem,0.7fr)] lg:items-center lg:gap-16 xl:gap-24">
           <div>
