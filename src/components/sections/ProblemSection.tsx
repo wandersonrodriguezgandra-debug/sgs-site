@@ -4,6 +4,7 @@ import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 import Reveal from '@/components/motion/Reveal'
 import Stagger from '@/components/motion/Stagger'
+import ChapterMark from '@/components/ui/ChapterMark'
 
 const problems = [
   {
@@ -41,6 +42,7 @@ export default function ProblemSection() {
         <div className="mb-14 grid items-end gap-8 lg:grid-cols-[1.1fr_0.9fr]">
           <Reveal direction="left" distance={44}>
             <div>
+              <ChapterMark number="01" label="Problema" />
               <Heading size="h2" className="max-w-3xl !text-3xl md:!text-5xl md:!leading-[1.08]">
                 Informação existe. O problema é ela chegar tarde e sem contexto.
               </Heading>

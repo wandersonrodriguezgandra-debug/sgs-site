@@ -22,6 +22,7 @@ import Section from '@/components/ui/Section'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 import ModuleDetailsDialog from '@/components/interaction/ModuleDetailsDialog'
+import ChapterMark from '@/components/ui/ChapterMark'
 import { modules } from '@/config/modules'
 import { motionTokens } from '@/components/motion/tokens'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
@@ -99,11 +100,14 @@ export default function ModulesShowcaseSection() {
     <Section
       id="modules"
       variant="default"
-      className="relative py-20 md:py-28"
+      className="relative overflow-hidden py-20 md:py-28"
       data-testid="modules-section"
     >
       <div className="relative" data-testid="modules-showcase-section">
         <div className="relative z-10 mb-10 text-center md:mb-14">
+          <div className="mx-auto max-w-2xl text-left">
+            <ChapterMark number="03" label="Módulos" />
+          </div>
           <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-sgs-blue-100 bg-white px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-sgs-accent">
             <ShieldCheck className="h-4 w-4" aria-hidden="true" />
             13 módulos conectados

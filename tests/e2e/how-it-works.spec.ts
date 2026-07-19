@@ -14,8 +14,8 @@ test.describe('How It Works Section', () => {
   })
 
   test('should display step numbers', async ({ page }) => {
-    const section = page.locator('#how-it-works')
-    await expect(section.getByText('01', { exact: true })).toBeVisible()
-    await expect(section.getByText('04', { exact: true })).toBeVisible()
+    const cards = page.locator('#how-it-works .sgs-step-card')
+    await expect(cards.getByText('01', { exact: true })).toBeVisible()
+    await expect(cards.getByText('04', { exact: true })).toBeVisible()
   })
 })

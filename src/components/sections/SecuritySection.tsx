@@ -11,6 +11,7 @@ import Stagger from '@/components/motion/Stagger'
 import ParallaxLayer from '@/components/motion/ParallaxLayer'
 import InteractiveSurface from '@/components/interaction/InteractiveSurface'
 import { ImageWithFallback } from '@/components/common/ImageWithFallback'
+import ChapterMark from '@/components/ui/ChapterMark'
 
 const securityFeatures = [
   {
@@ -40,6 +41,10 @@ export default function SecuritySection() {
     <Section id="security" variant="dark" className="relative overflow-hidden">
       <div className="sgs-dark-grid absolute inset-0 pointer-events-none" aria-hidden="true" />
       <div className="absolute -right-28 top-1/4 h-[500px] w-[500px] rounded-full bg-sgs-cyan/15 blur-3xl pointer-events-none" aria-hidden="true" />
+
+      <div className="mx-auto max-w-2xl text-left">
+        <ChapterMark number="05" label="Segurança" tone="dark" />
+      </div>
 
       <Reveal>
         <div className="flex items-center justify-center gap-3 mb-4">

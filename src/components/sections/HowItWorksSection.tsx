@@ -4,6 +4,7 @@ import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 import Reveal from '@/components/motion/Reveal'
 import Stagger from '@/components/motion/Stagger'
+import ChapterMark from '@/components/ui/ChapterMark'
 import { steps } from '@/config/steps'
 
 export default function HowItWorksSection() {
@@ -20,6 +21,7 @@ export default function HowItWorksSection() {
       <div className="relative z-10 grid gap-14 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
         <Reveal direction="left" distance={48}>
           <div className="lg:sticky lg:top-24">
+            <ChapterMark number="04" label="Fluxo" />
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-sgs-blue-100 bg-white px-4 py-2 font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-sgs-accent shadow-sm">
               Fluxo de implantação
             </div>
