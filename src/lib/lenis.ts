@@ -96,29 +96,59 @@ export function subscribeLenis(fn: (data: LenisScrollData) => void): () => void 
   }
 }
 
-// Offset do header fixo (h-20 = 80px em desktop)
-const HEADER_OFFSET = -80
+const ANCHOR_GAP_PX = 16
+
+export function getFixedHeaderOffset(): number {
+  if (typeof document === 'undefined') return 0
+
+  const header = document.querySelector<HTMLElement>('[data-testid="header"]')
+  return header ? Math.ceil(header.getBoundingClientRect().height + ANCHOR_GAP_PX) : 0
+}
+
+function getHashTarget(hash: string): HTMLElement | null {
+  if (!hash || hash === '#') return null
+
+  try {
+    return document.getElementById(decodeURIComponent(hash.slice(1)))
+  } catch {
+    return null
+  }
+}
+
+export function scrollToHash(hash: string): boolean {
+  if (typeof document === 'undefined') return false
+
+  const target = getHashTarget(hash)
+  if (!target) return false
+
+  scrollTo(target, -getFixedHeaderOffset())
+  return true
+}
 
 /**
  * Intercepta cliques em links de âncora (#id) da mesma página e os
  * roteia pelo scroll suave do Lenis, respeitando o header fixo.
- * Retorna função de cleanup. No-op se o Lenis não estiver ativo.
+ * Retorna função de cleanup e mantém fallback nativo quando o Lenis não está ativo.
  */
-export function bindAnchorLinks(): () => void {
+export function bindAnchorLinks(onBeforeScroll?: () => void): () => void {
   if (typeof document === 'undefined') return () => {}
 
   const onClick = (e: MouseEvent) => {
     if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
-    const anchor = (e.target as HTMLElement)?.closest('a')
+    const anchor = (e.target as Element | null)?.closest<HTMLAnchorElement>('a[href]')
     if (!anchor) return
     const href = anchor.getAttribute('href')
     if (!href || !href.startsWith('#') || href === '#') return
-    const el = document.querySelector(href)
-    if (!el) return
+    if (!getHashTarget(href)) return
+
     e.preventDefault()
-    scrollTo(el as HTMLElement, HEADER_OFFSET)
-    // Atualiza o hash sem provocar salto nativo
-    history.pushState(null, '', href)
+    onBeforeScroll?.()
+
+    if (window.location.hash !== href) history.pushState(null, '', href)
+
+    window.requestAnimationFrame(() => {
+      scrollToHash(href)
+    })
   }
 
   document.addEventListener('click', onClick)
@@ -127,15 +157,28 @@ export function bindAnchorLinks(): () => void {
 
 export function scrollTo(target: string | number | HTMLElement, offset = 0) {
   if (lenis) {
-    lenis.scrollTo(target, { offset })
-  } else if (typeof window !== 'undefined') {
-    if (typeof target === 'string') {
-      const el = document.querySelector(target)
-      el?.scrollIntoView({ behavior: 'smooth' })
-    } else if (typeof target === 'number') {
-      window.scrollTo({ top: target + offset, behavior: 'smooth' })
-    } else {
-      target.scrollIntoView({ behavior: 'smooth' })
+    if (typeof target === 'number') {
+      lenis.scrollTo(Math.max(0, target + offset))
+      return
     }
+
+    const element = typeof target === 'string' ? document.querySelector<HTMLElement>(target) : target
+    if (!element) return
+
+    const top = element.getBoundingClientRect().top + window.scrollY + offset
+    lenis.scrollTo(Math.max(0, top))
+  } else if (typeof window !== 'undefined') {
+    const behavior: ScrollBehavior = prefersReducedMotion() ? 'auto' : 'smooth'
+
+    if (typeof target === 'number') {
+      window.scrollTo({ top: Math.max(0, target + offset), behavior })
+      return
+    }
+
+    const element = typeof target === 'string' ? document.querySelector<HTMLElement>(target) : target
+    if (!element) return
+
+    const top = element.getBoundingClientRect().top + window.scrollY + offset
+    window.scrollTo({ top: Math.max(0, top), behavior })
   }
 }

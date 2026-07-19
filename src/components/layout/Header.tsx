@@ -23,9 +23,6 @@ export function Header() {
 
   // Track active section for indicator
   useEffect(() => {
-    const sections = document.querySelectorAll('section[id]')
-    if (!sections.length) return
-
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -37,8 +34,32 @@ export function Header() {
       { rootMargin: '-40% 0px -55% 0px', threshold: 0 }
     )
 
-    sections.forEach((section) => observer.observe(section))
-    return () => observer.disconnect()
+    const expectedSectionIds = navigationLinks.map((link) => link.href.slice(1))
+    const observedSections = new Set<Element>()
+    let mutationObserver: MutationObserver | null = null
+
+    const observeSections = () => {
+      expectedSectionIds.forEach((id) => {
+        const section = document.getElementById(id)
+        if (!section) return
+        if (observedSections.has(section)) return
+        observedSections.add(section)
+        observer.observe(section)
+      })
+
+      if (observedSections.size === expectedSectionIds.length) mutationObserver?.disconnect()
+    }
+
+    observeSections()
+    if (observedSections.size < expectedSectionIds.length) {
+      mutationObserver = new MutationObserver(observeSections)
+      mutationObserver.observe(document.body, { childList: true, subtree: true })
+    }
+
+    return () => {
+      mutationObserver?.disconnect()
+      observer.disconnect()
+    }
   }, [])
 
   useEffect(() => {
@@ -88,7 +109,7 @@ export function Header() {
                   <a
                     href={link.href}
                     data-testid={`nav-link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
-                    aria-current={isActive ? 'page' : undefined}
+                    aria-current={isActive ? 'location' : undefined}
                     className={cn(
                       'relative rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-200',
                       'text-sgs-text-secondary hover:text-sgs-accent hover:bg-sgs-blue-50',
@@ -207,7 +228,7 @@ export function Header() {
                     <a
                       href={link.href}
                       onClick={closeDrawer}
-                      aria-current={activeSection === link.href.replace('#', '') ? 'page' : undefined}
+                      aria-current={activeSection === link.href.replace('#', '') ? 'location' : undefined}
                       className={cn(
                         'block rounded-lg px-4 py-3 text-base font-medium transition-colors hover:bg-sgs-blue-50 hover:text-sgs-accent',
                         activeSection === link.href.replace('#', '')

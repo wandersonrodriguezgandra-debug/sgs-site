@@ -153,6 +153,20 @@
      scroll-behavior nativo conflitaria com o Lenis, causando saltos.
      Em reduced-motion o Lenis é desativado e o bloco abaixo força scroll auto. */
 
+  :root {
+    --site-header-offset: 5rem;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --site-header-offset: 6rem;
+    }
+  }
+
+  html {
+    scroll-padding-top: var(--site-header-offset);
+  }
+
   html,
   body {
     overflow-x: clip;
