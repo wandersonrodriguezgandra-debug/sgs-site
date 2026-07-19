@@ -46,31 +46,47 @@ export default function LuminanceArc() {
     let ctx: { revert: () => void } | undefined
     let disposed = false
 
-    void import('@/lib/gsap').then(({ gsap }) => {
-      if (disposed) return
-      const main = document.getElementById('main-content')
-      if (!main) return
+    // Defers the GSAP import (and its ~47 KB gzip chunk) until after the
+    // window's load event, the same signal ScrollProvider already waits on
+    // before initializing Lenis/ScrollTrigger. Loading GSAP eagerly on
+    // mount made it compete with the hero's H1 for CPU during the LCP
+    // window — requestIdleCallback wasn't a strong enough gate, since
+    // Lighthouse's CPU throttling can still call it back almost
+    // immediately. `load` guarantees the critical rendering path is done.
+    const loadArc = () => {
+      void import('@/lib/gsap').then(({ gsap }) => {
+        if (disposed) return
+        const main = document.getElementById('main-content')
+        if (!main) return
 
-      ctx = gsap.context(() => {
-        gsap.fromTo(
-          light,
-          { opacity: 0 },
-          {
-            opacity: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: main,
-              start: 'top top',
-              end: 'bottom bottom',
-              scrub: 0.65,
+        ctx = gsap.context(() => {
+          gsap.fromTo(
+            light,
+            { opacity: 0 },
+            {
+              opacity: 1,
+              ease: 'none',
+              scrollTrigger: {
+                trigger: main,
+                start: 'top top',
+                end: 'bottom bottom',
+                scrub: 0.65,
+              },
             },
-          },
-        )
+          )
+        })
       })
-    })
+    }
+
+    if (document.readyState === 'complete') {
+      loadArc()
+    } else {
+      window.addEventListener('load', loadArc, { once: true })
+    }
 
     return () => {
       disposed = true
+      window.removeEventListener('load', loadArc)
       ctx?.revert()
     }
   }, [reduced])

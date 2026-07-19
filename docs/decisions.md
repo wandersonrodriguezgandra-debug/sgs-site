@@ -177,3 +177,45 @@ real do plano original (peças 1b, 1c, 1d, 2, 3) ser fornecido. Quando
 chegar, tratar como uma etapa própria — não encaixar apressadamente no
 que já foi implementado sem revisar se a base (arco de luminância, tipo
 de capítulos, dualidade) já commitada precisa de ajuste para acomodá-la.
+
+## 2026-07-19 — Gate de saída da Imersão (peças 7-9): LCP piora ~300ms, dentro do Caminho B aceito
+
+**Medição** (5x Lighthouse mobile, `vite preview`, build de produção,
+mediana): Performance 86, LCP 3550ms, CLS 0, transferência 419KB.
+
+**Comparação com o gate anterior** (pré-Imersão, commit `07bcd42`):
+Performance 88→86, LCP 3244ms→3550ms (+306ms), CLS 0→0 (mantido),
+transferência 467KB→419KB (melhorou, CSS/JS morto continuam saindo).
+
+**Investigação do aumento de LCP**: o chunk crítico (`index-*.js`, sempre
+carregado, nunca lazy) cresceu de 72.54KB para 78.52KB (~6KB, a maior
+parte código novo: `LuminanceArc`, 4 usos de `ChapterMark`,
+`DualitySection`). O `bootup-time` do Lighthouse mostrava o chunk do GSAP
+(47KB gzip) consumindo CPU durante a janela de LCP — rastreado até
+`LuminanceArc` chamar `import('@/lib/gsap')` diretamente no `useEffect` de
+mount, antecipando o carregamento do GSAP para o boot inicial (antes,
+só o Scanner importava GSAP, e só quando perto do viewport).
+
+**Correção aplicada**: `LuminanceArc` agora adia esse import até o evento
+`window.load` (mesmo sinal que `ScrollProvider` já usa para inicializar
+Lenis/ScrollTrigure), em vez de disparar no mount. Tentativas anteriores
+com `requestIdleCallback` não seguraram o suficiente sob o CPU throttling
+simulado do Lighthouse. A correção reduziu o LCP em ~15-100ms nas
+execuções, mas não eliminou o aumento — o peso residual é o parse/
+execução do próprio bundle maior (o código novo em si, não o GSAP).
+
+**Decisão**: aceitar esse aumento de ~300ms como extensão do "Caminho B"
+já formalmente aceito antes da Imersão começar (ver decisão de
+2026-07-19 sobre LCP ~3,2s). Não fazer lazy-loading das novas seções para
+recuperar esses milissegundos agora — essa rota já foi tentada em uma
+etapa anterior (as 4 seções lazy-by-proximity) e causou flakiness real
+nos testes de âncora sem ganho líquido que justificasse a complexidade.
+A via correta para resolver isso de vez continua sendo o prerender,
+já promovido a primeira prioridade pós-Imersão.
+
+**Como aplicar esta decisão**: cada peça nova da Imersão que adicionar
+componentes ao bundle crítico (não-lazy) deve esperar um pequeno aumento
+proporcional de LCP — isso é esperado e aceito enquanto o CSR não for
+substituído por prerender. Continuar medindo (5x Lighthouse, mediana) a
+cada checkpoint para garantir que o aumento seja proporcional ao código
+adicionado, não um sintoma de regressão evitável.
