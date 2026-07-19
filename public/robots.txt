@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://sgs.com.br/sitemap.xml
+Sitemap: https://sgs-site-byk.pages.dev/sitemap.xml

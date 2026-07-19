@@ -1,3 +1,10 @@
+import {
+  DEMO_INTEREST_LABELS,
+  PRIVACY_POLICY_VERSION,
+  isDemoInterest,
+  type DemoInterest,
+} from '../../src/config/privacy'
+
 interface Env {
   RESEND_API_KEY?: string
   DEMO_TO_EMAIL?: string
@@ -15,7 +22,7 @@ interface DemoRequest {
   empresa: string
   email: string
   telefone: string
-  interesse: keyof typeof INTEREST_LABELS
+  interesse: DemoInterest
   privacyAccepted: true
   requestId: string
   turnstileToken: string
@@ -27,7 +34,6 @@ type TurnstileValidation = 'valid' | 'invalid' | 'unavailable'
 const MAX_BODY_BYTES = 16_384
 const RESEND_REQUEST_TIMEOUT_MS = 8_000
 const TURNSTILE_REQUEST_TIMEOUT_MS = 4_000
-const PRIVACY_POLICY_VERSION = '2026-07-18'
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
 const JSON_HEADERS = {
@@ -35,12 +41,6 @@ const JSON_HEADERS = {
   'Content-Type': 'application/json; charset=utf-8',
   'X-Content-Type-Options': 'nosniff',
 }
-const INTEREST_LABELS = {
-  centralizar_sst: 'Centralizar rotinas e documentos de SST',
-  riscos_acoes: 'Organizar riscos e planos de ação',
-  treinamentos_exames: 'Acompanhar treinamentos e exames',
-  visao_geral: 'Conhecer a plataforma de forma geral',
-} as const
 
 function jsonResponse(
   status: number,
@@ -55,10 +55,6 @@ function jsonResponse(
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
-function isInterest(value: string): value is keyof typeof INTEREST_LABELS {
-  return Object.hasOwn(INTEREST_LABELS, value)
 }
 
 function readTrimmedString(
@@ -99,7 +95,7 @@ function parseDemoRequest(value: unknown): DemoRequest | null {
     turnstileToken === null ||
     website === null ||
     !EMAIL_PATTERN.test(email) ||
-    !isInterest(interesse) ||
+    !isDemoInterest(interesse) ||
     !UUID_PATTERN.test(requestId)
   ) {
     return null
@@ -175,7 +171,7 @@ function buildEmailContent(
   request: DemoRequest,
   consentedAt: string,
 ): { html: string; text: string } {
-  const interestLabel = INTEREST_LABELS[request.interesse]
+  const interestLabel = DEMO_INTEREST_LABELS[request.interesse]
 
   return {
     text: [

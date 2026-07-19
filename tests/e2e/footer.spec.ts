@@ -12,10 +12,19 @@ test.describe('Footer', () => {
     await expect(page.locator('[data-testid="footer"]')).toBeVisible()
   })
 
-  test('should display contact information', async ({ page }) => {
+  test('should provide real navigation and no placeholder contact channel', async ({ page }) => {
     const footer = page.locator('[data-testid="footer"]')
-    await expect(footer.locator('text=@')).toBeVisible()
-    await expect(footer.locator('text=WhatsApp')).toBeVisible()
+    await expect(footer.getByRole('link', { name: 'Privacidade' })).toHaveAttribute(
+      'href',
+      '/privacidade',
+    )
+    await expect(footer.getByRole('link', { name: /Solicitar demonstração/ })).toHaveAttribute(
+      'href',
+      '#contato',
+    )
+    await expect(
+      footer.locator('a[href^="mailto:"], a[href^="tel:"], a[href*="whatsapp"]'),
+    ).toHaveCount(0)
   })
 
   test('should display current year in copyright', async ({ page }) => {

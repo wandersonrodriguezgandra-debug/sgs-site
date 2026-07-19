@@ -6,8 +6,10 @@ import SecuritySection from '@/components/sections/SecuritySection'
 import ProblemSection from '@/components/sections/ProblemSection'
 import ModulesShowcaseSection from '@/components/sections/ModulesShowcaseSection'
 import ScannerSection from '@/components/sections/ScannerSection'
-import { FaqJsonLd } from '@/components/seo/JsonLd'
+import { PageSEO } from '@/components/common/PageSEO'
+import { FaqJsonLd, OrganizationJsonLd, SoftwareAppJsonLd } from '@/components/seo/JsonLd'
 import { faqItems } from '@/config/faq'
+import { siteConfig } from '@/config/site'
 import ScrollProvider from '@/components/scroll/ScrollProvider'
 
 const DashboardSection = lazy(() => import('@/components/sections/DashboardSection'))
@@ -26,6 +28,21 @@ function SuspenseWrapper({ children }: { children: React.ReactNode }) {
 export default function HomePage() {
   return (
     <ScrollProvider>
+      <PageSEO
+        title="Sistema de Gestão de Segurança do Trabalho"
+        description="O SGS centraliza riscos, ações, treinamentos, exames e evidências de SST em uma operação rastreável."
+        canonicalPath="/"
+      />
+      <SoftwareAppJsonLd
+        name={siteConfig.name}
+        description={siteConfig.description}
+        url={siteConfig.url}
+      />
+      <OrganizationJsonLd
+        name={siteConfig.name}
+        url={siteConfig.url}
+        logo={siteConfig.logo}
+      />
       <FaqJsonLd items={faqItems} />
       <main id="main-content" data-testid="page-home">
         <HeroSection />

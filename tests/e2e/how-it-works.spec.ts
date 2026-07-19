@@ -15,6 +15,7 @@ test.describe('How It Works Section', () => {
 
   test('should display step numbers', async ({ page }) => {
     const section = page.locator('#how-it-works')
-    await expect(section.locator('text=Como funciona')).toBeVisible()
+    await expect(section.getByText('01', { exact: true })).toBeVisible()
+    await expect(section.getByText('04', { exact: true })).toBeVisible()
   })
 })

@@ -7,11 +7,18 @@ test.describe('Navigation', () => {
     await expect(page.locator('[data-testid="header"]')).toBeVisible()
   })
 
-  test('should show login and CTA buttons on desktop', async ({ page }) => {
+  test('should show the demo CTA without an unverified login destination', async ({ page }) => {
     await page.setViewportSize(viewports.desktop)
     await page.goto('/')
-    await expect(page.locator('[data-testid="login-link"]')).toBeVisible()
-    await expect(page.locator('[data-testid="cta-demo"]')).toBeVisible()
+    await expect(page.locator('[data-testid="cta-demo"]')).toHaveAttribute('href', '#contato')
+    await expect(page.locator('[data-testid="login-link"]')).toHaveCount(0)
+  })
+
+  test('should point home anchors correctly from the privacy route', async ({ page }) => {
+    await page.goto('/privacidade')
+
+    await expect(page.locator('[data-testid="header"] a[href="/#modules"]')).toBeVisible()
+    await expect(page.locator('[data-testid="cta-demo"]')).toHaveAttribute('href', '/#contato')
   })
 
   test('should toggle mobile menu on small viewport', async ({ page }) => {

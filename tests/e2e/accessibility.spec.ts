@@ -25,16 +25,20 @@ test.describe('Accessibility', () => {
     await expect(page.locator('#main-content')).toBeVisible()
   })
 
-  test('should have aria-label on social links', async ({ page }) => {
+  test('should expose an accessible name for every footer link', async ({ page }) => {
     await page.goto('/')
     await waitForPageReady(page)
 
     await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight))
     await page.waitForTimeout(500)
 
-    const socialLinks = page.locator('footer a[aria-label]')
-    const count = await socialLinks.count()
-    expect(count).toBeGreaterThanOrEqual(3)
+    const footerLinks = page.locator('footer a')
+    const accessibleNames = await footerLinks.evaluateAll((links) =>
+      links.map((link) => link.getAttribute('aria-label')?.trim() || link.textContent?.trim() || ''),
+    )
+
+    expect(accessibleNames.length).toBeGreaterThan(0)
+    expect(accessibleNames.every(Boolean)).toBe(true)
   })
 
   test('should have correct heading hierarchy', async ({ page }) => {

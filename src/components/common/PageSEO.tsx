@@ -3,13 +3,22 @@ import { siteConfig } from '@/config/site'
 
 interface PageSEOProps {
   title: string
-  description?: string
-  canonicalUrl?: string
+  description: string
+  canonicalPath?: string
+  noIndex?: boolean
 }
 
-export function PageSEO({ title, description, canonicalUrl }: PageSEOProps) {
+function getCanonicalUrl(path: string): string {
+  return new URL(path, `${siteConfig.url}/`).href
+}
+
+export function PageSEO({
+  title,
+  description,
+  canonicalPath = '/',
+  noIndex = false,
+}: PageSEOProps) {
   useEffect(() => {
-    const previousTitle = document.title
     const fullTitle = `${title} | ${siteConfig.name}`
     document.title = fullTitle
 
@@ -27,34 +36,27 @@ export function PageSEO({ title, description, canonicalUrl }: PageSEOProps) {
       meta.setAttribute('content', content)
     }
 
-    if (description) {
-      const desc = description
-      setMeta('description', desc)
-      setMeta('og:description', desc, true)
-      setMeta('twitter:description', desc)
-    }
+    setMeta('description', description)
+    setMeta('og:description', description, true)
+    setMeta('twitter:description', description)
 
     setMeta('og:title', fullTitle, true)
     setMeta('og:type', 'website', true)
     setMeta('twitter:card', 'summary_large_image')
+    setMeta('twitter:title', fullTitle)
+    setMeta('robots', noIndex ? 'noindex, nofollow' : 'index, follow')
 
-    const url = canonicalUrl || siteConfig.url
+    const url = getCanonicalUrl(canonicalPath)
     setMeta('og:url', url, true)
 
-    if (canonicalUrl) {
-      let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
-      if (!link) {
-        link = document.createElement('link')
-        link.setAttribute('rel', 'canonical')
-        document.head.appendChild(link)
-      }
-      link.setAttribute('href', canonicalUrl)
+    let link = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
+    if (!link) {
+      link = document.createElement('link')
+      link.setAttribute('rel', 'canonical')
+      document.head.appendChild(link)
     }
-
-    return () => {
-      document.title = previousTitle
-    }
-  }, [title, description, canonicalUrl])
+    link.setAttribute('href', url)
+  }, [title, description, canonicalPath, noIndex])
 
   return null
 }

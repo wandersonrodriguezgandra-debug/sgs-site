@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ChangeEvent, type FormEvent } from 'r
 import { CheckCircle2 } from 'lucide-react'
 import TurnstileWidget from '@/components/forms/TurnstileWidget'
 import { resetTurnstile } from '@/lib/turnstile'
+import { DEMO_INTEREST_LABELS, isDemoInterest } from '@/config/privacy'
 import FormField from '@/components/ui/FormField'
 import Card from '@/components/ui/Card'
 import Section from '@/components/ui/Section'
@@ -36,18 +37,19 @@ const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY?.trim() ?? ''
 
 const interestOptions = [
   { label: 'Selecione o foco principal', value: '' },
-  { label: 'Centralizar rotinas e documentos de SST', value: 'centralizar_sst' },
-  { label: 'Organizar riscos e planos de ação', value: 'riscos_acoes' },
-  { label: 'Acompanhar treinamentos e exames', value: 'treinamentos_exames' },
-  { label: 'Conhecer a plataforma de forma geral', value: 'visao_geral' },
+  ...Object.entries(DEMO_INTEREST_LABELS).map(([value, label]) => ({ label, value })),
 ]
 
-const initialFormData: DemoFormValues = {
-  nome: '',
-  empresa: '',
-  email: '',
-  telefone: '',
-  interesse: '',
+function createInitialFormData(): DemoFormValues {
+  const requestedInterest = new URLSearchParams(window.location.search).get('interesse') ?? ''
+
+  return {
+    nome: '',
+    empresa: '',
+    email: '',
+    telefone: '',
+    interesse: isDemoInterest(requestedInterest) ? requestedInterest : '',
+  }
 }
 
 function validateEmail(email: string): boolean {
@@ -92,7 +94,7 @@ function getSubmissionErrorMessage(status: number): string {
 }
 
 export default function DemoFormSection() {
-  const [formData, setFormData] = useState<DemoFormValues>(initialFormData)
+  const [formData, setFormData] = useState<DemoFormValues>(createInitialFormData)
   const [errors, setErrors] = useState<Partial<Record<FormErrorKey, string>>>({})
   const [privacyAccepted, setPrivacyAccepted] = useState(false)
   const [website, setWebsite] = useState('')

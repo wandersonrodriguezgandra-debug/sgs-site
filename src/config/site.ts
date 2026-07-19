@@ -1,18 +1,23 @@
 import type { SiteConfig } from '@/types'
 
+const DEFAULT_SITE_URL = 'https://sgs-site-byk.pages.dev'
+
+function normalizeSiteUrl(value: string | undefined): string {
+  const candidate = value?.trim() || DEFAULT_SITE_URL
+
+  try {
+    const url = new URL(candidate)
+    return url.href.replace(/\/$/, '')
+  } catch {
+    return DEFAULT_SITE_URL
+  }
+}
+
+const siteUrl = normalizeSiteUrl(import.meta.env.VITE_SITE_URL)
+
 export const siteConfig: SiteConfig = {
   name: 'SGS',
   description: 'Sistema de Gestão de Segurança do Trabalho',
-  url: import.meta.env.VITE_SITE_URL || 'https://example.com',
-  logo: '/images/brand/logo.svg',
-  contact: {
-    email: 'contato@sgs.com.br',
-    phone: '(11) 99999-0000',
-    whatsapp: '(11) 99999-0000',
-    social: {
-      linkedin: 'https://linkedin.com/company/sgs',
-      instagram: 'https://instagram.com/sgs',
-      youtube: 'https://youtube.com/@sgs',
-    },
-  },
+  url: siteUrl,
+  logo: `${siteUrl}/images/brand/logo.svg`,
 }

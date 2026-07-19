@@ -11,5 +11,4 @@ export const navigationLinks: NavigationLink[] = [
 
 export const headerCta = {
   demo: { label: 'Solicitar demonstração', href: '#contato' },
-  login: { label: 'Acessar o sistema', href: 'https://app.sgs.com.br' },
 }

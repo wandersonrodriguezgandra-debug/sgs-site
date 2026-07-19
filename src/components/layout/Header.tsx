@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLocation } from 'react-router-dom'
 import { Menu, X, ChevronDown } from 'lucide-react'
 import { useScrollHeader } from '@/hooks/useScrollHeader'
 import { navigationLinks, headerCta } from '@/config/navigation'
@@ -8,6 +9,8 @@ import Button from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 export function Header() {
+  const { pathname } = useLocation()
+  const isHomePage = pathname === '/'
   const isScrolled = useScrollHeader()
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
   const [activeSection, setActiveSection] = useState<string>('')
@@ -23,6 +26,9 @@ export function Header() {
 
   // Track active section for indicator
   useEffect(() => {
+    setActiveSection('')
+    if (!isHomePage) return
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -60,7 +66,12 @@ export function Header() {
       mutationObserver?.disconnect()
       observer.disconnect()
     }
-  }, [])
+  }, [isHomePage])
+
+  const resolveHomeHref = useCallback(
+    (href: string) => (isHomePage ? href : `/${href}`),
+    [isHomePage],
+  )
 
   useEffect(() => {
     if (isDrawerOpen) {
@@ -95,7 +106,7 @@ export function Header() {
     >
       <div className="container-sgs">
         <div className="flex h-16 items-center justify-between md:h-20">
-          <Logo />
+          <Logo href={resolveHomeHref('#hero')} />
 
           <nav
             ref={navRef}
@@ -103,11 +114,11 @@ export function Header() {
             aria-label="Navegação principal"
           >
             {navigationLinks.map((link) => {
-              const isActive = activeSection === link.href.replace('#', '')
+              const isActive = isHomePage && activeSection === link.href.replace('#', '')
               return (
                 <div key={link.href} className="group relative">
                   <a
-                    href={link.href}
+                    href={resolveHomeHref(link.href)}
                     data-testid={`nav-link-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
                     aria-current={isActive ? 'location' : undefined}
                     className={cn(
@@ -139,7 +150,7 @@ export function Header() {
                         {link.children.map((child) => (
                           <a
                             key={child.href}
-                            href={child.href}
+                            href={resolveHomeHref(child.href)}
                             className="block rounded-lg px-4 py-2.5 text-sm font-medium text-sgs-text-secondary transition-colors hover:bg-sgs-blue-50 hover:text-sgs-accent"
                           >
                             {child.label}
@@ -153,18 +164,8 @@ export function Header() {
             })}
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
-            <a
-              href={headerCta.login.href}
-              data-testid="login-link"
-              className={cn(
-                'text-sm font-medium transition-colors duration-200',
-                'text-sgs-text-secondary hover:text-sgs-accent',
-              )}
-            >
-              {headerCta.login.label}
-            </a>
-            <Button href={headerCta.demo.href} size="sm" data-testid="cta-demo">
+          <div className="hidden items-center lg:flex">
+            <Button href={resolveHomeHref(headerCta.demo.href)} size="sm" data-testid="cta-demo">
               {headerCta.demo.label}
             </Button>
           </div>
@@ -212,7 +213,7 @@ export function Header() {
               aria-label="Menu de navegação"
             >
               <div className="flex h-16 items-center justify-between px-4 border-b border-sgs-border-light">
-                <Logo />
+                <Logo href={resolveHomeHref('#hero')} />
                 <button
                   type="button"
                   onClick={closeDrawer}
@@ -226,12 +227,12 @@ export function Header() {
                 {navigationLinks.map((link) => (
                   <div key={link.href}>
                     <a
-                      href={link.href}
+                      href={resolveHomeHref(link.href)}
                       onClick={closeDrawer}
-                      aria-current={activeSection === link.href.replace('#', '') ? 'location' : undefined}
+                      aria-current={isHomePage && activeSection === link.href.replace('#', '') ? 'location' : undefined}
                       className={cn(
                         'block rounded-lg px-4 py-3 text-base font-medium transition-colors hover:bg-sgs-blue-50 hover:text-sgs-accent',
-                        activeSection === link.href.replace('#', '')
+                        isHomePage && activeSection === link.href.replace('#', '')
                           ? 'text-sgs-accent bg-sgs-blue-50'
                           : 'text-sgs-text-primary'
                       )}
@@ -243,7 +244,7 @@ export function Header() {
                         {link.children.map((child) => (
                           <a
                             key={child.href}
-                            href={child.href}
+                            href={resolveHomeHref(child.href)}
                             onClick={closeDrawer}
                             className="block rounded-lg px-3 py-2 text-sm font-medium text-sgs-text-secondary transition-colors hover:bg-sgs-blue-50 hover:text-sgs-accent"
                           >
@@ -256,14 +257,15 @@ export function Header() {
                 ))}
               </nav>
               <div className="flex flex-col gap-3 border-t border-sgs-border px-4 py-6">
-                <Button href={headerCta.demo.href} className="w-full">
+                <Button href={resolveHomeHref(headerCta.demo.href)} className="w-full">
                   {headerCta.demo.label}
                 </Button>
                 <a
-                  href={headerCta.login.href}
+                  href="/privacidade"
+                  onClick={closeDrawer}
                   className="w-full rounded-lg bg-sgs-blue-50 px-6 py-2.5 text-center text-sm font-semibold text-sgs-accent transition-colors hover:bg-sgs-blue-100"
                 >
-                  {headerCta.login.label}
+                  Política de Privacidade
                 </a>
               </div>
             </motion.div>

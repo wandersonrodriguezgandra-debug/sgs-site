@@ -8,11 +8,15 @@ test.describe('Initial Load', () => {
     await expect(page).toHaveTitle(/SGS/)
     await expect(page.locator('meta[name="description"]')).toHaveAttribute(
       'content',
-      /Sistema de Gestão/
+      /centraliza riscos, ações, treinamentos, exames e evidências de SST/
     )
     await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
       'content',
       /SGS/
+    )
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://sgs-site-byk.pages.dev/'
     )
   })
 
@@ -25,6 +29,10 @@ test.describe('Initial Load', () => {
     await page.goto('/pagina-inexistente')
     await expect(page.locator('[data-testid="page-not-found"]')).toBeVisible()
     await expect(page.locator('text=404')).toBeVisible()
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+      'content',
+      'noindex, nofollow',
+    )
   })
 
   test('should have no console errors on load', async ({ page }) => {

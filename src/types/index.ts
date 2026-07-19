@@ -63,21 +63,9 @@ export interface Testimonial {
   avatar: string
 }
 
-export interface ContactInfo {
-  email: string
-  phone: string
-  whatsapp: string
-  social: {
-    linkedin: string
-    instagram: string
-    youtube: string
-  }
-}
-
 export interface SiteConfig {
   name: string
   description: string
   url: string
   logo: string
-  contact: ContactInfo
 }
