@@ -4,6 +4,7 @@ import ProductShowcaseSection from '@/components/sections/ProductShowcaseSection
 import HowItWorksSection from '@/components/sections/HowItWorksSection'
 import SecuritySection from '@/components/sections/SecuritySection'
 import ProblemSection from '@/components/sections/ProblemSection'
+import DualitySection from '@/components/sections/DualitySection'
 import ModulesShowcaseSection from '@/components/sections/ModulesShowcaseSection'
 import { PageSEO } from '@/components/common/PageSEO'
 import { FaqJsonLd, OrganizationJsonLd, SoftwareAppJsonLd } from '@/components/seo/JsonLd'
@@ -84,6 +85,7 @@ export default function HomePage() {
         <div data-luminance="0"><HeroSection /></div>
         <div data-luminance="0.15"><ProductShowcaseSection /></div>
         <div data-luminance="0.3"><ProblemSection /></div>
+        <div data-luminance="0.38"><DualitySection /></div>
         <div data-luminance="0.45"><LazyScannerSection /></div>
         <div data-luminance="0.6"><ModulesShowcaseSection /></div>
         <div data-luminance="0.7"><HowItWorksSection /></div>
