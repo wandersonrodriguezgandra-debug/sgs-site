@@ -1,13 +1,9 @@
-'use client'
-
 import { AlertTriangle, ClipboardList, Files } from 'lucide-react'
-import { m } from 'framer-motion'
 import Section from '@/components/ui/Section'
 import Heading from '@/components/ui/Heading'
 import Text from '@/components/ui/Text'
 import Reveal from '@/components/motion/Reveal'
 import Stagger from '@/components/motion/Stagger'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const problems = [
   {
@@ -31,8 +27,6 @@ const problems = [
 ]
 
 export default function ProblemSection() {
-  const reduced = useReducedMotion()
-
   return (
     <Section
       id="problema"
@@ -69,15 +63,12 @@ export default function ProblemSection() {
             const featured = index === 1
 
             return (
-              <m.article
+              <article
                 key={problem.title}
                 data-testid={`problem-card-${problem.title.toLowerCase().replace(/\s+/g, '-')}`}
-                whileHover={reduced ? undefined : { y: featured ? -12 : -7, rotateX: featured ? 1.5 : 0.8, rotateY: index === 0 ? -1.5 : index === 2 ? 1.5 : 0 }}
-                transition={{ type: 'spring', stiffness: 220, damping: 18 }}
-                style={{ transformPerspective: 1200, transformStyle: 'preserve-3d' }}
                 className={featured
-                  ? 'group relative min-h-72 overflow-hidden rounded-3xl border border-sgs-blue-800 bg-sgs-blue-950 p-7 text-white shadow-[0_28px_80px_rgba(7,26,51,0.24)] [transform-style:preserve-3d] md:-translate-y-5'
-                  : 'group relative min-h-72 overflow-hidden rounded-3xl border border-sgs-blue-100 bg-white p-7 shadow-[0_20px_60px_rgba(7,26,51,0.07)] [transform-style:preserve-3d]'}
+                  ? 'group relative min-h-72 overflow-hidden rounded-3xl border border-sgs-blue-800 bg-sgs-blue-950 p-7 text-white shadow-[0_28px_80px_rgba(7,26,51,0.24)] transition-transform duration-200 ease-out hover:-translate-y-2 md:-translate-y-5'
+                  : 'group relative min-h-72 overflow-hidden rounded-3xl border border-sgs-blue-100 bg-white p-7 shadow-[0_20px_60px_rgba(7,26,51,0.07)] transition-transform duration-200 ease-out hover:-translate-y-1.5'}
               >
                 <div className={featured ? 'absolute inset-0 bg-gradient-to-br from-sgs-cyan/10 via-transparent to-transparent' : 'absolute inset-0 bg-gradient-to-br from-sgs-blue-50/45 via-transparent to-transparent'} aria-hidden="true" />
                 {featured && <div className="sgs-risk-pulse-ring pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full border border-sgs-cyan/35" aria-hidden="true" />}
@@ -102,7 +93,7 @@ export default function ProblemSection() {
                   {problem.description}
                 </p>
                 <span className={featured ? 'relative z-10 mt-8 block h-px w-16 bg-sgs-cyan/60' : 'relative z-10 mt-8 block h-px w-12 bg-sgs-blue-200 transition-all duration-500 group-hover:w-20 group-hover:bg-sgs-accent'} aria-hidden="true" />
-              </m.article>
+              </article>
             )
           })}
           </Stagger>
