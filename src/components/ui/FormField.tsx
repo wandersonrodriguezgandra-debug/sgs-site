@@ -11,6 +11,8 @@ interface FormFieldProps {
   onChange: (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void
   options?: { label: string; value: string }[]
   rows?: number
+  maxLength?: number
+  autoComplete?: string
 }
 
 export default function FormField({
@@ -24,6 +26,8 @@ export default function FormField({
   onChange,
   options,
   rows = 4,
+  maxLength,
+  autoComplete,
 }: FormFieldProps) {
   const errorId = `${name}-error`
   const inputId = `field-${name}`
@@ -45,6 +49,8 @@ export default function FormField({
           placeholder={placeholder}
           required={required}
           rows={rows}
+          maxLength={maxLength}
+          autoComplete={autoComplete}
           aria-invalid={!!error}
           aria-describedby={error ? errorId : undefined}
           className={`${baseClasses} ${errorClasses} resize-y min-h-[100px]`}
@@ -82,6 +88,8 @@ export default function FormField({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
+        maxLength={maxLength}
+        autoComplete={autoComplete}
         aria-invalid={!!error}
         aria-describedby={error ? errorId : undefined}
         className={`${baseClasses} ${errorClasses}`}

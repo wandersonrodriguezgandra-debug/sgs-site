@@ -1,0 +1,5 @@
+# Copie para .dev.vars e substitua pelos valores reais.
+RESEND_API_KEY=re_substitua_pela_chave
+DEMO_TO_EMAIL=contato@seudominio.com
+DEMO_FROM_EMAIL="SGS <noreply@seudominio.com>"
+TURNSTILE_SECRET_KEY=substitua_pela_chave_secreta_do_turnstile
